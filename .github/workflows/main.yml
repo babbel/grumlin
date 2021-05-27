@@ -36,8 +36,10 @@ jobs:
           docker-compose up -d --build
           sleep 3
 
-      - name: Run the default task
+      - name: Install deps
         run: |
           gem install bundler -v 2.2.15
           bundle install
-          bundle exec rspec
+
+      - name: Run tests
+        run: bundle exec rspec
