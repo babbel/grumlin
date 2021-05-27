@@ -62,6 +62,7 @@ jobs:
 
       - name: Create credentials
         run: |
+          mkdir ~/.gem
           cat << EOF > ~/.gem/credentials
           ---
           :rubygems_api_key: ${{ secrets.rubygems_api_key }}
