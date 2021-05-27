@@ -1,0 +1,20 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "grumlin"
+require "irb"
+
+Async do
+  client = Grumlin::Client.new("ws://localhost:8182/gremlin", mode: :bytecode)
+  g = Grumlin::Traversal.new(client)
+
+  IRB.setup(nil)
+  workspace = IRB::WorkSpace.new(binding)
+  irb = IRB::Irb.new(workspace)
+  irb.eval_input
+rescue StandardError
+  raise
+ensure
+  client.disconnect
+end

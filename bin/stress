@@ -1,0 +1,51 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+
+require "bundler/setup"
+require "grumlin"
+require "irb"
+
+def queries(client, uuids)
+  total = 0
+  g = Grumlin::Traversal.new(client)
+
+  loop do
+    uuid = uuids.sample
+    result = g.V(uuid).toList[0]
+    raise "!!!" if result.id != uuid
+
+    total += 1
+  end
+rescue Async::Stop
+  total
+end
+
+def prepare_dataset(client)
+  uuids = Array.new(1000) { SecureRandom.uuid }
+
+  Grumlin::Traversal.new(client) do
+    g.V().drop
+
+    uuids.each do |uuid|
+      g.addV("test_vertex").property(id, uuid).toList
+    end
+  end
+
+  uuids
+end
+
+Async do |task|
+  client = Grumlin::Client.new("ws://localhost:8182/gremlin", mode: :bytecode)
+
+  uuids = prepare_dataset(client)
+  tasks = Array.new(20) { task.async { queries(client, uuids) } }
+
+  task.sleep(60)
+
+  tasks.each(&:stop)
+  total = tasks.sum(&:wait)
+
+  p("#{total} requests performed")
+ensure
+  client.disconnect
+end
