@@ -12,5 +12,6 @@ gem "solargraph"
 
 gem "async-rspec"
 gem "factory_bot"
+gem "overcommit"
 gem "rspec"
 gem "simplecov"
