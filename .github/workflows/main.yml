@@ -30,7 +30,7 @@ jobs:
 
       - name: Start Gremlin server
         run: |
-          docker-compose up -d
+          docker-compose up -d --build
           sleep 3
 
       - name: Run the default task
