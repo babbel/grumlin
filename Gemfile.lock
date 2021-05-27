@@ -39,6 +39,7 @@ GEM
       protocol-websocket (~> 0.7.0)
     backport (1.1.2)
     benchmark (0.1.1)
+    childprocess (4.0.0)
     concurrent-ruby (1.1.8)
     console (1.12.0)
       fiber-local
@@ -50,6 +51,7 @@ GEM
     fiber-local (1.0.0)
     i18n (1.8.10)
       concurrent-ruby (~> 1.0)
+    iniparse (1.5.0)
     jaro_winkler (1.5.4)
     kramdown (2.3.1)
       rexml
@@ -59,6 +61,9 @@ GEM
     nio4r (2.5.7)
     nokogiri (1.11.5-x86_64-linux)
       racc (~> 1.4)
+    overcommit (0.57.0)
+      childprocess (>= 0.6.3, < 5)
+      iniparse (~> 1.4)
     parallel (1.20.1)
     parser (3.0.1.1)
       ast (~> 2.4.1)
@@ -149,6 +154,7 @@ DEPENDENCIES
   async-rspec
   factory_bot
   grumlin!
+  overcommit
   rspec
   rubocop
   rubocop-performance
