@@ -2,7 +2,10 @@
 
 module Grumlin
   class TraversingContext
-    ID = { :@type => "g:T", :@value => "id" }.freeze
+    T_ID = { :@type => "g:T", :@value => "id" }.freeze
+
+    ORDER_DESC = { "@type": "g:Order", "@value": "desc" }.freeze
+    ORDER_ASC = { "@type": "g:Order", "@value": "desc" }.freeze
 
     attr_reader :g
 
@@ -11,7 +14,15 @@ module Grumlin
     end
 
     def id
-      ID
+      T_ID
+    end
+
+    def asc
+      ORDER_ASC
+    end
+
+    def desc
+      ORDER_DESC
     end
   end
 end

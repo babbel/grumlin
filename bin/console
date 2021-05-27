@@ -7,12 +7,12 @@ require "irb"
 
 Async do
   client = Grumlin::Client.new("ws://localhost:8182/gremlin", mode: :bytecode)
-  g = Grumlin::Traversal.new(client)
-
-  IRB.setup(nil)
-  workspace = IRB::WorkSpace.new(binding)
-  irb = IRB::Irb.new(workspace)
-  irb.eval_input
+  Grumlin::Traversal.new(client) do
+    IRB.setup(nil)
+    workspace = IRB::WorkSpace.new(binding)
+    irb = IRB::Irb.new(workspace)
+    irb.eval_input
+  end
 rescue StandardError
   raise
 ensure
