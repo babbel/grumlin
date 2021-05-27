@@ -13,11 +13,6 @@ jobs:
           ruby-version: 3.0
           bundler-cache: true
 
-      - name: Set up Ruby
-        uses: ruby/setup-ruby@v1
-        with:
-          ruby-version: 3.0
-
       - name: Run the default task
         run: |
           gem install bundler -v 2.2.15
