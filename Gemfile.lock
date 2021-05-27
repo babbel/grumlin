@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grumlin (0.1.0)
+    grumlin (0.1.1)
       async-websocket (~> 0.18)
 
 GEM
