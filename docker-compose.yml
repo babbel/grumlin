@@ -1,0 +1,6 @@
+version: "3"
+services:
+  gremlin_server:
+    build: gremlin_server
+    ports:
+      - "8182:8182"

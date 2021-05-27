@@ -4,8 +4,6 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "rake"
-
 gem "rubocop"
 gem "rubocop-performance"
 gem "rubocop-rspec"
