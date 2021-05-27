@@ -12,7 +12,7 @@ module Grumlin
       @args = args
     end
 
-    %w[addV addE V E limit count drop property valueMap select from to as].each do |step|
+    %w[addV addE V E limit count drop property valueMap select from to as order by].each do |step|
       define_method step do |*args|
         Step.new(@client, step, *args, previous_steps: steps)
       end
