@@ -48,7 +48,7 @@ jobs:
     needs:
       - lint
       - test
-    # if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
     steps:
       - uses: actions/checkout@v2
 
@@ -67,7 +67,6 @@ jobs:
           ---
           :rubygems_api_key: ${{ secrets.rubygems_api_key }}
           EOF
-          chmod 0600 /home/runner/.gem/credentials
 
       - name: Push gem
         run: gem push *gem

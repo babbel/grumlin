@@ -8,8 +8,8 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Gleb Sinyavskiy"]
   spec.email         = ["zhulik.gleb@gmail.com"]
 
-  spec.summary       = "A ruby client for Gremlin query language."
-  spec.description   = "A ruby client for Gremlin query language."
+  spec.summary       = "Gremlin query language DSL for Ruby."
+  spec.description   = "Gremlin query language DSL for Ruby."
   spec.homepage      = "https://github.com/zhulik/grumlin"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
