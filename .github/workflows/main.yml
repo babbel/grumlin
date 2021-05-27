@@ -1,18 +1,72 @@
 name: Ruby
 
-on: [push,pull_request]
+on: [push, pull_request]
 
 jobs:
-  build:
+  lint:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - name: Set up Ruby
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.0.1
-    - name: Run the default task
-      run: |
-        gem install bundler -v 2.2.15
-        bundle install
-        bundle exec rake
+      - uses: actions/checkout@v2
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+          bundler-cache: true
+
+      - name: Run the default task
+        run: |
+          gem install bundler -v 2.2.15
+          bundle install
+          bundle exec rubocop
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: [2.6, 2.7, 3.0]
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ matrix.ruby }}
+          bundler-cache: true
+
+      - name: Start Gremlin server
+        run: |
+          docker-compose up -d --build
+          sleep 3
+
+      - name: Install deps
+        run: |
+          gem install bundler -v 2.2.15
+          bundle install
+
+      - name: Run tests
+        run: bundle exec rspec
+  publish:
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - test
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: 3.0
+          bundler-cache: true
+
+      - name: Build gem
+        run: gem build
+
+      - name: Create credentials
+        run: |
+          mkdir ~/.gem
+          cat << EOF > ~/.gem/credentials
+          ---
+          :rubygems_api_key: ${{ secrets.rubygems_api_key }}
+          EOF
+
+      - name: Push gem
+        run: gem push *gem
