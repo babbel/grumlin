@@ -3,12 +3,12 @@
 module Grumlin
   module Translator
     class << self
-      def to_string_query(steps) # rubocop:disable Metrics/MethodLength
-        counter = 0
-        string_steps, bindings = steps.each_with_object([[], {}]) do |step, (acc_g, acc_b)|
+      # TODO: support subtraversals
+      def to_string_query(steps, counter = 0, bindings = {})
+        string_steps = steps.each_with_object([]) do |step, acc_g|
           args = step.args.map do |arg|
             binding_name(counter).tap do |b|
-              acc_b[b] = arg
+              bindings[b] = arg
               counter += 1
             end
           end.join(", ")
@@ -21,7 +21,7 @@ module Grumlin
 
       def to_bytecode_query(steps)
         steps.map do |step|
-          [step.name, *step.args.flatten]
+          arg_to_bytecode(step)
         end
       end
 
@@ -35,6 +35,17 @@ module Grumlin
 
       def binding_name(num)
         "b_#{num.to_s(16)}"
+      end
+
+      def arg_to_bytecode(arg)
+        return arg unless arg.is_a?(AnonymousStep)
+
+        [arg.name, *arg.args.flatten.map do |a|
+          bc = arg_to_bytecode(a)
+          next [bc] if a.is_a?(AnonymousStep)
+
+          bc
+        end]
       end
     end
   end

@@ -10,6 +10,13 @@ module Grumlin
       @client = client
     end
 
+    # TODO: add support for next
+    # TODO: add support for iterate
+    # TODO: memoization
+    def toList # rubocop:disable Naming/MethodName
+      @client.query(*steps)
+    end
+
     private
 
     def add_step(step_name, args, previous_steps:)

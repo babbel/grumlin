@@ -67,8 +67,7 @@ module Grumlin
           close_request(request_id)
           return []
         end
-
-        check_errors!(status, request_id)
+        check_errors!(status, request_id) # rescue binding.irb
 
         page = Typing.cast(response.dig(:result, :data))
 

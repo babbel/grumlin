@@ -20,13 +20,6 @@ module Grumlin
     alias addVertex addV
     alias addEdge addE
 
-    # TODO: add support for next
-    # TODO: add support for iterate
-    # TODO: memoization
-    def toList # rubocop:disable Naming/MethodName
-      @client.query(*steps)
-    end
-
     def inspect
       "<Step #{self}>" # TODO: substitute bindings
     end

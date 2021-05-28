@@ -4,16 +4,16 @@ module Grumlin
   module U
     class U
       class << self
-        def V(id) # rubocop:disable Naming/MethodName
-          { "@type": "g:Bytecode", "@value": { step: [["V", id]] } }
+        def V(*args) # rubocop:disable Naming/MethodName
+          AnonymousStep.new("V", *args)
         end
       end
     end
 
     # TODO: use metaprogramming
     class << self
-      def V(id) # rubocop:disable Naming/MethodName
-        U.V(id)
+      def V(*args) # rubocop:disable Naming/MethodName
+        U.V(*args)
       end
     end
   end
