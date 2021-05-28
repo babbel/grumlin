@@ -84,8 +84,8 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
       t = g
       batch.each do |edge|
         t = t.addE(edge.delete("~label")).property(Grumlin::T.id, edge.delete("~id"))
-             .from(Grumlin::TraversingContext.V(edge.delete("~from")))
-             .to(Grumlin::TraversingContext.V(edge.delete("~to")))
+             .from(Grumlin::U.V(edge.delete("~from")))
+             .to(Grumlin::U.V(edge.delete("~to")))
         edge.compact.each do |k, v|
           t = t.property(k.split(":")[0], v)
         end
