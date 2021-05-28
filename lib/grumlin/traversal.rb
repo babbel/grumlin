@@ -4,18 +4,15 @@ module Grumlin
   class Traversal
     attr_reader :connection
 
-    def initialize(client_or_url, &block)
+    def initialize(client_or_url)
       @client = if client_or_url.is_a?(String)
                   Grumlin::Client.new(client_or_url)
                 else
                   client_or_url
                 end
-
-      return if block.nil?
-
-      TraversingContext.new(self).instance_exec(&block)
     end
 
+    # TODO: add other start steps
     %w[addV addE V E].each do |step|
       define_method step do |*args|
         Step.new(@client, step, *args)

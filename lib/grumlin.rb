@@ -19,6 +19,7 @@ require_relative "grumlin/traversal"
 require_relative "grumlin/step"
 require_relative "grumlin/translator"
 require_relative "grumlin/traversing_context"
+require_relative "grumlin/t"
 
 module Grumlin
 end
