@@ -66,29 +66,35 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
 
   it "imports the dataset" do # rubocop:disable RSpec/MultipleExpectations
     g = Grumlin::Traversal.new(client)
-    casted_nodes.each do |node| # TODO: import in batches
-      t = g.addV(node.delete("~label")).property(Grumlin::T.id, node.delete("~id"))
-      node.each do |k, v|
-        next if v.nil?
 
-        t = t.property(k.split(":")[0], v)
+    tasks = casted_nodes.each_slice(100).map do |batch|
+      t = g
+      batch.each do |node|
+        t = t.addV(node.delete("~label")).property(Grumlin::T.id, node.delete("~id"))
+        node.compact.each do |k, v|
+          t = t.property(k.split(":")[0], v)
+        end
       end
-      t.toList
+      reactor.async { t.toList }
     end
 
-    casted_edges.each do |node| # TODO: import in batches
-      t = g.addE(node.delete("~label")).property(Grumlin::T.id, node.delete("~id"))
-           .from(Grumlin::TraversingContext.V(node.delete("~from")))
-           .to(Grumlin::TraversingContext.V(node.delete("~to")))
-      node.each do |k, v|
-        next if v.nil?
-
-        t = t.property(k.split(":")[0], v)
-      end
-      t.toList
-    end
+    tasks.each(&:wait)
 
     expect(g.V().count.toList[0]).to eq(3741)
+
+    tasks = casted_edges.each_slice(100).map do |batch|
+      t = g
+      batch.each do |edge|
+        t = t.addE(edge.delete("~label")).property(Grumlin::T.id, edge.delete("~id"))
+             .from(Grumlin::TraversingContext.V(edge.delete("~from")))
+             .to(Grumlin::TraversingContext.V(edge.delete("~to")))
+        edge.compact.each do |k, v|
+          t = t.property(k.split(":")[0], v)
+        end
+      end
+      reactor.async { t.toList }
+    end
+    tasks.each(&:wait)
     expect(g.E().count.toList[0]).to eq(57_573)
   end
 end
