@@ -3,6 +3,7 @@
 RSpec.describe Grumlin::Step, gremlin_server: true do
   let(:url) { "ws://localhost:8182/gremlin" }
 
+  # TODO: fix string mode
   %i[bytecode].each do |method|
     context "when method is #{method}" do
       let(:client) { Grumlin::Client.new(url, mode: method) }
