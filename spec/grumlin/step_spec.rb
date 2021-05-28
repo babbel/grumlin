@@ -37,8 +37,6 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
                  .addE("follows").from(Grumlin::U.V(2)).to(Grumlin::U.V(3))
                  .addE("follows").from(Grumlin::U.V(3)).to(Grumlin::U.V(1))
 
-            p Grumlin::Translator.to_bytecode_query(t.steps)
-
             t.toList
 
             expect(g.V().count.toList).to eq([3])

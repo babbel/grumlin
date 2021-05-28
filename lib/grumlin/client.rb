@@ -153,7 +153,7 @@ module Grumlin
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: { "@type": "g:Bytecode", "@value": { step: bytecode } },
+          gremlin: Typing.to_bytecode(bytecode),
           aliases: { g: :g }
         }
       }

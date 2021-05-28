@@ -42,7 +42,7 @@ module Grumlin
 
         [arg.name, *arg.args.flatten.map do |a|
           bc = arg_to_bytecode(a)
-          next [bc] if a.is_a?(AnonymousStep)
+          next Typing.to_bytecode([bc]) if a.is_a?(AnonymousStep)
 
           bc
         end]
