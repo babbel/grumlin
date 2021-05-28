@@ -116,8 +116,8 @@ module Grumlin
 
     def reraise_error!(error)
       raise error
-    rescue StandardError
-      raise ConnectionError
+      # rescue StandardError
+      #   raise ConnectionError
     end
 
     def query_task(connection)
