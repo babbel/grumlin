@@ -67,7 +67,7 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
   it "imports the dataset" do # rubocop:disable RSpec/MultipleExpectations
     g = Grumlin::Traversal.new(client)
 
-    tasks = casted_nodes.each_slice(100).map do |batch|
+    casted_nodes.each_slice(100) do |batch|
       t = g
       batch.each do |node|
         t = t.addV(node.delete("~label")).property(Grumlin::T.id, node.delete("~id"))
@@ -75,14 +75,12 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
           t = t.property(k.split(":")[0], v)
         end
       end
-      reactor.async { t.toList }
+      t.toList
     end
-
-    tasks.each(&:wait)
 
     expect(g.V().count.toList[0]).to eq(3741)
 
-    tasks = casted_edges.each_slice(100).map do |batch|
+    casted_edges.each_slice(100) do |batch|
       t = g
       batch.each do |edge|
         t = t.addE(edge.delete("~label")).property(Grumlin::T.id, edge.delete("~id"))
@@ -92,9 +90,8 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
           t = t.property(k.split(":")[0], v)
         end
       end
-      reactor.async { t.toList }
+      t.toList
     end
-    tasks.each(&:wait)
     expect(g.E().count.toList[0]).to eq(57_573)
   end
 end
