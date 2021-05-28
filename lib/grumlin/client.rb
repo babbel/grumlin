@@ -115,8 +115,8 @@ module Grumlin
 
     def reraise_error!(error)
       raise error
-      # rescue StandardError
-      #   raise ConnectionError
+    rescue StandardError
+      raise ConnectionError
     end
 
     def query_task(connection)
@@ -129,6 +129,7 @@ module Grumlin
     def response_task(connection)
       loop do
         response = connection.read
+        # TODO: sometimes response does not include requestID, now idea how to handle it so far.
         response_queue = @requests[response[:requestId]]
         response_queue << [:response, response]
       end
