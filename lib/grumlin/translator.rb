@@ -46,21 +46,21 @@ module Grumlin
       def arg_to_bytecode(arg)
         return arg unless arg.is_a?(AnonymousStep)
 
-        [arg.name, *arg.args.flatten.map do |a|
+        args = arg.args.flatten.map do |a|
           bc = arg_to_bytecode(a)
-          next [bc] if a.instance_of?(AnonymousStep)
-
-          bc
-        end]
+          a.instance_of?(AnonymousStep) ? [bc] : bc
+        end
+        [arg.name, *args]
       end
 
       def arg_to_query_bytecode(arg)
         return arg unless arg.is_a?(AnonymousStep)
 
-        [arg.name, *arg.args.flatten.map do |a|
+        args = arg.args.flatten.map do |a|
           bc = arg_to_query_bytecode(a)
           a.instance_of?(AnonymousStep) ? Typing.to_bytecode([bc]) : bc
-        end]
+        end
+        [arg.name, *args]
       end
     end
   end

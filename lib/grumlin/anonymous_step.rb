@@ -20,16 +20,12 @@ module Grumlin
     alias addVertex addV
     alias addEdge addE
 
-    def inspect
-      "<Step #{self}>" # TODO: substitute bindings
-    end
-
     # TODO: memoization
-    def to_s(*)
-      Translator.to_string(steps)
+    def inspect
+      @inspect ||= Translator.to_bytecode(steps).to_s
     end
 
-    alias to_gremlin to_s
+    alias to_s inspect
 
     def steps
       (@previous_steps + [self])
