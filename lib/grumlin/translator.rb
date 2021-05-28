@@ -19,9 +19,15 @@ module Grumlin
         ["g.#{string_steps.join(".")}", bindings]
       end
 
-      def to_bytecode_query(steps)
+      def to_bytecode(steps)
         steps.map do |step|
           arg_to_bytecode(step)
+        end
+      end
+
+      def to_bytecode_query(steps)
+        steps.map do |step|
+          arg_to_query_bytecode(step)
         end
       end
 
@@ -42,9 +48,18 @@ module Grumlin
 
         [arg.name, *arg.args.flatten.map do |a|
           bc = arg_to_bytecode(a)
-          next Typing.to_bytecode([bc]) if a.is_a?(AnonymousStep)
+          next [bc] if a.instance_of?(AnonymousStep)
 
           bc
+        end]
+      end
+
+      def arg_to_query_bytecode(arg)
+        return arg unless arg.is_a?(AnonymousStep)
+
+        [arg.name, *arg.args.flatten.map do |a|
+          bc = arg_to_query_bytecode(a)
+          a.instance_of?(AnonymousStep) ? Typing.to_bytecode([bc]) : bc
         end]
       end
     end

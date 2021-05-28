@@ -42,8 +42,8 @@ RSpec.describe Grumlin::Translator do
     end
   end
 
-  describe ".to_bytecode_query" do
-    subject { described_class.to_bytecode_query(steps) }
+  describe ".to_bytecode" do
+    subject { described_class.to_bytecode(steps) }
 
     context "when there are no subtraversals" do
       let(:steps) do
