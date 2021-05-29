@@ -60,6 +60,10 @@ module Grumlin
       end
     end
 
+    def requests
+      @transport.requests
+    end
+
     private
 
     def submit_query(args, &block)

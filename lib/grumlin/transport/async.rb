@@ -5,6 +5,8 @@ module Grumlin
     # A transport based on https://github.com/socketry/async
     # and https://github.com/socketry/async-websocket
     class Async
+      attr_reader :requests
+
       def initialize(url, task: ::Async::Task.current)
         @task = task
         @url = url
