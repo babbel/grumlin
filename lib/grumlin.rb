@@ -24,6 +24,7 @@ require_relative "grumlin/step"
 
 require_relative "grumlin/translator"
 require_relative "grumlin/t"
+require_relative "grumlin/order"
 require_relative "grumlin/u"
 
 module Grumlin

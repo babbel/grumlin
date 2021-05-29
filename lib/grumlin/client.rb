@@ -34,7 +34,8 @@ module Grumlin
     def query(*args) # rubocop:disable Metrics/MethodLength
       result = []
 
-      submit_query(args).each do |status, response|
+      uuid, queue = submit_query(args)
+      queue.each do |status, response|
         reraise_error!(response) if status == :error
 
         check_errors!(response[:status])
@@ -48,7 +49,7 @@ module Grumlin
           return []
         end
       ensure
-        @transport.close_request(response[:requestId])
+        @transport.close_request(uuid)
       end
     end
 
@@ -60,7 +61,7 @@ module Grumlin
 
     def submit_query(args, &block)
       uuid = SecureRandom.uuid
-      @transport.submit(to_query(uuid, args), &block)
+      [uuid, @transport.submit(to_query(uuid, args), &block)]
     end
 
     def to_query(uuid, message)
