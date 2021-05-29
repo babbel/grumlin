@@ -4,7 +4,6 @@ module Grumlin
   class Step < AnonymousStep
     attr_reader :client
 
-    # TODO: add support for bytecode
     def initialize(client, name, *args, previous_steps: [])
       super(name, *args, previous_steps: previous_steps)
       @client = client

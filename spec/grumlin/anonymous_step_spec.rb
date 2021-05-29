@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::AnonymousStep, gremlin_server: true do
+RSpec.describe Grumlin::AnonymousStep do
   let(:g) { Grumlin::U.V() }
 
   describe "#inspect" do

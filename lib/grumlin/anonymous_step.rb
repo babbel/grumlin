@@ -4,7 +4,6 @@ module Grumlin
   class AnonymousStep
     attr_reader :name, :args
 
-    # TODO: add support for bytecode
     def initialize(name, *args, previous_steps: [])
       @name = name
       @previous_steps = previous_steps
