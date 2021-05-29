@@ -13,7 +13,7 @@ RSpec.describe Grumlin::Edge do
   describe "#inspect" do
     it "returns string representation of the edge" do
       edge = described_class.new(**attrs)
-      expect(edge.inspect).to eq("<E edge(123)>")
+      expect(edge.inspect).to eq("e[123][234-edge->345]")
     end
   end
 

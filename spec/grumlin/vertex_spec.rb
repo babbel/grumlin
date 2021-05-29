@@ -13,7 +13,7 @@ RSpec.describe Grumlin::Vertex do
   describe "#inspect" do
     it "returns string representation of the vertex" do
       vertex = described_class.new(**attrs)
-      expect(vertex.inspect).to eq("<V vertex(123)>")
+      expect(vertex.inspect).to eq("v[123]")
     end
   end
 
