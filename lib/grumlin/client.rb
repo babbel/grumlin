@@ -18,10 +18,9 @@ module Grumlin
       498 => ClientSideError
     }.freeze
 
-    def initialize(url, task: Async::Task.current, autoconnect: true, mode: :bytecode)
+    def initialize(url, task: Async::Task.current, autoconnect: true)
       @task = task
       @endpoint = Async::HTTP::Endpoint.parse(url)
-      @mode = mode
 
       @requests = {}
       @query_queue = Async::Queue.new
@@ -99,7 +98,7 @@ module Grumlin
       when String
         string_query_message(uuid, *message)
       when Grumlin::Step
-        build_query(uuid, message)
+        bytecode_query_message(uuid, Translator.to_bytecode_query(message))
       end
     end
 
@@ -158,15 +157,6 @@ module Grumlin
           aliases: { g: :g }
         }
       }
-    end
-
-    def build_query(uuid, steps)
-      case @mode
-      when :string
-        string_query_message(uuid, *Translator.to_string_query(steps))
-      else
-        bytecode_query_message(uuid, Translator.to_bytecode_query(steps))
-      end
     end
   end
 end
