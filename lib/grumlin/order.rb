@@ -2,30 +2,21 @@
 
 module Grumlin
   module Order
-    class Order
+    module Order
       DESC = { "@type": "g:Order", "@value": "desc" }.freeze
       ASC = { "@type": "g:Order", "@value": "desc" }.freeze
 
-      class << self
-        def asc
-          ASC
-        end
+      extend self # rubocop:disable Style/ModuleFunction
 
-        def desc
-          DESC
-        end
-      end
-    end
-
-    # TODO: use metaprogramming
-    class << self
       def asc
-        Order.asc
+        ASC
       end
 
       def desc
-        Order.desc
+        DESC
       end
     end
+
+    extend Order
   end
 end

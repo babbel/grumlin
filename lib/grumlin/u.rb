@@ -2,19 +2,14 @@
 
 module Grumlin
   module U
-    class U
-      class << self
-        def V(*args) # rubocop:disable Naming/MethodName
-          AnonymousStep.new("V", *args)
-        end
+    module U
+      extend self # rubocop:disable Style/ModuleFunction
+
+      def V(*args) # rubocop:disable Naming/MethodName
+        AnonymousStep.new("V", *args)
       end
     end
 
-    # TODO: use metaprogramming
-    class << self
-      def V(*args) # rubocop:disable Naming/MethodName
-        U.V(*args)
-      end
-    end
+    extend U
   end
 end
