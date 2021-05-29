@@ -14,6 +14,7 @@ end
 require "grumlin"
 
 require_relative "support/shared_examples"
+require_relative "support/csv_importer"
 
 RSpec.configure do |config|
   config.order = :random
