@@ -5,23 +5,6 @@ RSpec.describe Grumlin::Translator do
   let(:client) { nil }
   let(:g) { Grumlin::Traversal.new(client) }
 
-  describe ".to_string" do
-    subject { described_class.to_string(steps) }
-
-    let(:steps) do
-      g.addV.as("first")
-       .addV.as("second")
-       .addV.as("third")
-       .addE("follows").from("first").to("second")
-       .addE("follows").from("second").to("third")
-       .addE("follows").from("third").to("first").steps
-    end
-
-    it "returns string represenation of the query" do
-      expect(subject).to eq('g.addV().as("first").addV().as("second").addV().as("third").addE("follows").from("first").to("second").addE("follows").from("second").to("third").addE("follows").from("third").to("first")') # rubocop:disable Layout/LineLength
-    end
-  end
-
   describe ".to_bytecode" do
     subject { described_class.to_bytecode(steps) }
 

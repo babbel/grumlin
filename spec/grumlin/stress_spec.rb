@@ -15,7 +15,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
 
   before do
     uuids.each_with_index do |uuid, i|
-      g.addV("test_vertex").property(Grumlin::T.id, uuid).property("index", i).toList
+      g.addV("test_vertex").property(Grumlin::T.id, uuid).property("index", i).iterate
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
 
   def error_query
     expect do
-      g.addE.toList
+      g.addE.iterate
     end.to raise_error(Grumlin::ServerSerializationError)
   end
 

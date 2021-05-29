@@ -66,7 +66,7 @@ module Grumlin
       def response_task(connection)
         loop do
           response = connection.read
-          # TODO: sometimes response does not include requestID, now idea how to handle it so far.
+          # TODO: sometimes response does not include requestID, no idea how to handle it so far.
           response_queue = @requests[response[:requestId]]
           response_queue << [:response, response]
         end
