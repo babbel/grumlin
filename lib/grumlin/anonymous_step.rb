@@ -19,12 +19,15 @@ module Grumlin
     alias addVertex addV
     alias addEdge addE
 
-    # TODO: memoization
     def inspect
-      @inspect ||= Translator.to_bytecode(steps).to_s
+      @inspect ||= to_bytecode.to_s
     end
 
     alias to_s inspect
+
+    def to_bytecode
+      @to_bytecode ||= (@previous_steps.last&.to_bytecode || []) + [Translator.to_bytecode(self)]
+    end
 
     def steps
       (@previous_steps + [self])

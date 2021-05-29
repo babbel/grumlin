@@ -20,6 +20,8 @@ module Grumlin
       end
 
       def to_bytecode(steps)
+        return arg_to_bytecode(steps) if steps.is_a?(AnonymousStep)
+
         steps.map do |step|
           arg_to_bytecode(step)
         end
