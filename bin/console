@@ -8,7 +8,6 @@ require "irb"
 Async do
   client = Grumlin::Client.new("ws://localhost:8182/gremlin")
   g = Grumlin::Traversal.new(client)
-  p(g.V().count.toList)
 
   IRB.setup(nil)
   workspace = IRB::WorkSpace.new(binding)
