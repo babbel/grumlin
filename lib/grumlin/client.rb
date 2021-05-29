@@ -37,26 +37,18 @@ module Grumlin
       submit_query(args).each do |status, response|
         reraise_error!(response) if status == :error
 
-        request_id = response[:requestId]
+        check_errors!(response[:status])
 
-        status = response[:status]
-        status_msg = SUCCESS[status[:code]]
-
-        if status_msg == :no_content
-          @transport.close_request(request_id)
+        case SUCCESS[response.dig(:status, :code)]
+        when :success
+          return result + Typing.cast(response.dig(:result, :data))
+        when :partial_content
+          result += Typing.cast(response.dig(:result, :data))
+        when :no_content
           return []
         end
-        check_errors!(status_msg, status, request_id)
-
-        page = Typing.cast(response.dig(:result, :data))
-
-        case status_msg
-        when :success
-          @transport.close_request(request_id)
-          return result + page
-        when :partial_content
-          result += page
-        end
+      ensure
+        @transport.close_request(response[:requestId])
       end
     end
 
@@ -80,12 +72,11 @@ module Grumlin
       end
     end
 
-    def check_errors!(status_msg, status, request_id)
+    def check_errors!(status)
       error = ERRORS[status[:code]]
-      @transport.close_request(request_id)
       raise(error, status) if error
 
-      raise UnknownResponseStatus, status if status_msg.nil?
+      raise UnknownResponseStatus, status if SUCCESS[status[:code]].nil?
     end
 
     def reraise_error!(error)
