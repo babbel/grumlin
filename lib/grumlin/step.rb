@@ -16,6 +16,10 @@ module Grumlin
       @client.query(*steps)
     end
 
+    def iterate
+      @client.query(*(steps + [nil]))
+    end
+
     private
 
     def add_step(step_name, args, previous_steps:)

@@ -75,7 +75,7 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
           t = t.property(k.split(":")[0], v)
         end
       end
-      t.toList
+      t.iterate
     end
 
     expect(g.V().count.toList[0]).to eq(3741)
@@ -90,7 +90,7 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
           t = t.property(k.split(":")[0], v)
         end
       end
-      t.toList
+      t.iterate
     end
     expect(g.E().count.toList[0]).to eq(57_573)
   end

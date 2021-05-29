@@ -24,10 +24,10 @@ def prepare_dataset(client)
   uuids = Array.new(1000) { SecureRandom.uuid }
 
   g = Grumlin::Traversal.new(client)
-  g.V().drop.toList
+  g.V().drop.iterate
 
   uuids.each_with_index do |uuid, i|
-    g.addV("test_vertex").property(Grumlin::T.id, uuid).property("index", i).toList
+    g.addV("test_vertex").property(Grumlin::T.id, uuid).property("index", i).iterate
   end
 
   uuids

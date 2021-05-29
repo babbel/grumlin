@@ -30,7 +30,7 @@ RSpec.configure do |config|
   end
 
   config.before(:each, gremlin_server: true) do
-    Grumlin::Traversal.new("ws://localhost:8182/gremlin").V().drop.toList
+    Grumlin::Traversal.new("ws://localhost:8182/gremlin").V().drop.iterate
   end
 
   config.include_context(Async::RSpec::Reactor, gremlin_server: true)

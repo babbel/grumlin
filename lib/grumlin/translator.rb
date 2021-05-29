@@ -17,12 +17,6 @@ module Grumlin
         end
       end
 
-      def to_string(steps)
-        "g." + steps.map do |step| # rubocop:disable Style/StringConcatenation
-          "#{step.name}(#{step.args.map(&:inspect).join(", ")})"
-        end.join(".")
-      end
-
       private
 
       def binding_name(num)
@@ -40,6 +34,7 @@ module Grumlin
       end
 
       def arg_to_query_bytecode(arg)
+        return ["none"] if arg.nil?
         return arg unless arg.is_a?(AnonymousStep)
 
         args = arg.args.flatten.map do |a|
