@@ -24,7 +24,7 @@ class CSVImporter
   private
 
   def import_nodes!
-    casted_nodes.each_slice(100) do |batch|
+    casted_entities(@nodes).each_slice(100) do |batch|
       t = g
       batch.each do |node|
         t = t.addV(node.delete("~label")).property(T.id, node.delete("~id"))
@@ -37,7 +37,7 @@ class CSVImporter
   end
 
   def import_edges! # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-    casted_edges.each_slice(100) do |batch|
+    casted_entities(@edges).each_slice(100) do |batch|
       t = g
       batch.each do |edge|
         t = t.addE(edge.delete("~label")).property(T.id, edge.delete("~id"))
@@ -55,19 +55,8 @@ class CSVImporter
     Grumlin::Traversal.new(@client)
   end
 
-  def casted_nodes
-    @nodes.each_with_index.map do |row, index|
-      next if index.zero?
-
-      row.each_with_object({}) do |(k, v), acc|
-        k, v = cast_property(k, v)
-        acc[k] = v
-      end
-    end.compact
-  end
-
-  def casted_edges
-    @edges.each_with_index.map do |row, index|
+  def casted_entities(entities)
+    entities.each_with_index.map do |row, index|
       next if index.zero?
 
       row.each_with_object({}) do |(k, v), acc|
