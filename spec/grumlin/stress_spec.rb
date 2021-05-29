@@ -1,11 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/DescribeClass
+RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/DescribeClass,RSpec/MultipleMemoizedHelpers
   let(:url) { "ws://localhost:8182/gremlin" }
   let(:client) { Grumlin::Client.new(url) }
   let(:g) { Grumlin::Traversal.new(client) }
-
   let(:uuids) { Array.new(1000) { SecureRandom.uuid } }
+
+  let(:iterations) { 3000 }
+  let(:concurrency) { 20 }
 
   after do
     client.disconnect
@@ -21,7 +23,6 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
     uuid = uuids.sample
     result = g.V(uuid).toList[0]
     expect(result.id).to eq(uuid)
-    # reactor.sleep(0.01)
   end
 
   def create_query
@@ -39,14 +40,15 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
   it "succeeds", timeout: 120 do # rubocop:disable RSpec/MultipleExpectations
     expect(client.requests).to be_empty
 
-    tasks = Array.new(20) do
+    tasks = Array.new(concurrency) do
       reactor.async do
-        3000.times do
+        iterations.times do
           [
             -> { find_query },
             -> { create_query },
             -> { error_query }
           ].sample.call
+          reactor.sleep(Float(rand(10)) / 100) if rand(3) == 0
         end
       end
     end
