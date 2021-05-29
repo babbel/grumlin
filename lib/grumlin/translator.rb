@@ -3,22 +3,6 @@
 module Grumlin
   module Translator
     class << self
-      # TODO: support subtraversals
-      def to_string_query(steps, counter = 0, bindings = {})
-        string_steps = steps.each_with_object([]) do |step, acc_g|
-          args = step.args.map do |arg|
-            binding_name(counter).tap do |b|
-              bindings[b] = arg
-              counter += 1
-            end
-          end.join(", ")
-
-          acc_g << "#{step.name}(#{args})"
-        end
-
-        ["g.#{string_steps.join(".")}", bindings]
-      end
-
       def to_bytecode(steps)
         return arg_to_bytecode(steps) if steps.is_a?(AnonymousStep)
 

@@ -1,10 +1,12 @@
 # frozen_string_literal: true
 
 module Grumlin
-  class Client # rubocop:disable Metrics/ClassLength
-    SUCCESS_STATUS = 200
-    NO_CONTENT_STATUS = 204
-    PARTIAL_CONTENT_STATUS = 206
+  class Client
+    SUCCESS = {
+      200 => :success,
+      204 => :no_content,
+      206 => :partial_content
+    }.freeze
 
     ERRORS = {
       499 => InvalidRequestArgumentsError,
@@ -18,80 +20,47 @@ module Grumlin
       498 => ClientSideError
     }.freeze
 
-    def initialize(url, task: Async::Task.current, autoconnect: true, mode: :bytecode)
-      @task = task
-      @endpoint = Async::HTTP::Endpoint.parse(url)
-      @mode = mode
-
-      @requests = {}
-      @query_queue = Async::Queue.new
-
-      connect if autoconnect
-    end
-
-    def connect # rubocop:disable Metrics/MethodLength
-      raise AlreadyConnectedError unless @connection_task.nil?
-
-      @connection_task = @task.async do |subtask|
-        Async::WebSocket::Client.connect(@endpoint) do |connection|
-          subtask.async { query_task(connection) }
-          response_task(connection)
-        end
-      rescue StandardError => e
-        @requests.each_value do |queue|
-          queue << [:error, e]
-        end
-        disconnect
-      end
+    def initialize(url, autoconnect: true)
+      @url = url
+      @transport = Transport::Async.new(url)
+      @transport.connect if autoconnect
     end
 
     def disconnect
-      raise NotConnectedError if @connection_task.nil?
-
-      @connection_task&.stop
-      @connection_task&.wait
-      @connection_task = nil
-      @requests = {}
+      @transport.disconnect
     end
 
+    # TODO: support yielding
     def query(*args) # rubocop:disable Metrics/MethodLength
-      response_queue, request_id = schedule_query(args)
       result = []
 
-      response_queue.each do |status, response|
+      submit_query(args).each do |status, response|
         reraise_error!(response) if status == :error
 
-        status = response[:status]
+        check_errors!(response[:status])
 
-        if status[:code] == NO_CONTENT_STATUS
-          close_request(request_id)
+        case SUCCESS[response.dig(:status, :code)]
+        when :success
+          return result + Typing.cast(response.dig(:result, :data))
+        when :partial_content
+          result += Typing.cast(response.dig(:result, :data))
+        when :no_content
           return []
         end
-        check_errors!(status, request_id) # rescue binding.irb
-
-        page = Typing.cast(response.dig(:result, :data))
-
-        case status[:code]
-        when SUCCESS_STATUS
-          close_request(request_id)
-          return result + page
-        when PARTIAL_CONTENT_STATUS
-          result += page
-        else
-          raise UnknownResponseStatus, status
-        end
+      ensure
+        @transport.close_request(response[:requestId])
       end
+    end
+
+    def requests
+      @transport.requests
     end
 
     private
 
-    def schedule_query(args)
+    def submit_query(args, &block)
       uuid = SecureRandom.uuid
-      queue = Async::Queue.new
-      @requests[uuid] = queue
-      @query_queue << to_query(uuid, args)
-
-      [queue, uuid]
+      @transport.submit(to_query(uuid, args), &block)
     end
 
     def to_query(uuid, message)
@@ -99,40 +68,21 @@ module Grumlin
       when String
         string_query_message(uuid, *message)
       when Grumlin::Step
-        build_query(uuid, message)
+        bytecode_query_message(uuid, Translator.to_bytecode_query(message))
       end
     end
 
-    def check_errors!(status, request_id)
+    def check_errors!(status)
       error = ERRORS[status[:code]]
-      close_request(request_id)
       raise(error, status) if error
-    end
 
-    def close_request(request_id)
-      @requests.delete(request_id)
+      raise UnknownResponseStatus, status if SUCCESS[status[:code]].nil?
     end
 
     def reraise_error!(error)
       raise error
     rescue StandardError
       raise ConnectionError
-    end
-
-    def query_task(connection)
-      loop do
-        connection.write @query_queue.dequeue
-        connection.flush
-      end
-    end
-
-    def response_task(connection)
-      loop do
-        response = connection.read
-        # TODO: sometimes response does not include requestID, now idea how to handle it so far.
-        response_queue = @requests[response[:requestId]]
-        response_queue << [:response, response]
-      end
     end
 
     def string_query_message(uuid, query, bindings)
@@ -158,15 +108,6 @@ module Grumlin
           aliases: { g: :g }
         }
       }
-    end
-
-    def build_query(uuid, steps)
-      case @mode
-      when :string
-        string_query_message(uuid, *Translator.to_string_query(steps))
-      else
-        bytecode_query_message(uuid, Translator.to_bytecode_query(steps))
-      end
     end
   end
 end
