@@ -12,7 +12,7 @@ module Grumlin
     # TODO: add support for next
     # TODO: memoization
     def toList # rubocop:disable Naming/MethodName
-      @client.query(*steps)
+      @toList ||= @client.query(*steps) # rubocop:disable Naming/VariableName
     end
 
     def iterate
