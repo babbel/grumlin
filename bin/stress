@@ -34,7 +34,7 @@ def prepare_dataset(client)
 end
 
 Async do |task|
-  client = Grumlin::Client.new("ws://localhost:8182/gremlin", mode: :bytecode)
+  client = Grumlin::Client.new("ws://localhost:8182/gremlin")
 
   uuids = prepare_dataset(client)
   tasks = Array.new(20) { task.async { queries(client, uuids) } }
