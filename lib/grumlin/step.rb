@@ -1,25 +1,13 @@
 # frozen_string_literal: true
 
 module Grumlin
-  class Step
-    attr_reader :client, :name, :args
+  class Step < AnonymousStep
+    attr_reader :client
 
-    # TODO: add support for bytecode
     def initialize(client, name, *args, previous_steps: [])
+      super(name, *args, previous_steps: previous_steps)
       @client = client
-      @name = name
-      @previous_steps = previous_steps
-      @args = args
     end
-
-    %w[addV addE V E limit count drop property valueMap select from to as order by].each do |step|
-      define_method step do |*args|
-        Step.new(@client, step, *args, previous_steps: steps)
-      end
-    end
-
-    alias addVertex addV
-    alias addEdge addE
 
     # TODO: add support for next
     # TODO: add support for iterate
@@ -28,19 +16,10 @@ module Grumlin
       @client.query(*steps)
     end
 
-    def inspect
-      "<Step #{self}>" # TODO: substitute bindings
-    end
+    private
 
-    # TODO: memoization
-    def to_s(*)
-      Translator.to_string(steps)
-    end
-
-    alias to_gremlin to_s
-
-    def steps
-      (@previous_steps + [self])
+    def add_step(step_name, args, previous_steps:)
+      self.class.new(@client, step_name, *args, previous_steps: previous_steps)
     end
   end
 end

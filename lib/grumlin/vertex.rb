@@ -14,7 +14,7 @@ module Grumlin
     end
 
     def inspect
-      "<V #{@label}(#{@id})>"
+      "v[#{@id}]"
     end
     alias to_s inspect
   end

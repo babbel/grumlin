@@ -67,8 +67,7 @@ module Grumlin
           close_request(request_id)
           return []
         end
-
-        check_errors!(status, request_id)
+        check_errors!(status, request_id) # rescue binding.irb
 
         page = Typing.cast(response.dig(:result, :data))
 
@@ -130,6 +129,7 @@ module Grumlin
     def response_task(connection)
       loop do
         response = connection.read
+        # TODO: sometimes response does not include requestID, now idea how to handle it so far.
         response_queue = @requests[response[:requestId]]
         response_queue << [:response, response]
       end
@@ -154,7 +154,7 @@ module Grumlin
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: { "@type": "g:Bytecode", "@value": { step: bytecode } },
+          gremlin: Typing.to_bytecode(bytecode),
           aliases: { g: :g }
         }
       }
