@@ -2,9 +2,11 @@
 
 module Grumlin
   class Client
-    SUCCESS_STATUS = 200
-    NO_CONTENT_STATUS = 204
-    PARTIAL_CONTENT_STATUS = 206
+    SUCCESS = {
+      200 => :success,
+      204 => :no_content,
+      206 => :partial_content
+    }.freeze
 
     ERRORS = {
       499 => InvalidRequestArgumentsError,
@@ -20,12 +22,7 @@ module Grumlin
 
     def initialize(url, autoconnect: true)
       @url = url
-
       @transport = Transport::Async.new(url)
-
-      @requests = {}
-      @query_queue = Async::Queue.new
-
       @transport.connect if autoconnect
     end
 
@@ -33,31 +30,32 @@ module Grumlin
       @transport.disconnect
     end
 
+    # TODO: support yielding
     def query(*args) # rubocop:disable Metrics/MethodLength
       result = []
 
-      submit_query(args) do |status, response|
-        request_id = response[:requestId]
+      submit_query(args).each do |status, response|
         reraise_error!(response) if status == :error
 
-        status = response[:status]
+        request_id = response[:requestId]
 
-        if status[:code] == NO_CONTENT_STATUS
+        status = response[:status]
+        status_msg = SUCCESS[status[:code]]
+
+        if status_msg == :no_content
           @transport.close_request(request_id)
           return []
         end
-        check_errors!(status, request_id)
+        check_errors!(status_msg, status, request_id)
 
         page = Typing.cast(response.dig(:result, :data))
 
-        case status[:code]
-        when SUCCESS_STATUS
+        case status_msg
+        when :success
           @transport.close_request(request_id)
           return result + page
-        when PARTIAL_CONTENT_STATUS
+        when :partial_content
           result += page
-        else
-          raise UnknownResponseStatus, status
         end
       end
     end
@@ -65,9 +63,8 @@ module Grumlin
     private
 
     def submit_query(args, &block)
-      SecureRandom.uuid.tap do |uuid|
-        @transport.submit(to_query(uuid, args), &block)
-      end
+      uuid = SecureRandom.uuid
+      @transport.submit(to_query(uuid, args), &block)
     end
 
     def to_query(uuid, message)
@@ -79,10 +76,12 @@ module Grumlin
       end
     end
 
-    def check_errors!(status, request_id)
+    def check_errors!(status_msg, status, request_id)
       error = ERRORS[status[:code]]
       @transport.close_request(request_id)
       raise(error, status) if error
+
+      raise UnknownResponseStatus, status if status_msg.nil?
     end
 
     def reraise_error!(error)

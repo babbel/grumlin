@@ -42,11 +42,9 @@ module Grumlin
       # Raw message
       def submit(message)
         uuid = message[:requestId]
-        @requests[uuid] = ::Async::Queue.new
-        @query_queue << message
-
-        @requests[uuid].each do |response|
-          yield(*response)
+        ::Async::Queue.new.tap do |queue|
+          @requests[uuid] = queue
+          @query_queue << message
         end
       end
 
