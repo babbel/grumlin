@@ -31,23 +31,11 @@ module Grumlin
     end
 
     # TODO: support yielding
-    def query(*args) # rubocop:disable Metrics/MethodLength
+    def query(*args)
       result = []
-
       uuid, queue = submit_query(args)
-      queue.each do |status, response|
-        reraise_error!(response) if status == :error
-
-        check_errors!(response[:status])
-
-        case SUCCESS[response.dig(:status, :code)]
-        when :success
-          return result + Typing.cast(response.dig(:result, :data))
-        when :partial_content
-          result += Typing.cast(response.dig(:result, :data))
-        when :no_content
-          return []
-        end
+      begin
+        wait_for_response(queue, result)
       ensure
         @transport.close_request(uuid)
       end
@@ -58,6 +46,18 @@ module Grumlin
     end
 
     private
+
+    def wait_for_response(queue, result)
+      queue.each do |status, response|
+        check_errors!(status, response)
+
+        case SUCCESS[response.dig(:status, :code)]
+        when :success then return result + Typing.cast(response.dig(:result, :data))
+        when :partial_content then result += Typing.cast(response.dig(:result, :data))
+        when :no_content then return []
+        end
+      end
+    end
 
     def submit_query(args, &block)
       uuid = SecureRandom.uuid
@@ -73,7 +73,11 @@ module Grumlin
       end
     end
 
-    def check_errors!(status)
+    def check_errors!(status, response)
+      reraise_error!(response) if status == :error
+
+      status = response[:status]
+
       error = ERRORS[status[:code]]
       raise(error, status) if error
 

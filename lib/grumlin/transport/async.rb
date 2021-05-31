@@ -21,8 +21,9 @@ module Grumlin
         @connection_task = @task.async do |subtask|
           endpoint = ::Async::HTTP::Endpoint.parse(@url)
           ::Async::WebSocket::Client.connect(endpoint) do |connection|
-            subtask.async { query_task(connection) }
-            response_task(connection)
+            query = subtask.async { query_task(connection) }
+            response = subtask.async { response_task(connection) }
+            [response, query].each(&:wait)
           end
         rescue StandardError => e
           @requests.each_value do |queue|
