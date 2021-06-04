@@ -55,11 +55,15 @@ module Grumlin
         @requests.delete(request_id)
       end
 
+      def ongoing_request?(request_id)
+        @requests.key?(request_id)
+      end
+
       private
 
       def query_task(connection)
-        loop do
-          connection.write @query_queue.dequeue
+        @query_queue.each do |query|
+          connection.write(query)
           connection.flush
         end
       end

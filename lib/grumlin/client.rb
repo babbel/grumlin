@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Grumlin
-  class Client
+  class Client # rubocop:disable Metrics/ClassLength
     SUCCESS = {
       200 => :success,
       204 => :no_content,
@@ -33,12 +33,8 @@ module Grumlin
     # TODO: support yielding
     def query(*args)
       result = []
-      uuid, queue = submit_query(args)
-      begin
-        wait_for_response(queue, result)
-      ensure
-        @transport.close_request(uuid)
-      end
+      request_id, queue = submit_query(args)
+      wait_for_response(request_id, queue, result)
     end
 
     def requests
@@ -47,41 +43,56 @@ module Grumlin
 
     private
 
-    def wait_for_response(queue, result)
+    def wait_for_response(request_id, queue, result) # rubocop:disable Metrics/MethodLength
       queue.each do |status, response|
-        check_errors!(status, response)
+        check_errors!(request_id, status, response)
 
         case SUCCESS[response.dig(:status, :code)]
-        when :success then return result + Typing.cast(response.dig(:result, :data))
+        when :success
+          @transport.close_request(request_id)
+          return result + Typing.cast(response.dig(:result, :data))
         when :partial_content then result += Typing.cast(response.dig(:result, :data))
-        when :no_content then return []
+        when :no_content
+          @transport.close_request(request_id)
+          return []
         end
       end
+    rescue ::Async::Stop
+      retry if @transport.ongoing_request?(request_id)
+      nil
     end
 
     def submit_query(args, &block)
-      uuid = SecureRandom.uuid
-      [uuid, @transport.submit(to_query(uuid, args), &block)]
+      request_id = SecureRandom.uuid
+      [request_id, @transport.submit(to_query(request_id, args), &block)]
     end
 
-    def to_query(uuid, message)
+    def to_query(request_id, message)
       case message.first
       when String
-        string_query_message(uuid, *message)
+        string_query_message(request_id, *message)
       when Grumlin::Step
-        bytecode_query_message(uuid, Translator.to_bytecode_query(message))
+        bytecode_query_message(request_id, Translator.to_bytecode_query(message))
       end
     end
 
-    def check_errors!(status, response)
-      reraise_error!(response) if status == :error
+    def check_errors!(request_id, status, response) # rubocop:disable Metrics/MethodLength
+      if status == :error
+        @transport.close_request(request_id)
+        reraise_error!(response)
+      end
 
       status = response[:status]
 
-      error = ERRORS[status[:code]]
-      raise(error, status) if error
+      if (error = ERRORS[status[:code]])
+        @transport.close_request(request_id)
+        raise(error, status)
+      end
 
-      raise UnknownResponseStatus, status if SUCCESS[status[:code]].nil?
+      return unless SUCCESS[status[:code]].nil?
+
+      @transport.close_request(request_id)
+      raise(UnknownResponseStatus, status)
     end
 
     def reraise_error!(error)
@@ -90,9 +101,9 @@ module Grumlin
       raise ConnectionError
     end
 
-    def string_query_message(uuid, query, bindings)
+    def string_query_message(request_id, query, bindings)
       {
-        requestId: uuid,
+        requestId: request_id,
         op: "eval",
         processor: "",
         args: {
@@ -103,9 +114,9 @@ module Grumlin
       }
     end
 
-    def bytecode_query_message(uuid, bytecode)
+    def bytecode_query_message(request_id, bytecode)
       {
-        requestId: uuid,
+        requestId: request_id,
         op: "bytecode",
         processor: "traversal",
         args: {
