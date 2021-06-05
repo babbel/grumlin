@@ -31,8 +31,11 @@ RSpec.configure do |config|
   end
 
   config.before(:each, clean_db: true) do
-    Grumlin::Traversal.new("ws://localhost:8182/gremlin").V().drop.iterate
+    Grumlin::Client.new("ws://localhost:8182/gremlin").tap do |client|
+      Grumlin::Traversal.new(client).V().drop.iterate
+    end.disconnect
   end
 
   config.include_context(Async::RSpec::Reactor, clean_db: true)
+  config.include_context(Async::RSpec::Reactor, async: true)
 end
