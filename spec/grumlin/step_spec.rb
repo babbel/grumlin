@@ -22,6 +22,7 @@ RSpec.describe Grumlin::Step, clean_db: true do
 
         expect(g.V().count.toList).to eq([3])
         expect(g.E().count.toList).to eq([3])
+        # binding.irb
       end
     end
 

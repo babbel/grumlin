@@ -23,7 +23,11 @@ module Grumlin
     def initialize(url, autoconnect: true)
       @url = url
       @transport = Transport::Async.new(url)
-      @transport.connect if autoconnect
+      connect if autoconnect
+    end
+
+    def connect
+      @transport.connect
     end
 
     def disconnect
@@ -32,9 +36,8 @@ module Grumlin
 
     # TODO: support yielding
     def query(*args)
-      result = []
       request_id, queue = submit_query(args)
-      wait_for_response(request_id, queue, result)
+      wait_for_response(request_id, queue)
     end
 
     def requests
@@ -43,7 +46,7 @@ module Grumlin
 
     private
 
-    def wait_for_response(request_id, queue, result) # rubocop:disable Metrics/MethodLength
+    def wait_for_response(request_id, queue, result: []) # rubocop:disable Metrics/MethodLength
       queue.each do |status, response|
         check_errors!(request_id, status, response)
 
