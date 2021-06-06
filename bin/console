@@ -16,5 +16,5 @@ Async do
 rescue StandardError
   raise
 ensure
-  client.disconnect
+  client&.disconnect
 end

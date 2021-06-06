@@ -93,7 +93,7 @@ module Grumlin
     def reraise_error!(error)
       raise error
     rescue StandardError
-      raise ConnectionError
+      raise UnknownError
     end
 
     def string_query_message(request_id, query, bindings)

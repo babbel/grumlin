@@ -25,12 +25,8 @@ module Grumlin
 
         @tasks_barrier.async { query_task }
         @tasks_barrier.async { response_task }
-
-        # rescue StandardError => e
-        #   @requests.each_value do |queue|
-        #     queue << [:error, e]
-        #   end
-        #   disconnect
+      rescue StandardError
+        raise ConnectionError
       end
 
       def disconnect
