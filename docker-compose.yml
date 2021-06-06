@@ -1,6 +1,6 @@
 version: "3"
 services:
-  clean_db:
+  gremlin_server:
     build: gremlin_server
     ports:
       - "8182:8182"
