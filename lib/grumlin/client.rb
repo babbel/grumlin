@@ -1,7 +1,9 @@
 # frozen_string_literal: true
 
 module Grumlin
-  class Client # rubocop:disable Metrics/ClassLength
+  class Client
+    extend Forwardable
+
     SUCCESS = {
       200 => :success,
       204 => :no_content,
@@ -26,22 +28,12 @@ module Grumlin
       connect if autoconnect
     end
 
-    def connect
-      @transport.connect
-    end
-
-    def disconnect
-      @transport.disconnect
-    end
+    def_delegators :@transport, :connect, :disconnect, :requests
 
     # TODO: support yielding
     def query(*args)
       request_id, queue = submit_query(args)
       wait_for_response(request_id, queue)
-    end
-
-    def requests
-      @transport.requests
     end
 
     private
