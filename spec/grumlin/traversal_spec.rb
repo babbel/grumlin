@@ -32,8 +32,8 @@ RSpec.describe Grumlin::Traversal, clean_db: true do
 
     context "when the DB is not empty" do
       before do
-        client.query('g.addV("test_vertex").property(T.id, x)', x: 1)
-        client.query('g.addV("test_vertex").property(T.id, x)', x: 2)
+        g.addV("test_vertex").property(Grumlin::T.id, 1)
+         .addV("test_vertex").property(Grumlin::T.id, 2).iterate
       end
 
       context "with no arguments" do

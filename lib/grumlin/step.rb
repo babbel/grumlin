@@ -11,11 +11,11 @@ module Grumlin
 
     # TODO: add support for next
     def toList # rubocop:disable Naming/MethodName
-      @toList ||= @client.query(*steps) # rubocop:disable Naming/VariableName
+      @toList ||= @client.submit(*steps) # rubocop:disable Naming/VariableName
     end
 
     def iterate
-      @client.query(*(steps + [nil]))
+      @client.submit(*(steps + [nil]))
     end
 
     private
