@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Transport::Async, clean_db: true do
-  let(:url) { "ws://localhost:8182/gremlin" }
+RSpec.describe Grumlin::Transport::Async, gremlin_server: true do
   let!(:transport) { described_class.new(url) }
 
   describe "when Async::WebSocket::Client#connect is not used" do

@@ -1,15 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Step, clean_db: true do
-  let(:url) { "ws://localhost:8182/gremlin" }
-
-  let(:client) { Grumlin::Client.new(url) }
-  let(:g) { Grumlin::Traversal.new(client) }
-
-  after do
-    client.disconnect
-  end
-
+RSpec.describe Grumlin::Step, gremlin_server: true do
   describe "chaining" do
     context "when using aliases" do
       it "builds a chain" do # rubocop:disable RSpec/MultipleExpectations

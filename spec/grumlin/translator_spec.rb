@@ -1,9 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Translator do
-  let(:url) { "ws://localhost:8182/gremlin" }
-  let(:client) { nil }
-  let(:g) { Grumlin::Traversal.new(client) }
+  let(:g) { Grumlin::Traversal.new(nil) }
 
   describe ".to_bytecode" do
     subject { described_class.to_bytecode(steps) }

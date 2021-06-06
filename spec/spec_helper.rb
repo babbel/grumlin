@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+ENV["ENV"] ||= "test"
+ENV["GREMLIN_URL"] ||= "ws://localhost:8182/gremlin"
+
 require "csv"
 
 require "async/rspec"
@@ -13,8 +16,7 @@ end
 
 require "grumlin"
 
-require_relative "support/shared_examples"
-require_relative "support/csv_importer"
+Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| load(f) }
 
 RSpec.configure do |config|
   config.order = :random
@@ -30,12 +32,12 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before(:each, clean_db: true) do
+  config.before(:each, gremlin_server: true) do
     Grumlin::Client.new("ws://localhost:8182/gremlin").tap do |client|
       Grumlin::Traversal.new(client).V().drop.iterate
     end.disconnect
   end
 
-  config.include_context(Async::RSpec::Reactor, clean_db: true)
-  config.include_context(Async::RSpec::Reactor, async: true)
+  config.include_context(Async::RSpec::Reactor, gremlin_server: true)
+  config.include_context(RSpec::GremlinContext, gremlin_server: true)
 end

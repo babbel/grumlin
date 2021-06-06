@@ -1,16 +1,9 @@
 # frozen_string_literal: true
 
-RSpec.describe "stress test", clean_db: true do # rubocop:disable RSpec/DescribeClass
-  let(:url) { "ws://localhost:8182/gremlin" }
-  let!(:client) { Grumlin::Client.new(url) }
-  let(:g) { Grumlin::Traversal.new(client) }
+RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/DescribeClass
   let(:uuids) { Array.new(1000) { SecureRandom.uuid } }
 
   let(:concurrency) { 20 }
-
-  after do
-    client.disconnect
-  end
 
   before do
     uuids.each_with_index do |uuid, i|
@@ -52,7 +45,7 @@ RSpec.describe "stress test", clean_db: true do # rubocop:disable RSpec/Describe
     Async::Task.current.sleep(Float(rand(10)) / 100) if rand(3) == 0
   end
 
-  context "when number of iterations is limited" do # rubocop:disable RSpec/MultipleMemoizedHelpers
+  context "when number of iterations is limited" do
     let(:iterations) { 100 }
 
     it "succeeds", timeout: 120 do # rubocop:disable RSpec/MultipleExpectations
@@ -74,7 +67,7 @@ RSpec.describe "stress test", clean_db: true do # rubocop:disable RSpec/Describe
     end
   end
 
-  context "when time is limited" do # rubocop:disable RSpec/MultipleMemoizedHelpers
+  context "when time is limited" do
     let(:duration) { 10 }
 
     it "succeeds", timeout: 20 do # rubocop:disable RSpec/MultipleExpectations
