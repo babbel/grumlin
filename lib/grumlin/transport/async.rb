@@ -46,15 +46,14 @@ module Grumlin
         @connection = nil
         @tasks_barrier = nil
 
-        # TODO: ensure that @requests and @query_queue are empty
-
-        @requests = {}
-        @query_queue = ::Async::Queue.new
+        raise ResourceLeakError, "ongoing requests list is not empty: #{@requests.count} items" unless @requests.empty?
+        raise ResourceLeakError, "query queue empty: #{@query.count} items" unless @query_queue.empty?
       end
 
       # Raw message
       def submit(message)
-        # TODO: rize an error when not connected
+        raise NotConnectedError if @connection.nil?
+
         uuid = message[:requestId]
         ::Async::Queue.new.tap do |queue|
           @requests[uuid] = queue

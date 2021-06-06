@@ -48,4 +48,10 @@ module Grumlin
   class ServerSerializationError < ServerSideError; end
 
   class ServerTimeoutError < ServerSideError; end
+
+  class InternalClientError < Error; end
+
+  class UnknownRequestStoppedError < InternalClientError; end
+
+  class ResourceLeakError < InternalClientError; end
 end

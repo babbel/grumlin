@@ -54,7 +54,7 @@ module Grumlin
       end
     rescue ::Async::Stop
       retry if @transport.ongoing_request?(request_id)
-      # TODO: raise an error
+      raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
     end
 
     def submit_query(args, &block)
