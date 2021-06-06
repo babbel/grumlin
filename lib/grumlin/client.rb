@@ -27,15 +27,11 @@ module Grumlin
     end
 
     def connect
-      p("Connecting")
       @transport.connect
-      p("Connected")
     end
 
     def disconnect
-      p("Disconnecting")
       @transport.disconnect
-      p("Disconnected")
     end
 
     # TODO: support yielding
@@ -50,16 +46,13 @@ module Grumlin
 
     private
 
-    def wait_for_response(request_id, queue, result: [], stopping: false) # rubocop:disable Metrics/MethodLength,Metrics/AbcSize,Metrics/CyclomaticComplexity
-      p("#{request_id} Stopping") if stopping
+    def wait_for_response(request_id, queue, result: []) # rubocop:disable Metrics/MethodLength
       queue.each do |status, response|
-        p("#{request_id} #{response.dig(:status, :code)}") if stopping
         check_errors!(request_id, status, response)
 
         case SUCCESS[response.dig(:status, :code)]
         when :success
           @transport.close_request(request_id)
-          p("#{request_id} returning") if stopping
           return result + Typing.cast(response.dig(:result, :data))
         when :partial_content then result += Typing.cast(response.dig(:result, :data))
         when :no_content
@@ -68,21 +61,13 @@ module Grumlin
         end
       end
     rescue ::Async::Stop
-      if @transport.ongoing_request?(request_id)
-        stopping = true
-        p("#{request_id} retrying")
-        retry
-      end
-      p("#{request_id} #{requests}")
-      nil
+      retry if @transport.ongoing_request?(request_id)
+      # TODO: raise an error
     end
 
     def submit_query(args, &block)
       request_id = SecureRandom.uuid
       [request_id, @transport.submit(to_query(request_id, args), &block)]
-    rescue ::Async::Stop
-      p("submit_query stoppend")
-      raise
     end
 
     def to_query(request_id, message)

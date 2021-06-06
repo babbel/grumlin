@@ -58,46 +58,41 @@ RSpec.describe "stress test", clean_db: true do # rubocop:disable RSpec/Describe
     it "succeeds", timeout: 120 do # rubocop:disable RSpec/MultipleExpectations
       expect(client.requests).to be_empty
 
-      tasks = Array.new(concurrency) do
-        reactor.async do
+      barrier = Async::Barrier.new
+
+      Array.new(concurrency) do
+        barrier.async do
           iterations.times do
             random_query
           end
         end
       end
 
-      tasks.each(&:wait)
+      barrier.wait
 
       expect(client.requests).to be_empty
     end
   end
 
   context "when time is limited" do # rubocop:disable RSpec/MultipleMemoizedHelpers
-    let(:duration) { 3 }
-    let(:concurrency) { 4 }
+    let(:duration) { 10 }
 
-    it "succeeds", timeout: 10 do # rubocop:disable RSpec/MultipleExpectations
+    it "succeeds", timeout: 20 do # rubocop:disable RSpec/MultipleExpectations
       expect(client.requests).to be_empty
+      working = true
 
       barrier = Async::Barrier.new
 
-      Array.new(concurrency) do |id|
+      Array.new(concurrency) do |_id|
         barrier.async do
-          p("Workder #{id} started")
-          loop do
-            uuid = uuids.sample
-            result = g.V(uuid).toList[0]
-            expect(result.id).to eq(uuid)
-          rescue ::Async::Stop => e
-            puts(e.backtrace)
-            p("Workder #{id} stopped")
-          end
+          random_query while working
         end
       end
 
       Async::Task.current.sleep(duration)
+      working = false
 
-      barrier.tasks.each { |task| task.stop(true) }
+      barrier.tasks.each(&:stop)
 
       barrier.wait
 

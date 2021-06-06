@@ -21,8 +21,10 @@ module Grumlin
         @client = ::Async::WebSocket::Client.open(@endpoint)
         @connection = @client.connect(@endpoint.authority, @endpoint.path)
 
-        @query_task = @task.async { query_task }
-        @response_task = @task.async { response_task }
+        @tasks_barrier = ::Async::Barrier.new(parent: @task)
+
+        @tasks_barrier.async { query_task }
+        @tasks_barrier.async { response_task }
 
         # rescue StandardError => e
         #   @requests.each_value do |queue|
@@ -34,14 +36,15 @@ module Grumlin
       def disconnect
         raise NotConnectedError if @connection.nil?
 
-        [@query_task, @response_task].each(&:stop)
-        [@query_task, @response_task].each(&:wait)
+        @tasks_barrier.tasks.each(&:stop)
+        @tasks_barrier.wait
 
         @connection.close
         @client.close
 
         @client = nil
         @connection = nil
+        @tasks_barrier = nil
 
         # TODO: ensure that @requests and @query_queue are empty
 
@@ -51,6 +54,7 @@ module Grumlin
 
       # Raw message
       def submit(message)
+        # TODO: rize an error when not connected
         uuid = message[:requestId]
         ::Async::Queue.new.tap do |queue|
           @requests[uuid] = queue
@@ -73,9 +77,6 @@ module Grumlin
           @connection.write(query)
           @connection.flush
         end
-      rescue ::Async::Stop
-        p("query_task stopped")
-        nil
       end
 
       def response_task
@@ -85,9 +86,6 @@ module Grumlin
           response_queue = @requests[response[:requestId]]
           response_queue << [:response, response]
         end
-      rescue ::Async::Stop
-        p("response_task stopped")
-        nil
       end
     end
   end

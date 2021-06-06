@@ -19,10 +19,6 @@ module Grumlin
 
       private
 
-      def binding_name(num)
-        "b_#{num.to_s(16)}"
-      end
-
       def arg_to_bytecode(arg)
         return arg unless arg.is_a?(AnonymousStep)
 
