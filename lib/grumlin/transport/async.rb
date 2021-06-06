@@ -73,6 +73,9 @@ module Grumlin
           @connection.write(query)
           @connection.flush
         end
+      rescue ::Async::Stop
+        p("query_task stopped")
+        nil
       end
 
       def response_task
@@ -82,6 +85,9 @@ module Grumlin
           response_queue = @requests[response[:requestId]]
           response_queue << [:response, response]
         end
+      rescue ::Async::Stop
+        p("response_task stopped")
+        nil
       end
     end
   end
