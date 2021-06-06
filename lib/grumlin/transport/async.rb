@@ -76,6 +76,8 @@ module Grumlin
           @connection.write(query)
           @connection.flush
         end
+      rescue StandardError
+        raise DisconnectError
       end
 
       def response_task
@@ -85,6 +87,8 @@ module Grumlin
           response_queue = @requests[response[:requestId]]
           response_queue << [:response, response]
         end
+      rescue StandardError
+        raise DisconnectError
       end
     end
   end

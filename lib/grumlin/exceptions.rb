@@ -9,6 +9,8 @@ module Grumlin
 
   class CannotConnectError < ConnectionError; end
 
+  class DisconnectError < ConnectionError; end
+
   class ConnectionStatusError < Error; end
 
   class NotConnectedError < ConnectionStatusError; end
