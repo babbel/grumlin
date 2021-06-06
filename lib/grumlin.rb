@@ -5,6 +5,7 @@ require "json"
 
 require "async"
 require "async/queue"
+require "async/barrier"
 require "async/http/endpoint"
 require "async/websocket/client"
 

@@ -9,40 +9,51 @@ module Grumlin
 
       def initialize(url, task: ::Async::Task.current)
         @task = task
-        @url = url
+        @endpoint = ::Async::HTTP::Endpoint.parse(url)
 
         @requests = {}
         @query_queue = ::Async::Queue.new
       end
 
-      def connect # rubocop:disable Metrics/MethodLength
-        raise AlreadyConnectedError unless @connection_task.nil?
+      def connect
+        raise AlreadyConnectedError unless @connection.nil?
 
-        @connection_task = @task.async do |subtask|
-          endpoint = ::Async::HTTP::Endpoint.parse(@url)
-          ::Async::WebSocket::Client.connect(endpoint) do |connection|
-            subtask.async { query_task(connection) }
-            response_task(connection)
-          end
-        rescue StandardError => e
-          @requests.each_value do |queue|
-            queue << [:error, e]
-          end
-          disconnect
-        end
+        @client = ::Async::WebSocket::Client.open(@endpoint)
+        @connection = @client.connect(@endpoint.authority, @endpoint.path)
+
+        @tasks_barrier = ::Async::Barrier.new(parent: @task)
+
+        @tasks_barrier.async { query_task }
+        @tasks_barrier.async { response_task }
+
+        # rescue StandardError => e
+        #   @requests.each_value do |queue|
+        #     queue << [:error, e]
+        #   end
+        #   disconnect
       end
 
       def disconnect
-        raise NotConnectedError if @connection_task.nil?
+        raise NotConnectedError if @connection.nil?
 
-        @connection_task&.stop
-        @connection_task&.wait
-        @connection_task = nil
-        @requests = {}
+        @tasks_barrier.tasks.each(&:stop)
+        @tasks_barrier.wait
+
+        @connection.close
+        @client.close
+
+        @client = nil
+        @connection = nil
+        @tasks_barrier = nil
+
+        raise ResourceLeakError, "ongoing requests list is not empty: #{@requests.count} items" unless @requests.empty?
+        raise ResourceLeakError, "query queue empty: #{@query.count} items" unless @query_queue.empty?
       end
 
       # Raw message
       def submit(message)
+        raise NotConnectedError if @connection.nil?
+
         uuid = message[:requestId]
         ::Async::Queue.new.tap do |queue|
           @requests[uuid] = queue
@@ -54,18 +65,22 @@ module Grumlin
         @requests.delete(request_id)
       end
 
+      def ongoing_request?(request_id)
+        @requests.key?(request_id)
+      end
+
       private
 
-      def query_task(connection)
-        loop do
-          connection.write @query_queue.dequeue
-          connection.flush
+      def query_task
+        @query_queue.each do |query|
+          @connection.write(query)
+          @connection.flush
         end
       end
 
-      def response_task(connection)
+      def response_task
         loop do
-          response = connection.read
+          response = @connection.read
           # TODO: sometimes response does not include requestID, no idea how to handle it so far.
           response_queue = @requests[response[:requestId]]
           response_queue << [:response, response]

@@ -30,9 +30,12 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before(:each, gremlin_server: true) do
-    Grumlin::Traversal.new("ws://localhost:8182/gremlin").V().drop.iterate
+  config.before(:each, clean_db: true) do
+    Grumlin::Client.new("ws://localhost:8182/gremlin").tap do |client|
+      Grumlin::Traversal.new(client).V().drop.iterate
+    end.disconnect
   end
 
-  config.include_context(Async::RSpec::Reactor, gremlin_server: true)
+  config.include_context(Async::RSpec::Reactor, clean_db: true)
+  config.include_context(Async::RSpec::Reactor, async: true)
 end

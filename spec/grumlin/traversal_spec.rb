@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Traversal, gremlin_server: true do
+RSpec.describe Grumlin::Traversal, clean_db: true do
   let(:url) { "ws://localhost:8182/gremlin" }
   let(:client) { Grumlin::Client.new(url) }
   let(:g) { described_class.new(client) }
