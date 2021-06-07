@@ -16,7 +16,7 @@ module Grumlin
       end
 
       def connect
-        raise AlreadyConnectedError unless @connection.nil?
+        raise AlreadyConnectedError if connected?
 
         @client = ::Async::WebSocket::Client.open(@endpoint)
         @connection = @client.connect(@endpoint.authority, @endpoint.path)
@@ -25,16 +25,12 @@ module Grumlin
 
         @tasks_barrier.async { query_task }
         @tasks_barrier.async { response_task }
-
-        # rescue StandardError => e
-        #   @requests.each_value do |queue|
-        #     queue << [:error, e]
-        #   end
-        #   disconnect
+      rescue StandardError
+        raise ConnectionError
       end
 
       def disconnect
-        raise NotConnectedError if @connection.nil?
+        raise NotConnectedError unless connected?
 
         @tasks_barrier.tasks.each(&:stop)
         @tasks_barrier.wait
@@ -52,7 +48,7 @@ module Grumlin
 
       # Raw message
       def submit(message)
-        raise NotConnectedError if @connection.nil?
+        raise NotConnectedError unless connected?
 
         uuid = message[:requestId]
         ::Async::Queue.new.tap do |queue|
@@ -69,6 +65,10 @@ module Grumlin
         @requests.key?(request_id)
       end
 
+      def connected?
+        !@connection.nil?
+      end
+
       private
 
       def query_task
@@ -76,6 +76,8 @@ module Grumlin
           @connection.write(query)
           @connection.flush
         end
+      rescue StandardError
+        raise DisconnectError
       end
 
       def response_task
@@ -85,6 +87,8 @@ module Grumlin
           response_queue = @requests[response[:requestId]]
           response_queue << [:response, response]
         end
+      rescue StandardError
+        raise DisconnectError
       end
     end
   end

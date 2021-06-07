@@ -3,7 +3,13 @@
 module Grumlin
   class Error < StandardError; end
 
+  class UnknownError < Error; end
+
   class ConnectionError < Error; end
+
+  class CannotConnectError < ConnectionError; end
+
+  class DisconnectError < ConnectionError; end
 
   class ConnectionStatusError < Error; end
 
@@ -23,8 +29,6 @@ module Grumlin
   end
 
   class UnknownTypeError < ProtocolError; end
-
-  class ConnectionClosedError < Error; end
 
   class StatusError < Error
     attr_reader :status

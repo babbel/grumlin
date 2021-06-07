@@ -1,14 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Traversal, clean_db: true do
-  let(:url) { "ws://localhost:8182/gremlin" }
-  let(:client) { Grumlin::Client.new(url) }
-  let(:g) { described_class.new(client) }
-
-  after do
-    client.disconnect
-  end
-
+RSpec.describe Grumlin::Traversal, gremlin_server: true do
   describe "#V" do
     subject { g.V(*ids).toList }
 
@@ -32,8 +24,8 @@ RSpec.describe Grumlin::Traversal, clean_db: true do
 
     context "when the DB is not empty" do
       before do
-        client.query('g.addV("test_vertex").property(T.id, x)', x: 1)
-        client.query('g.addV("test_vertex").property(T.id, x)', x: 2)
+        g.addV("test_vertex").property(Grumlin::T.id, 1)
+         .addV("test_vertex").property(Grumlin::T.id, 2).iterate
       end
 
       context "with no arguments" do

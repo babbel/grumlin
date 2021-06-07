@@ -31,7 +31,7 @@ module Grumlin
     def_delegators :@transport, :connect, :disconnect, :requests
 
     # TODO: support yielding
-    def query(*args)
+    def submit(*args)
       request_id, queue = submit_query(args)
       wait_for_response(request_id, queue)
     end
@@ -93,7 +93,7 @@ module Grumlin
     def reraise_error!(error)
       raise error
     rescue StandardError
-      raise ConnectionError
+      raise UnknownError
     end
 
     def string_query_message(request_id, query, bindings)
