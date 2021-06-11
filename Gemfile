@@ -4,6 +4,7 @@ source "https://rubygems.org"
 
 gemspec
 
+gem "nokogiri"
 gem "rubocop"
 gem "rubocop-performance"
 gem "rubocop-rspec"

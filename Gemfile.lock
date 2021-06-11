@@ -155,6 +155,7 @@ DEPENDENCIES
   async-rspec
   factory_bot
   grumlin!
+  nokogiri
   overcommit
   rspec
   rubocop
