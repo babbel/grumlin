@@ -2,7 +2,7 @@
 
 RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/DescribeClass
   it "1" do
-    expect(g.V().hasLabel("airport").count.next).to eq(3497)
+    expect(g.V().hasLabel("airport").count.next).to eq(3374)
   end
 
   it "2" do
@@ -30,8 +30,8 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
   end
 
   it "7" do # rubocop:disable RSpec/MultipleExpectations
-    expect(g.E().has("dist").count.next).to eq(50_579)
-    expect(g.V().has("region").count.next).to eq(3497)
+    expect(g.E().has("dist").count.next).to eq(43_400)
+    expect(g.V().has("region").count.next).to eq(3374)
     expect(g.V().hasNot("region").count.next).to eq(244)
     expect(g.V().not(Grumlin::U.has("region")).count.next).to eq(244)
   end

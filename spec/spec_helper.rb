@@ -7,6 +7,7 @@ require "csv"
 
 require "async/rspec"
 require "factory_bot"
+require "nokogiri"
 
 require "simplecov"
 
