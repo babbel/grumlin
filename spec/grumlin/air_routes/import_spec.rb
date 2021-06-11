@@ -8,6 +8,6 @@ RSpec.describe "Import the air routes dataset", gremlin_server: true, timeout: 6
     importer.import!
 
     expect(g.V().count.toList[0]).to eq(3618)
-    expect(g.E().count.toList[0]).to eq(57_573)
+    expect(g.E().count.toList[0]).to eq(50_148)
   end
 end

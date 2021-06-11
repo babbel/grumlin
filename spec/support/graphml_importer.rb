@@ -40,10 +40,31 @@ class GraphMLImporter
     end
   end
 
-  def import_edges!; end
+  def import_edges! # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+    edges.each_slice(100) do |slice|
+      t = g
+      slice.each do |edge|
+        label = edge.xpath("xmlns:data[@key='labelE']").text
+
+        t = t.addE(label).property(T.id, edge.attributes["id"].value.to_i)
+             .from(U.V(edge.attributes["source"].value.to_i))
+             .to(U.V(edge.attributes["target"].value.to_i))
+        edge.xpath("xmlns:data[not(@key='labelE')]").each do |attribute|
+          key = attribute.attributes["key"].value
+          cast_method = TYPES[properties[:edge][key][0][:type]]
+          t = t.property(key, attribute.text.send(cast_method))
+        end
+      end
+      t.iterate
+    end
+  end
 
   def nodes
     @graphml.xpath("//xmlns:graphml//xmlns:graph//xmlns:node")
+  end
+
+  def edges
+    @graphml.xpath("//xmlns:graphml//xmlns:graph//xmlns:edge")
   end
 
   def properties # rubocop:disable Metrics/AbcSize
