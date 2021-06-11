@@ -9,6 +9,11 @@ module Grumlin
       @client = client
     end
 
+    def next
+      @enum ||= toList.to_enum
+      @enum.next
+    end
+
     # TODO: add support for next
     def toList # rubocop:disable Naming/MethodName
       @toList ||= @client.submit(*steps) # rubocop:disable Naming/VariableName
