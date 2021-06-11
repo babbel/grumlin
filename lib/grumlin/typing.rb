@@ -9,6 +9,7 @@ module Grumlin
       "g:Edge" => ->(value) { cast_entity(Grumlin::Edge, value) },
       "g:Int64" => ->(value) { cast_int(value) },
       "g:Int32" => ->(value) { cast_int(value) },
+      "g:Double" => ->(value) { cast_double(value) },
       "g:Traverser" => ->(value) { cast(value[:value]) } # TODO: wtf is bulk?
     }.freeze
 
@@ -50,6 +51,12 @@ module Grumlin
 
       def cast_int(value)
         raise TypeError, "#{value} is not an Integer" unless value.is_a?(Integer)
+
+        value
+      end
+
+      def cast_double(value)
+        raise TypeError, "#{value} is not a Double" unless value.is_a?(Float)
 
         value
       end
