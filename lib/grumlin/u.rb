@@ -5,8 +5,10 @@ module Grumlin
     module U
       extend self # rubocop:disable Style/ModuleFunction
 
-      def V(*args) # rubocop:disable Naming/MethodName
-        AnonymousStep.new("V", *args)
+      %w[V has].each do |step|
+        define_method step do |*args|
+          AnonymousStep.new(step, *args)
+        end
       end
     end
 

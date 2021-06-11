@@ -10,7 +10,8 @@ module Grumlin
       @args = args
     end
 
-    %w[addV addE V E limit count drop property valueMap select from to as order by has hasLabel values].each do |step|
+    %w[addV addE V E limit count drop property valueMap select from to as order by has hasLabel values hasNot
+       not].each do |step|
       define_method step do |*args|
         add_step(step, args, previous_steps: steps)
       end
