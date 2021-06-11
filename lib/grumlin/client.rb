@@ -32,8 +32,11 @@ module Grumlin
 
     # TODO: support yielding
     def submit(*args)
-      request_id, queue = submit_query(args)
+      request_id = SecureRandom.uuid
+      queue = @transport.submit(to_query(request_id, args))
       wait_for_response(request_id, queue)
+    ensure
+      @transport.close_request(request_id)
     end
 
     private
@@ -44,11 +47,9 @@ module Grumlin
 
         case SUCCESS[response.dig(:status, :code)]
         when :success
-          @transport.close_request(request_id)
           return result + Typing.cast(response.dig(:result, :data))
         when :partial_content then result += Typing.cast(response.dig(:result, :data))
         when :no_content
-          @transport.close_request(request_id)
           return []
         end
       end
@@ -57,13 +58,8 @@ module Grumlin
       raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
     end
 
-    def submit_query(args, &block)
-      request_id = SecureRandom.uuid
-      [request_id, @transport.submit(to_query(request_id, args), &block)]
-    end
-
     def to_query(request_id, message)
-      case message.first
+      case message.first # TODO: properly handle unknown type of message
       when String
         string_query_message(request_id, *message)
       when Grumlin::Step
@@ -71,22 +67,17 @@ module Grumlin
       end
     end
 
-    def check_errors!(request_id, status, response) # rubocop:disable Metrics/MethodLength
-      if status == :error
-        @transport.close_request(request_id)
-        reraise_error!(response)
-      end
+    def check_errors!(_request_id, status, response)
+      reraise_error!(response) if status == :error
 
       status = response[:status]
 
       if (error = ERRORS[status[:code]])
-        @transport.close_request(request_id)
         raise(error, status)
       end
 
       return unless SUCCESS[status[:code]].nil?
 
-      @transport.close_request(request_id)
       raise(UnknownResponseStatus, status)
     end
 
