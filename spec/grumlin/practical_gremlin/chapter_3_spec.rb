@@ -35,4 +35,12 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
     expect(g.V().hasNot("region").count.next).to eq(244)
     expect(g.V().not(Grumlin::U.has("region")).count.next).to eq(244)
   end
+
+  it "8" do
+    expect(g.V().outE("route").count.next).to eq(43_400)
+  end
+
+  it "9" do
+    expect(g.E().hasLabel("route").count.next).to eq(43_400)
+  end
 end
