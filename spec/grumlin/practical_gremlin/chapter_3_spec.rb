@@ -51,6 +51,7 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
                version: 1 }
     expect(g.V().groupCount.by(Grumlin::T.label).next).to eq(result)
     expect(g.V().label.groupCount.next).to eq(result)
+    expect(g.V().group.by(Grumlin::T.label).by(Grumlin::U.count).next).to eq(result)
   end
 
   it "11" do # rubocop:disable RSpec/MultipleExpectations
