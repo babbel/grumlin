@@ -9,7 +9,7 @@ RSpec.describe "Practical Gremlin: Import data", gremlin_server: true, timeout: 
       g.V.drop.iterate
       importer.import!
 
-      expect(g.V().count.toList[0]).to eq(3618)
+      expect(g.V().count.toList[0]).to eq(3619)
       expect(g.E().count.toList[0]).to eq(50_148)
     end
   end

@@ -27,7 +27,6 @@ class GraphMLImporter
       t = g
       slice.each do |node|
         label = node.xpath("xmlns:data[@key='labelV']").text
-        next if label == "version"
 
         t = t.addV(label).property(T.id, node.attributes["id"].value.to_i)
         node.xpath("xmlns:data[not(@key='labelV')]").each do |attribute|

@@ -32,8 +32,8 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
   it "7" do # rubocop:disable RSpec/MultipleExpectations
     expect(g.E().has("dist").count.next).to eq(43_400)
     expect(g.V().has("region").count.next).to eq(3374)
-    expect(g.V().hasNot("region").count.next).to eq(244)
-    expect(g.V().not(Grumlin::U.has("region")).count.next).to eq(244)
+    expect(g.V().hasNot("region").count.next).to eq(245)
+    expect(g.V().not(Grumlin::U.has("region")).count.next).to eq(245)
   end
 
   it "8" do
@@ -42,5 +42,20 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
 
   it "9" do
     expect(g.E().hasLabel("route").count.next).to eq(43_400)
+  end
+
+  it "10" do # rubocop:disable RSpec/MultipleExpectations
+    result = { airport: 3374,
+               continent: 7,
+               country: 237,
+               version: 1 }
+    expect(g.V().groupCount.by(Grumlin::T.label).next).to eq(result)
+    expect(g.V().label.groupCount.next).to eq(result)
+  end
+
+  it "11" do # rubocop:disable RSpec/MultipleExpectations
+    result = { contains: 6748, route: 43_400 }
+    expect(g.E().groupCount.by(Grumlin::T.label).next).to eq(result)
+    expect(g.E().label.groupCount.next).to eq(result)
   end
 end
