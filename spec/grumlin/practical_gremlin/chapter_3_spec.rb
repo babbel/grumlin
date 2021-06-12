@@ -60,7 +60,7 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
     expect(g.E().label.groupCount.next).to eq(result)
   end
 
-  it "12" do
+  it "12" do # rubocop:disable RSpec/MultipleExpectations
     result = {
       PR: 6,
       PT: 14,
@@ -296,14 +296,12 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
       PM: 1
     }
     expect(g.V().hasLabel("airport").groupCount.by("country").next).to eq(result)
-    # For some reason the next resquest returns only 1 airport per country, skipping it
-    # TODO: figure out what's wrong
-    # expect(g.V().hasLabel("country").group.by("code").by(Grumlin::U.out.count).next).to eq(result)
+    expect(g.V().hasLabel("country").group.by("code").by(Grumlin::U.out.count).next).to eq(result.merge(AD: 0, LI: 0,
+                                                                                                        MC: 0, PN: 0,
+                                                                                                        SM: 0))
   end
 
-  xit "13" do
-    # For some reason the next resquest returns only 1 airport per continent, skipping it
-    # TODO: figure out what's wrong
+  it "13" do
     expect(g.V().hasLabel("continent").group.by("code").by(Grumlin::U.out.count).next).to eq({ EU: 583, AS: 932,
                                                                                                NA: 978, OC: 284,
                                                                                                AF: 294, AN: 0,

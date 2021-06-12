@@ -16,13 +16,24 @@ RSpec.describe Grumlin::Translator do
       end
     end
 
-    context "when there are subtraversals" do
+    context "when there are simple subtraversals" do
       let(:steps) do
         g.addE("follows").from(Grumlin::U.V(1)).to(Grumlin::U.V(2)).steps
       end
 
       it "returns bytecode" do
         expect(subject).to eq([["addE", "follows"], ["from", [["V", 1]]], ["to", [["V", 2]]]])  # rubocop:disable Style/WordArray
+      end
+    end
+
+    context "when there are long subtraversals" do
+      let(:steps) do
+        g.V().hasLabel("continent").group.by("code").by(Grumlin::U.out.count).steps
+      end
+
+      it "returns bytecode" do
+        expect(subject).to eq([["V"], %w[hasLabel continent], ["group"], %w[by code],
+                               ["by", [["out"], ["count"]]]])
       end
     end
   end
