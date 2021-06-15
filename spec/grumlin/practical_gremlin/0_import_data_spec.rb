@@ -5,7 +5,7 @@ RSpec.describe "Practical Gremlin: Import data", gremlin_server: true, timeout: 
   let(:importer) { GraphMLImporter.new(client, graphml) }
 
   describe "#import!" do
-    it "imports the dataset" do # rubocop:disable RSpec/MultipleExpectations
+    xit "imports the dataset" do # rubocop:disable RSpec/MultipleExpectations
       g.V.drop.iterate
       importer.import!
 

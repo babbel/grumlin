@@ -307,4 +307,14 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
                                                                                                AF: 294, AN: 0,
                                                                                                SA: 303 })
   end
+
+  it "14" do
+    expect(g.V().hasLabel("airport").groupCount.by("country").select("FR").next).to eq(58)
+  end
+
+  it "15" do
+    expect(g.V().hasLabel("airport").groupCount.by("country").select("FR", "GR", "BE").next).to eq({ BE: 5,
+                                                                                                     FR: 58,
+                                                                                                     GR: 39 })
+  end
 end
