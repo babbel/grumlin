@@ -317,4 +317,66 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
                                                                                                      FR: 58,
                                                                                                      GR: 39 })
   end
+
+  it "16" do
+    expect(g.V().has("airport", "code", "AUS").out.values("code").fold.next).to eq(%w[YYZ
+                                                                                      LHR
+                                                                                      FRA
+                                                                                      MEX
+                                                                                      PIT
+                                                                                      PDX
+                                                                                      CLT
+                                                                                      CUN
+                                                                                      MEM
+                                                                                      CVG
+                                                                                      IND
+                                                                                      MCI
+                                                                                      DAL
+                                                                                      STL
+                                                                                      ABQ
+                                                                                      MDW
+                                                                                      LBB
+                                                                                      HRL
+                                                                                      GDL
+                                                                                      PNS
+                                                                                      VPS
+                                                                                      SFB
+                                                                                      BKG
+                                                                                      PIE
+                                                                                      ATL
+                                                                                      BNA
+                                                                                      BOS
+                                                                                      BWI
+                                                                                      DCA
+                                                                                      DFW
+                                                                                      FLL
+                                                                                      IAD
+                                                                                      IAH
+                                                                                      JFK
+                                                                                      LAX
+                                                                                      MCO
+                                                                                      MIA
+                                                                                      MSP
+                                                                                      ORD
+                                                                                      PHX
+                                                                                      RDU
+                                                                                      SEA
+                                                                                      SFO
+                                                                                      SJC
+                                                                                      TPA
+                                                                                      SAN
+                                                                                      LGB
+                                                                                      SNA
+                                                                                      SLC
+                                                                                      LAS
+                                                                                      DEN
+                                                                                      MSY
+                                                                                      EWR
+                                                                                      HOU
+                                                                                      ELP
+                                                                                      CLE
+                                                                                      OAK
+                                                                                      PHL
+                                                                                      DTW])
+  end
 end
