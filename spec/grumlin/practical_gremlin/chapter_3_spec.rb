@@ -437,4 +437,20 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
                                                                                            PHX RDU SEA SFO SJC SAN SLC
                                                                                            LAS DEN MSY EWR PHL DTW])
   end
+
+  it "20" do
+    expect(g.V().has("airport", "code", "LCY").outE.inV.path.count.next).to eq(42)
+  end
+
+  it "21" do # rubocop:disable RSpec/MultipleExpectations
+    expect(
+      g.V().has("airport", "code", "LCY").outE.inV
+            .path.by("code").by("dist").count.next
+    ).to eq(42)
+
+    expect(
+      g.V().has("airport", "code", "LCY").outE.inV
+            .path.by("code").by("dist").by("code").count.next
+    ).to eq(42)
+  end
 end

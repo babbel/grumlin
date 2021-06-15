@@ -16,6 +16,7 @@ require_relative "grumlin/transport/async"
 
 require_relative "grumlin/vertex"
 require_relative "grumlin/edge"
+require_relative "grumlin/path"
 require_relative "grumlin/typing"
 require_relative "grumlin/client"
 require_relative "grumlin/traversal"
