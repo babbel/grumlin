@@ -379,4 +379,62 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
                                                                                       PHL
                                                                                       DTW])
   end
+
+  it "17" do
+    expect(g.V().has("airport", "code", "AUS").out("route").out("route").values("code").count.next).to eq(5942)
+  end
+
+  it "18" do
+    expect(g.V().has("airport", "code", "LCY").in("route").values("code").toList).to eq(%w[IBZ
+                                                                                           AGP
+                                                                                           PMI
+                                                                                           JSI
+                                                                                           AMS
+                                                                                           MAH
+                                                                                           BRN
+                                                                                           DRS
+                                                                                           EDI
+                                                                                           CDG
+                                                                                           ARN
+                                                                                           ABZ
+                                                                                           RTM
+                                                                                           IOM
+                                                                                           CWL
+                                                                                           BSL
+                                                                                           ORY
+                                                                                           FRA
+                                                                                           DOL
+                                                                                           BVE
+                                                                                           ZRH
+                                                                                           NCE
+                                                                                           BLL
+                                                                                           MAN
+                                                                                           VCE
+                                                                                           GRX
+                                                                                           GVA
+                                                                                           BES
+                                                                                           JFK
+                                                                                           LIN
+                                                                                           DUS
+                                                                                           LUX
+                                                                                           JER
+                                                                                           FCO
+                                                                                           NTE
+                                                                                           ANR
+                                                                                           DUB
+                                                                                           FLR
+                                                                                           CMF
+                                                                                           MAD
+                                                                                           BHD
+                                                                                           GLA
+                                                                                           BRE])
+  end
+
+  it "19" do
+    expect(g.V().has("code", "LHR").out("route").has("country",
+                                                     "US").values("code").toList).to eq(%w[PDX CLT ATL AUS BOS BWI DFW
+                                                                                           IAD IAH JFK LAX MIA MSP ORD
+                                                                                           PHX RDU SEA SFO SJC SAN SLC
+                                                                                           LAS DEN MSY EWR PHL DTW])
+  end
 end

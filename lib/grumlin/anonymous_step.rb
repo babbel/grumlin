@@ -11,7 +11,7 @@ module Grumlin
     end
 
     %w[addV addE V E limit count drop property valueMap select from to as order by has hasLabel values hasNot
-       not outE groupCount label group out fold unfold].each do |step|
+       not outE groupCount label group in out fold unfold].each do |step|
       define_method step do |*args|
         add_step(step, args, previous_steps: steps)
       end
