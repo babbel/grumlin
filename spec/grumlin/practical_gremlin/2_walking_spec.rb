@@ -157,4 +157,17 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
       g.V(3).out.limit(5).path.by(Grumlin::U.out.count.fold).count.next
     ).to eq(5)
   end
+
+  it "9" do
+    expect(
+      g.V().has("airport", "code", "AUS").out.out.path.by("code").limit(10).count.next
+    ).to eq(10)
+  end
+
+  it "10" do
+    expect(
+      g.V().has("airport", "code", "AUS").out.as("a").out.as("b")
+            .path.by("code").from("a").to("b").limit(10).count.next
+    ).to eq(10)
+  end
 end
