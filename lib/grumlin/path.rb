@@ -6,5 +6,10 @@ module Grumlin
       @labels = Typing.cast(path[:labels])
       @objects = Typing.cast(path[:objects])
     end
+
+    def inspect
+      "p[#{@objects}]"
+    end
+    alias to_s inspect
   end
 end

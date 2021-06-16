@@ -452,5 +452,26 @@ RSpec.describe "Practical Gremlin: Chapter 3 specs" do # rubocop:disable RSpec/D
       g.V().has("airport", "code", "LCY").outE.inV
             .path.by("code").by("dist").by("code").count.next
     ).to eq(42)
+
+    expect(
+      g.V().has("airport", "code", "LCY").outE.inV.path.by("code").by("dist").by("city").count.next
+    ).to eq(42)
+
+    expect(
+      g.V().has("airport", "code", "LCY").outE.inV
+      .path.by("code").by("dist").by("city").count.next
+    ).to eq(42)
+  end
+
+  it "22" do
+    expect(
+      g.V(3).out.limit(5).path.by(Grumlin::U.values("code", "city").fold).count.next
+    ).to eq(5)
+  end
+
+  it "23" do
+    expect(
+      g.V(3).out.limit(5).path.by(Grumlin::U.out.count.fold).count.next
+    ).to eq(5)
   end
 end
