@@ -212,4 +212,18 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
             .path.by("code").count.next
     ).to eq(11)
   end
+
+  it "12" do  # rubocop:disable RSpec/MultipleExpectations
+    expect(
+      g.V().has("type", "airport").limit(10).as("a", "b", "c")
+            .select("a", "b", "c")
+              .by("code").by("region").by(Grumlin::U.out.count).count.next
+    ).to eq(10)
+
+    expect(
+      g.V().has("type", "airport").limit(10)
+            .project("a", "b", "c")
+              .by("code").by("region").by(Grumlin::U.out.count).count.next
+    ).to eq(10)
+  end
 end
