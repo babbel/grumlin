@@ -20,7 +20,6 @@ require "grumlin"
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| load(f) }
 
 RSpec.configure do |config|
-  config.order = :random
   config.disable_monkey_patching!
 
   config.include FactoryBot::Syntax::Methods
@@ -33,12 +32,22 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
-  config.before(:each, gremlin_server: true) do
-    Grumlin::Client.new("ws://localhost:8182/gremlin").tap do |client|
-      Grumlin::Traversal.new(client).V().drop.iterate
-    end.disconnect
-  end
-
   config.include_context(Async::RSpec::Reactor, gremlin_server: true)
   config.include_context(RSpec::GremlinContext, gremlin_server: true)
+  config.include_context(RSpec::DBCleanerContext, gremlin_server: true)
+
+  config.include_context(Async::RSpec::Reactor, practical_gremlin: true)
+  config.include_context(RSpec::GremlinContext, practical_gremlin: true)
+
+  re = Regexp.compile("#{%w[spec grumlin practical_gremlin].join('[\\\/]')}[\\\\/]")
+  config.define_derived_metadata(file_path: re) do |metadata|
+    metadata[:practical_gremlin] ||= true
+  end
+
+  config.register_ordering(:global) do |items|
+    next items if items.empty?
+
+    groups = items.group_by { |item| item.metadata[:practical_gremlin] }
+    (groups[true] || []) + (groups[nil] || []).shuffle
+  end
 end

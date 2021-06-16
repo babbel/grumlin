@@ -4,11 +4,14 @@ module Grumlin
   module Typing
     TYPES = {
       "g:List" => ->(value) { value.map { |item| cast(item) } },
+      "g:Set" => ->(value) { Set.new(value.map { |item| cast(item) }) },
       "g:Map" => ->(value) { cast_map(value) },
       "g:Vertex" => ->(value) { cast_entity(Grumlin::Vertex, value) },
       "g:Edge" => ->(value) { cast_entity(Grumlin::Edge, value) },
+      "g:Path" => ->(value) { cast_entity(Grumlin::Path, value) },
       "g:Int64" => ->(value) { cast_int(value) },
       "g:Int32" => ->(value) { cast_int(value) },
+      "g:Double" => ->(value) { cast_double(value) },
       "g:Traverser" => ->(value) { cast(value[:value]) } # TODO: wtf is bulk?
     }.freeze
 
@@ -54,6 +57,12 @@ module Grumlin
         value
       end
 
+      def cast_double(value)
+        raise TypeError, "#{value} is not a Double" unless value.is_a?(Float)
+
+        value
+      end
+
       def cast_entity(entity, value)
         entity.new(**value)
       rescue ArgumentError, TypeError
@@ -65,8 +74,6 @@ module Grumlin
       rescue ArgumentError
         raise TypeError, "#{value} cannot be casted to Hash"
       end
-
-      def cast_traverser(value); end
     end
   end
 end
