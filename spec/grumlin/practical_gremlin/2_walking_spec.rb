@@ -158,7 +158,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     ).to eq(5)
   end
 
-  it "9" do  # rubocop:disable RSpec/MultipleExpectations
+  it "9" do # rubocop:disable RSpec/MultipleExpectations
     expect(
       g.V().has("airport", "code", "AUS").out.out.path.by("code").limit(10).count.next
     ).to eq(10)
@@ -186,5 +186,30 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
       g.V().has("airport", "code", "AUS").as("a").out.out.as("b").out
       .path.by("code").to("b").limit(10).dedup.count.next
     ).to eq(1)
+  end
+
+  xit "10" do
+    # TODO: add support for hasNext
+    expect(g.V().has("code", "AUS").out("route").has("code", "DFW").hasNext).to eq([])
+  end
+
+  it "11" do # rubocop:disable RSpec/MultipleExpectations
+    expect(
+      g.V().has("code", "DFW").as("from").out
+            .has("region", "US-CA").as("to")
+            .select("from", "to").count.next
+    ).to eq(11)
+
+    expect(
+      g.V().has("code", "DFW").as("from").out
+            .has("region", "US-CA").as("to")
+            .select("from", "to").by("code").count.next
+    ).to eq(11)
+
+    expect(
+      g.V().has("code", "DFW").out
+            .has("region", "US-CA")
+            .path.by("code").count.next
+    ).to eq(11)
   end
 end
