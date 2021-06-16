@@ -29,6 +29,7 @@ require_relative "grumlin/t"
 require_relative "grumlin/order"
 require_relative "grumlin/u"
 require_relative "grumlin/pop"
+require_relative "grumlin/sugar"
 
 module Grumlin
 end
