@@ -158,16 +158,33 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     ).to eq(5)
   end
 
-  it "9" do
+  it "9" do  # rubocop:disable RSpec/MultipleExpectations
     expect(
       g.V().has("airport", "code", "AUS").out.out.path.by("code").limit(10).count.next
     ).to eq(10)
-  end
-
-  it "10" do
     expect(
-      g.V().has("airport", "code", "AUS").out.as("a").out.as("b")
-            .path.by("code").from("a").to("b").limit(10).count.next
+      g.V().has("airport", "code", "AUS").out.as("a").out
+            .path.by("code").from("a").limit(10).count.next
     ).to eq(10)
+
+    expect(
+      g.V().has("airport", "code", "AUS").out.out.out
+            .path.by("code").limit(10).count.next
+    ).to eq(10)
+
+    expect(
+      g.V().has("airport", "code", "AUS").out.as("a").out.as("b").out
+      .path.by("code").from("a").to("b").limit(10).count.next
+    ).to eq(10)
+
+    expect(
+      g.V().has("airport", "code", "AUS").out.out.as("b").out
+      .path.by("code").to("b").limit(10).count.next
+    ).to eq(10)
+
+    expect(
+      g.V().has("airport", "code", "AUS").as("a").out.out.as("b").out
+      .path.by("code").to("b").limit(10).dedup.count.next
+    ).to eq(1)
   end
 end
