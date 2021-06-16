@@ -238,4 +238,27 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
                                               "a").next).to eq([Grumlin::Vertex.new(label: "airport", id: 1),
                                                                 Grumlin::Vertex.new(label: "airport", id: 2)])
   end
+
+  it "14" do # rubocop:disable RSpec/MultipleExpectations
+    expect(
+      g.V().has("code", "AUS").as("a")
+    .out.as("a").limit(10)
+    .select(Grumlin::Pop.last, "a").by("code").fold.next
+    ).to eq(%w[YYZ LHR FRA MEX PIT PDX CLT
+               CUN MEM CVG])
+
+    expect(
+      g.V().has("code", "AUS").as("a")
+    .out.as("a").limit(10)
+    .select(Grumlin::Pop.first, "a").by("code").fold.next
+    ).to eq(%w[AUS AUS AUS AUS AUS AUS AUS
+               AUS AUS AUS])
+
+    expect(
+      g.V().has("code", "AUS").as("a")
+    .out.as("a").limit(10)
+    .select(Grumlin::Pop.all, "a").unfold.values("code").fold.next
+    ).to eq(%w[AUS AUS AUS AUS AUS AUS
+               AUS AUS AUS AUS YYZ LHR FRA MEX PIT PDX CLT CUN MEM CVG])
+  end
 end
