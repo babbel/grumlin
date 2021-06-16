@@ -213,7 +213,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     ).to eq(11)
   end
 
-  it "12" do  # rubocop:disable RSpec/MultipleExpectations
+  it "12" do # rubocop:disable RSpec/MultipleExpectations
     expect(
       g.V().has("type", "airport").limit(10).as("a", "b", "c")
             .select("a", "b", "c")
@@ -225,5 +225,17 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
             .project("a", "b", "c")
               .by("code").by("region").by(Grumlin::U.out.count).count.next
     ).to eq(10)
+  end
+
+  it "13" do # rubocop:disable RSpec/MultipleExpectations
+    expect(g.V(1).as("a").V(2).as("a").select("a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
+    expect(g.V(1).as("a").V(2).as("a").select(Grumlin::Pop.first,
+                                              "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 1))
+    expect(g.V(1).as("a").V(2).as("a").select(Grumlin::Pop.last,
+                                              "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
+
+    expect(g.V(1).as("a").V(2).as("a").select(Grumlin::Pop.all,
+                                              "a").next).to eq([Grumlin::Vertex.new(label: "airport", id: 1),
+                                                                Grumlin::Vertex.new(label: "airport", id: 2)])
   end
 end

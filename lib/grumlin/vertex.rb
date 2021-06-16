@@ -10,7 +10,7 @@ module Grumlin
     end
 
     def ==(other)
-      @label == other.label && @id == other.id
+      self.class == other.class && @label == other.label && @id == other.id
     end
 
     def inspect
