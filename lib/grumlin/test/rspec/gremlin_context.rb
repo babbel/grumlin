@@ -14,6 +14,7 @@ module Grumlin
         let(:g) { Grumlin::Traversal.new(client) }
 
         after do
+          expect(client.requests).to be_empty
           client.disconnect
         end
       end
