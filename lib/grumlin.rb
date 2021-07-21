@@ -32,4 +32,21 @@ require_relative "grumlin/pop"
 require_relative "grumlin/sugar"
 
 module Grumlin
+  class Config
+    attr_accessor :url
+
+    def default_client
+      @default_client ||= Grumlin::Client.new(url)
+    end
+  end
+
+  class << self
+    def configure
+      yield config
+    end
+
+    def config
+      @config ||= Config.new
+    end
+  end
 end

@@ -10,7 +10,7 @@ module Grumlin
         include DBCleanerContext
 
         before do
-          client = Grumlin::Client.new(ENV["GREMLIN_URL"])
+          client = Grumlin::Client.new(Grumlin.config.url)
           Grumlin::Traversal.new(client).V().drop.iterate
           client.disconnect
         end
