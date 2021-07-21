@@ -111,5 +111,11 @@ module Grumlin
         }
       }
     end
+
+    def inspect
+      "<#{self.class} @url=#{@url}>"
+    end
+
+    alias to_s inspect
   end
 end
