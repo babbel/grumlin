@@ -16,7 +16,7 @@ module Grumlin
       "g:T" => ->(value) { value }
     }.freeze
 
-    CASTABLE_TYPES = [Hash, String, Integer].freeze
+    CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass].freeze
 
     class << self
       def cast(value)
