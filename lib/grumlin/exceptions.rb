@@ -58,4 +58,14 @@ module Grumlin
   class UnknownRequestStoppedError < InternalClientError; end
 
   class ResourceLeakError < InternalClientError; end
+
+  class UnknownMapKey < InternalClientError
+    attr_reader :key, :map
+
+    def initialize(key, map)
+      @key = key
+      @map = map
+      super("Cannot cast key #{key} in map #{map}")
+    end
+  end
 end

@@ -72,7 +72,7 @@ class GraphMLImporter
         type: prop.attributes["attr.type"].value,
         for: prop.attributes["for"].value
       }
-    end.group_by { |p| p[:for] }.transform_values { |v| v.group_by { |p| p[:id] } }.symbolize_keys # rubocop:disable Style/MultilineBlockChain
+    end.group_by { |p| p[:for] }.transform_values { |v| v.group_by { |p| p[:id] } }.symbolize_keys
   end
 
   def g

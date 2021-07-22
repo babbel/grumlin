@@ -33,3 +33,6 @@ RSpec/NestedGroups:
 
 RSpec/ExampleLength:
   Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false

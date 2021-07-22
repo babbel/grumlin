@@ -12,7 +12,8 @@ module Grumlin
       "g:Int64" => ->(value) { cast_int(value) },
       "g:Int32" => ->(value) { cast_int(value) },
       "g:Double" => ->(value) { cast_double(value) },
-      "g:Traverser" => ->(value) { cast(value[:value]) } # TODO: wtf is bulk?
+      "g:Traverser" => ->(value) { cast(value[:value]) }, # TODO: wtf is bulk?
+      "g:T" => ->(value) { value }
     }.freeze
 
     CASTABLE_TYPES = [Hash, String, Integer].freeze
@@ -70,7 +71,12 @@ module Grumlin
       end
 
       def cast_map(value)
-        Hash[*value].transform_keys(&:to_sym).transform_values { |v| cast(v) }
+        Hash[*value].transform_keys do |key|
+          next key.to_sym if key.respond_to?(:to_sym)
+          next cast(key) if key[:@type]
+
+          raise UnknownMapKey, key, value
+        end.transform_values { |v| cast(v) }
       rescue ArgumentError
         raise TypeError, "#{value} cannot be casted to Hash"
       end

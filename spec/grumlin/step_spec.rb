@@ -34,13 +34,13 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
 
     context "when using elementMap" do
       before do
-        g.addV.property(Grumlin::T.id, 1).property("foo1", "bar")
-         .addV.property(Grumlin::T.id, 2).property("foo2", "bar")
-         .addV.property(Grumlin::T.id, 3).property("foo3", "bar").iterate
+        g.addV(:test_label).property(Grumlin::T.id, 1).property("foo1", "bar").property("foo3", 3)
+         .addV(:test_label).property(Grumlin::T.id, 2).property("foo2", "bar")
+         .addV(:test_label).property(Grumlin::T.id, 3).property("foo3", 3).iterate
       end
 
       it "returns a map" do
-        g.V().valueMap.toList
+        g.V().elementMap.toList
       end
     end
   end
