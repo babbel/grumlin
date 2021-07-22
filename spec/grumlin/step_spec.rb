@@ -40,7 +40,9 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
       end
 
       it "returns a map" do
-        g.V().elementMap.toList # TODO: expectation
+        expect(g.V().elementMap.toList).to eq([{ foo1: "bar", foo3: 3, id: 1, label: "test_label" },
+                                               { foo2: "bar", id: 2, label: "test_label" },
+                                               { foo3: 3, id: 3, label: "test_label" }])
       end
     end
 
