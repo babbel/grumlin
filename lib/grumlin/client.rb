@@ -39,6 +39,12 @@ module Grumlin
       @transport.close_request(request_id)
     end
 
+    def inspect
+      "<#{self.class} @url=#{@url}>"
+    end
+
+    alias to_s inspect
+
     private
 
     def wait_for_response(request_id, queue, result: []) # rubocop:disable Metrics/MethodLength
@@ -111,11 +117,5 @@ module Grumlin
         }
       }
     end
-
-    def inspect
-      "<#{self.class} @url=#{@url}>"
-    end
-
-    alias to_s inspect
   end
 end
