@@ -6,6 +6,7 @@ module Grumlin
     HELPERS = [
       Grumlin::U,
       Grumlin::T,
+      Grumlin::P,
       Grumlin::Pop,
       Grumlin::Order
     ].freeze

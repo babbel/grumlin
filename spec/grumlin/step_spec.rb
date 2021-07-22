@@ -40,7 +40,19 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
       end
 
       it "returns a map" do
-        g.V().elementMap.toList
+        g.V().elementMap.toList # TODO: expectation
+      end
+    end
+
+    context "when using within" do
+      before do
+        g.addV(:test_label).property(Grumlin::T.id, 1)
+         .addV(:test_label).property(Grumlin::T.id, 2)
+         .addV(:test_label).property(Grumlin::T.id, 3).iterate
+      end
+
+      it "returns a list of nodes" do
+        expect(g.V().has(Grumlin::T.id, Grumlin::P.within(1, 3)).toList).not_to be_empty
       end
     end
   end

@@ -28,6 +28,7 @@ require_relative "grumlin/translator"
 require_relative "grumlin/t"
 require_relative "grumlin/order"
 require_relative "grumlin/u"
+require_relative "grumlin/p"
 require_relative "grumlin/pop"
 require_relative "grumlin/sugar"
 
