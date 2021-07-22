@@ -38,6 +38,10 @@ module Grumlin
     def default_client
       @default_client ||= Grumlin::Client.new(url)
     end
+
+    def reset!
+      @default_client = nil
+    end
   end
 
   class << self

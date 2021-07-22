@@ -9,8 +9,7 @@ class GraphMLImporter
 
   include Grumlin::Sugar
 
-  def initialize(client, graphml)
-    @client = client
+  def initialize(graphml)
     @graphml = Nokogiri::XML(graphml)
   end
 
@@ -77,6 +76,6 @@ class GraphMLImporter
   end
 
   def g
-    Grumlin::Traversal.new(@client)
+    Grumlin::Traversal.new
   end
 end

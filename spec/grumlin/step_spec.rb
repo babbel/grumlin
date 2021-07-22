@@ -31,5 +31,17 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
         expect(g.E().count.toList).to eq([3])
       end
     end
+
+    context "when using elementMap" do
+      before do
+        g.addV.property(Grumlin::T.id, 1).property("foo1", "bar")
+         .addV.property(Grumlin::T.id, 2).property("foo2", "bar")
+         .addV.property(Grumlin::T.id, 3).property("foo3", "bar").iterate
+      end
+
+      it "returns a map" do
+        g.V().valueMap.toList
+      end
+    end
   end
 end

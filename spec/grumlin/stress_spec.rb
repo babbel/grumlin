@@ -48,9 +48,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
   context "when number of iterations is limited" do
     let(:iterations) { 100 }
 
-    it "succeeds", timeout: 120 do # rubocop:disable RSpec/MultipleExpectations
-      expect(client.requests).to be_empty
-
+    it "succeeds", timeout: 120 do
       barrier = Async::Barrier.new
 
       Array.new(concurrency) do
@@ -63,15 +61,14 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
 
       barrier.wait
 
-      expect(client.requests).to be_empty
+      expect(Grumlin.config.default_client.requests).to be_empty
     end
   end
 
   context "when time is limited" do
     let(:duration) { 10 }
 
-    it "succeeds", timeout: 20 do # rubocop:disable RSpec/MultipleExpectations
-      expect(client.requests).to be_empty
+    it "succeeds", timeout: 20 do
       working = true
 
       barrier = Async::Barrier.new
@@ -89,7 +86,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
 
       barrier.wait
 
-      expect(client.requests).to be_empty
+      expect(Grumlin.config.default_client.requests).to be_empty
     end
   end
 end

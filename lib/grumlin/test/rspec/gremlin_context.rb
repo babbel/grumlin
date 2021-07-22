@@ -9,12 +9,12 @@ module Grumlin
       ::RSpec.shared_context GremlinContext do
         include GremlinContext
 
-        let!(:client) { Grumlin::Client.new(Grumlin.config.url) }
-        let(:g) { Grumlin::Traversal.new(client) }
+        let(:g) { Grumlin::Traversal.new }
 
         after do
-          expect(client.requests).to be_empty
-          client.disconnect
+          expect(Grumlin.config.default_client.requests).to be_empty
+          Grumlin.config.default_client.disconnect
+          Grumlin.config.reset!
         end
       end
     end
