@@ -33,5 +33,9 @@ module Grumlin
     def __
       Grumlin::U
     end
+
+    def g
+      Grumlin::Traversal.new
+    end
   end
 end
