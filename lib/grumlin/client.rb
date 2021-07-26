@@ -29,7 +29,8 @@ module Grumlin
     end
 
     def connect
-      @transport.connect
+      response_queue = @transport.connect
+      @task.async { response_task(response_queue) }
     end
 
     def disconnect
@@ -40,10 +41,10 @@ module Grumlin
     # TODO: support yielding
     def write(*args)
       request_id = SecureRandom.uuid
-      queue = @transport.write(to_query(request_id, args))
+      queue = transport_write(to_query(request_id, args))
       wait_for_response(request_id, queue)
     ensure
-      @transport.close_request(request_id)
+      close_request(request_id)
     end
 
     def inspect
@@ -67,7 +68,7 @@ module Grumlin
         end
       end
     rescue ::Async::Stop
-      retry if @transport.ongoing_request?(request_id)
+      retry if ongoing_request?(request_id)
       raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
     end
 
@@ -127,6 +128,30 @@ module Grumlin
 
     def reset!
       @requests = {}
+      @response_queue = nil
+    end
+
+    def close_request(request_id)
+      @requests.delete(request_id)
+    end
+
+    def response_task(queue)
+      queue.each do |response|
+        # TODO: sometimes response does not include requestID, no idea how to handle it so far.
+        response_queue = @requests[response[:requestId]]
+        response_queue << [:response, response]
+      end
+    end
+
+    def transport_write(request)
+      Async::Queue.new.tap do |queue|
+        @requests[request[:requestId]] = queue
+        @transport.write(request)
+      end
+    end
+
+    def ongoing_request?(request_id)
+      @requests.key?(request_id)
     end
   end
 end

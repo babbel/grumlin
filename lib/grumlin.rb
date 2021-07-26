@@ -13,7 +13,6 @@ require_relative "grumlin/version"
 require_relative "grumlin/exceptions"
 
 require_relative "grumlin/transport/async"
-require_relative "grumlin/transport/async2"
 
 require_relative "grumlin/vertex"
 require_relative "grumlin/edge"
