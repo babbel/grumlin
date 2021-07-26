@@ -2,8 +2,6 @@
 
 module Grumlin
   class Client # rubocop:disable Metrics/ClassLength
-    attr_reader :requests
-
     SUCCESS = {
       200 => :success,
       204 => :no_content,
@@ -30,6 +28,7 @@ module Grumlin
 
     def connect
       response_queue = @transport.connect
+      @request_dispatcher = RequestDispatcher.new
       @task.async { response_task(response_queue) }
     end
 
@@ -38,13 +37,17 @@ module Grumlin
       reset!
     end
 
+    def requests
+      @request_dispatcher.requests
+    end
+
     # TODO: support yielding
     def write(*args)
       request_id = SecureRandom.uuid
       queue = transport_write(to_query(request_id, args))
       wait_for_response(request_id, queue)
     ensure
-      close_request(request_id)
+      @request_dispatcher.close_request(request_id)
     end
 
     def inspect
@@ -56,8 +59,8 @@ module Grumlin
     private
 
     def wait_for_response(request_id, queue, result: []) # rubocop:disable Metrics/MethodLength
-      queue.each do |status, response|
-        check_errors!(request_id, status, response)
+      queue.each do |response|
+        check_errors!(response[:status])
 
         case SUCCESS[response.dig(:status, :code)]
         when :success
@@ -81,11 +84,7 @@ module Grumlin
       end
     end
 
-    def check_errors!(_request_id, status, response)
-      reraise_error!(response) if status == :error
-
-      status = response[:status]
-
+    def check_errors!(status)
       if (error = ERRORS[status[:code]])
         raise(error, status)
       end
@@ -93,12 +92,6 @@ module Grumlin
       return unless SUCCESS[status[:code]].nil?
 
       raise(UnknownResponseStatus, status)
-    end
-
-    def reraise_error!(error)
-      raise error
-    rescue StandardError
-      raise UnknownError
     end
 
     def string_query_message(request_id, query, bindings)
@@ -127,31 +120,24 @@ module Grumlin
     end
 
     def reset!
-      @requests = {}
+      @request_dispatcher = nil
       @response_queue = nil
-    end
-
-    def close_request(request_id)
-      @requests.delete(request_id)
     end
 
     def response_task(queue)
       queue.each do |response|
-        # TODO: sometimes response does not include requestID, no idea how to handle it so far.
-        response_queue = @requests[response[:requestId]]
-        response_queue << [:response, response]
+        @request_dispatcher.add_response(response)
       end
     end
 
     def transport_write(request)
-      Async::Queue.new.tap do |queue|
-        @requests[request[:requestId]] = queue
+      @request_dispatcher.add_request(request).tap do
         @transport.write(request)
       end
     end
 
     def ongoing_request?(request_id)
-      @requests.key?(request_id)
+      @request_dispatcher.requests.key?(request_id)
     end
   end
 end

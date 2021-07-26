@@ -20,6 +20,7 @@ require_relative "grumlin/path"
 require_relative "grumlin/typing"
 require_relative "grumlin/client"
 require_relative "grumlin/traversal"
+require_relative "grumlin/request_dispatcher"
 
 require_relative "grumlin/anonymous_step"
 require_relative "grumlin/step"
