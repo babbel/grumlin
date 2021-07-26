@@ -24,7 +24,7 @@ module Grumlin
       @connection = @client.connect(@endpoint.authority, @endpoint.path)
       @response_queue = Async::Queue.new
 
-      @listen_task = @task.async do
+      @response_task = @task.async do
         loop do
           @response_queue << @connection.read
         end
@@ -43,8 +43,8 @@ module Grumlin
     end
 
     def disconnect
-      @listen_task.stop
-      @listen_task.wait
+      @response_task.stop
+      @response_task.wait
 
       @connection.close
       @client.close

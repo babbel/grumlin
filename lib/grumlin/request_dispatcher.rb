@@ -34,8 +34,7 @@ module Grumlin
       end
     end
 
-    # returns nil if the result is not built yet
-    # pushes the result to the queue when it's ready
+    # builds a response object, when it's ready sends it to the client via a notification
     # TODO: sometimes response does not include requestID, no idea how to handle it so far.
     def add_response(response) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       request_id = response[:requestId]
