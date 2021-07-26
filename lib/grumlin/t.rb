@@ -3,8 +3,8 @@
 module Grumlin
   module T
     module T
-      T_ID = { :@type => "g:T", :@value => "id" }.freeze
-      T_LABEL = { :@type => "g:T", :@value => "label" }.freeze
+      T_ID = { :@type => "g:T", :@value => "id" }.freeze # TODO: replace with a class?
+      T_LABEL = { :@type => "g:T", :@value => "label" }.freeze # TODO: replace with a class?
 
       extend self # rubocop:disable Style/ModuleFunction
 

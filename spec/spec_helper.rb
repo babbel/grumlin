@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 ENV["ENV"] ||= "test"
-ENV["GREMLIN_URL"] ||= "ws://localhost:8182/gremlin"
 
 require "csv"
 
@@ -16,8 +15,13 @@ SimpleCov.start do
 end
 
 require "grumlin"
+require "grumlin/test/rspec"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| load(f) }
+
+Grumlin.configure do |config|
+  config.url = ENV["GREMLIN_URL"] || "ws://localhost:8182/gremlin"
+end
 
 RSpec.configure do |config|
   config.disable_monkey_patching!
@@ -33,11 +37,11 @@ RSpec.configure do |config|
   end
 
   config.include_context(Async::RSpec::Reactor, gremlin_server: true)
-  config.include_context(RSpec::GremlinContext, gremlin_server: true)
-  config.include_context(RSpec::DBCleanerContext, gremlin_server: true)
+  config.include_context(Grumlin::Test::RSpec::GremlinContext, gremlin_server: true)
+  config.include_context(Grumlin::Test::RSpec::DBCleanerContext, gremlin_server: true)
 
   config.include_context(Async::RSpec::Reactor, practical_gremlin: true)
-  config.include_context(RSpec::GremlinContext, practical_gremlin: true)
+  config.include_context(Grumlin::Test::RSpec::GremlinContext, practical_gremlin: true)
 
   re = Regexp.compile("#{%w[spec grumlin practical_gremlin].join('[\\\/]')}[\\\\/]")
   config.define_derived_metadata(file_path: re) do |metadata|

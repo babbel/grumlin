@@ -28,7 +28,30 @@ require_relative "grumlin/translator"
 require_relative "grumlin/t"
 require_relative "grumlin/order"
 require_relative "grumlin/u"
+require_relative "grumlin/p"
 require_relative "grumlin/pop"
+require_relative "grumlin/sugar"
 
 module Grumlin
+  class Config
+    attr_accessor :url
+
+    def default_client
+      @default_client ||= Grumlin::Client.new(url)
+    end
+
+    def reset!
+      @default_client = nil
+    end
+  end
+
+  class << self
+    def configure
+      yield config
+    end
+
+    def config
+      @config ||= Config.new
+    end
+  end
 end

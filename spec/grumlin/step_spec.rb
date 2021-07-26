@@ -31,5 +31,31 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
         expect(g.E().count.toList).to eq([3])
       end
     end
+
+    context "when using elementMap" do
+      before do
+        g.addV(:test_label).property(Grumlin::T.id, 1).property("foo1", "bar").property("foo3", 3)
+         .addV(:test_label).property(Grumlin::T.id, 2).property("foo2", "bar")
+         .addV(:test_label).property(Grumlin::T.id, 3).property("foo3", 3).iterate
+      end
+
+      it "returns a map" do
+        expect(g.V().elementMap.toList).to eq([{ foo1: "bar", foo3: 3, id: 1, label: "test_label" },
+                                               { foo2: "bar", id: 2, label: "test_label" },
+                                               { foo3: 3, id: 3, label: "test_label" }])
+      end
+    end
+
+    context "when using within" do
+      before do
+        g.addV(:test_label).property(Grumlin::T.id, 1)
+         .addV(:test_label).property(Grumlin::T.id, 2)
+         .addV(:test_label).property(Grumlin::T.id, 3).iterate
+      end
+
+      it "returns a list of nodes" do
+        expect(g.V().has(Grumlin::T.id, Grumlin::P.within(1, 3)).toList).not_to be_empty
+      end
+    end
   end
 end

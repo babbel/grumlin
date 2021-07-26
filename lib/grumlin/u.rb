@@ -5,7 +5,7 @@ module Grumlin
     module U
       extend self # rubocop:disable Style/ModuleFunction
 
-      %w[V has count out values].each do |step|
+      %w[addV V has count out values unfold].each do |step|
         define_method step do |*args|
           AnonymousStep.new(step, *args)
         end

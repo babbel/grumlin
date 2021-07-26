@@ -2,7 +2,7 @@
 
 RSpec.describe "Practical Gremlin: Import data", gremlin_server: true, timeout: 60 do # rubocop:disable RSpec/DescribeClass
   let(:graphml) { File.read("spec/fixtures/air_routes/air-routes.graphml") }
-  let(:importer) { GraphMLImporter.new(client, graphml) }
+  let(:importer) { GraphMLImporter.new(graphml) }
 
   describe "#import!" do
     it "imports the dataset" do # rubocop:disable RSpec/MultipleExpectations

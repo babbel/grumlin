@@ -5,9 +5,12 @@ require "bundler/setup"
 require "grumlin"
 require "irb"
 
+Grumlin.configure do |config|
+  config.url = ENV["GREMLIN_URL"] || "ws://localhost:8182/gremlin"
+end
+
 Async do
-  client = Grumlin::Client.new("ws://localhost:8182/gremlin")
-  g = Grumlin::Traversal.new(client)
+  g = Grumlin::Traversal.new
 
   IRB.setup(nil)
   workspace = IRB::WorkSpace.new(binding)
@@ -16,5 +19,5 @@ Async do
 rescue StandardError
   raise
 ensure
-  client&.disconnect
+  Grumlin.config.default_client&.disconnect
 end

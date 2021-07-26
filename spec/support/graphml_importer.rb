@@ -7,11 +7,9 @@ class GraphMLImporter
     "double" => :to_f
   }.freeze
 
-  include Grumlin::U
-  include Grumlin::T
+  include Grumlin::Sugar
 
-  def initialize(client, graphml)
-    @client = client
+  def initialize(graphml)
     @graphml = Nokogiri::XML(graphml)
   end
 
@@ -46,8 +44,8 @@ class GraphMLImporter
         label = edge.xpath("xmlns:data[@key='labelE']").text
 
         t = t.addE(label).property(T.id, edge.attributes["id"].value.to_i)
-             .from(U.V(edge.attributes["source"].value.to_i))
-             .to(U.V(edge.attributes["target"].value.to_i))
+             .from(__.V(edge.attributes["source"].value.to_i))
+             .to(__.V(edge.attributes["target"].value.to_i))
         edge.xpath("xmlns:data[not(@key='labelE')]").each do |attribute|
           key = attribute.attributes["key"].value
           cast_method = TYPES[properties[:edge][key][0][:type]]
@@ -74,10 +72,10 @@ class GraphMLImporter
         type: prop.attributes["attr.type"].value,
         for: prop.attributes["for"].value
       }
-    end.group_by { |p| p[:for] }.transform_values { |v| v.group_by { |p| p[:id] } }.symbolize_keys # rubocop:disable Style/MultilineBlockChain
+    end.group_by { |p| p[:for] }.transform_values { |v| v.group_by { |p| p[:id] } }.symbolize_keys
   end
 
   def g
-    Grumlin::Traversal.new(@client)
+    Grumlin::Traversal.new
   end
 end
