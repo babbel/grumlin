@@ -19,14 +19,22 @@ module Grumlin
       @connected
     end
 
-    def connect
+    def connect # rubocop:disable Metrics/MethodLength
       @client = Async::WebSocket::Client.open(@endpoint)
       @connection = @client.connect(@endpoint.authority, @endpoint.path)
+      @request_queue = Async::Queue.new
       @response_queue = Async::Queue.new
 
       @response_task = @task.async do
         loop do
           @response_queue << @connection.read
+        end
+      end
+
+      @request_task = @task.async do
+        @request_queue.each do |message|
+          @connection.write(message)
+          @connection.flush
         end
       end
 
@@ -38,11 +46,13 @@ module Grumlin
     def write(message)
       raise NotConnectedError unless connected?
 
-      @connection.write(message)
-      @connection.flush
+      @request_queue << message
     end
 
     def disconnect
+      @request_task.stop
+      @request_task.wait
+
       @response_task.stop
       @response_task.wait
 
@@ -59,8 +69,10 @@ module Grumlin
       @response_queue = nil
       @client = nil
       @connection = nil
+      @request_queue = nil
       @response_queue = nil
-      @listen_task = nil
+      @request_task = nil
+      @response_task = nil
     end
   end
 end
