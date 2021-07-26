@@ -1,25 +1,7 @@
 # frozen_string_literal: true
 
 module Grumlin
-  class Client # rubocop:disable Metrics/ClassLength
-    SUCCESS = {
-      200 => :success,
-      204 => :no_content,
-      206 => :partial_content
-    }.freeze
-
-    ERRORS = {
-      499 => InvalidRequestArgumentsError,
-      500 => ServerError,
-      597 => ScriptEvaluationError,
-      599 => ServerSerializationError,
-      598 => ServerTimeoutError,
-
-      401 => ClientSideError,
-      407 => ClientSideError,
-      498 => ClientSideError
-    }.freeze
-
+  class Client
     def initialize(url, task: Async::Task.current)
       @task = task
       @transport = Transport.new(url)
@@ -44,10 +26,11 @@ module Grumlin
     # TODO: support yielding
     def write(*args)
       request_id = SecureRandom.uuid
-      queue = transport_write(to_query(request_id, args))
-      wait_for_response(request_id, queue)
-    ensure
-      @request_dispatcher.close_request(request_id)
+      request = to_query(request_id, args)
+      notification = @request_dispatcher.add_request(request).tap do
+        @transport.write(request)
+      end
+      wait_for_response(request_id, notification)
     end
 
     def inspect
@@ -58,18 +41,11 @@ module Grumlin
 
     private
 
-    def wait_for_response(request_id, queue, result: []) # rubocop:disable Metrics/MethodLength
-      queue.each do |response|
-        check_errors!(response[:status])
+    def wait_for_response(request_id, notification)
+      msg, response = notification.wait
+      return response if msg == :result
 
-        case SUCCESS[response.dig(:status, :code)]
-        when :success
-          return result + Typing.cast(response.dig(:result, :data))
-        when :partial_content then result += Typing.cast(response.dig(:result, :data))
-        when :no_content
-          return []
-        end
-      end
+      raise response
     rescue Async::Stop
       retry if ongoing_request?(request_id)
       raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
@@ -82,16 +58,6 @@ module Grumlin
       when Grumlin::Step
         bytecode_query_message(request_id, Translator.to_bytecode_query(message))
       end
-    end
-
-    def check_errors!(status)
-      if (error = ERRORS[status[:code]])
-        raise(error, status)
-      end
-
-      return unless SUCCESS[status[:code]].nil?
-
-      raise(UnknownResponseStatus, status)
     end
 
     def string_query_message(request_id, query, bindings)
@@ -127,12 +93,6 @@ module Grumlin
     def response_task(queue)
       queue.each do |response|
         @request_dispatcher.add_response(response)
-      end
-    end
-
-    def transport_write(request)
-      @request_dispatcher.add_request(request).tap do
-        @transport.write(request)
       end
     end
 
