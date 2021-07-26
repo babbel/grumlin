@@ -47,34 +47,12 @@ module Grumlin
     private
 
     def to_query(request_id, message)
-      case message.first # TODO: properly handle unknown type of message
-      when String
-        string_query_message(request_id, *message)
-      when Grumlin::Step
-        bytecode_query_message(request_id, Translator.to_bytecode_query(message))
-      end
-    end
-
-    def string_query_message(request_id, query, bindings)
-      {
-        requestId: request_id,
-        op: "eval",
-        processor: "",
-        args: {
-          gremlin: query,
-          bindings: bindings,
-          language: "gremlin-groovy"
-        }
-      }
-    end
-
-    def bytecode_query_message(request_id, bytecode)
       {
         requestId: request_id,
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: Typing.to_bytecode(bytecode),
+          gremlin: Typing.to_bytecode(Translator.to_bytecode_query(message)),
           aliases: { g: :g }
         }
       }
