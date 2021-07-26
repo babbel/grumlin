@@ -24,13 +24,18 @@ module Grumlin
     end
 
     # TODO: support yielding
-    def write(*args)
-      request_id = SecureRandom.uuid
+    def write(*args, request_id: SecureRandom.uuid)
       request = to_query(request_id, args)
-      notification = @request_dispatcher.add_request(request).tap do
-        @transport.write(request)
+      @transport.write(request)
+      begin
+        msg, response = @request_dispatcher.add_request(request).wait
+        return response.flat_map { |item| Typing.cast(item) } if msg == :result
+
+        raise response
+      rescue Async::Stop
+        retry if ongoing_request?(request_id)
+        raise UnknownRequestStoppedError, "#{request_id} is not in the ongoing requests list"
       end
-      wait_for_response(request_id, notification)
     end
 
     def inspect
@@ -40,16 +45,6 @@ module Grumlin
     alias to_s inspect
 
     private
-
-    def wait_for_response(request_id, notification)
-      msg, response = notification.wait
-      return response if msg == :result
-
-      raise response
-    rescue Async::Stop
-      retry if ongoing_request?(request_id)
-      raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
-    end
 
     def to_query(request_id, message)
       case message.first # TODO: properly handle unknown type of message

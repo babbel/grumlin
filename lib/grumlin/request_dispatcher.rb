@@ -27,6 +27,8 @@ module Grumlin
     end
 
     def add_request(request)
+      raise "ERROR" if @requests.key?(request[:requestId])
+
       Async::Notification.new.tap do |notification|
         @requests[request[:requestId]] = { result: [], notification: notification }
       end
@@ -46,8 +48,8 @@ module Grumlin
       case SUCCESS[response.dig(:status, :code)]
       when :success
         close_request(request_id)
-        request[:notification].signal([:result, request[:result] + Typing.cast(response.dig(:result, :data))])
-      when :partial_content then request[:result] += Typing.cast(response.dig(:result, :data))
+        request[:notification].signal([:result, request[:result] + [response.dig(:result, :data)]])
+      when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content
         close_request(request_id)
         request[:notification].signal([:result, []])
