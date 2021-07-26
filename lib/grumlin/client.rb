@@ -11,7 +11,11 @@ module Grumlin
     def connect
       response_queue = @transport.connect
       @request_dispatcher = RequestDispatcher.new
-      @task.async { response_task(response_queue) }
+      @task.async do
+        response_queue.each do |response|
+          @request_dispatcher.add_response(response)
+        end
+      end
     end
 
     def disconnect
@@ -24,16 +28,18 @@ module Grumlin
     end
 
     # TODO: support yielding
-    def write(*args, request_id: SecureRandom.uuid)
+    def write(*args) # rubocop:disable Metrics/MethodLength
+      request_id = SecureRandom.uuid
       request = to_query(request_id, args)
       @transport.write(request)
+      notification = @request_dispatcher.add_request(request)
       begin
-        msg, response = @request_dispatcher.add_request(request).wait
+        msg, response = notification.wait
         return response.flat_map { |item| Typing.cast(item) } if msg == :result
 
         raise response
       rescue Async::Stop
-        retry if ongoing_request?(request_id)
+        retry if @request_dispatcher.requests.key?(request_id)
         raise UnknownRequestStoppedError, "#{request_id} is not in the ongoing requests list"
       end
     end
@@ -61,16 +67,6 @@ module Grumlin
     def reset!
       @request_dispatcher = nil
       @response_queue = nil
-    end
-
-    def response_task(queue)
-      queue.each do |response|
-        @request_dispatcher.add_response(response)
-      end
-    end
-
-    def ongoing_request?(request_id)
-      @request_dispatcher.requests.key?(request_id)
     end
   end
 end
