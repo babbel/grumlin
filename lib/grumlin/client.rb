@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
 module Grumlin
-  class Client
-    extend Forwardable
+  class Client # rubocop:disable Metrics/ClassLength
+    attr_reader :requests
 
     SUCCESS = {
       200 => :success,
@@ -22,25 +22,32 @@ module Grumlin
       498 => ClientSideError
     }.freeze
 
-    def initialize(url, autoconnect: true)
-      @url = url
+    def initialize(url, task: Async::Task.current)
+      @task = task
       @transport = Transport::Async.new(url)
-      connect if autoconnect
+      reset!
     end
 
-    def_delegators :@transport, :connect, :disconnect, :requests
+    def connect
+      @transport.connect
+    end
+
+    def disconnect
+      @transport.disconnect
+      reset!
+    end
 
     # TODO: support yielding
-    def submit(*args)
+    def write(*args)
       request_id = SecureRandom.uuid
-      queue = @transport.submit(to_query(request_id, args))
+      queue = @transport.write(to_query(request_id, args))
       wait_for_response(request_id, queue)
     ensure
       @transport.close_request(request_id)
     end
 
     def inspect
-      "<#{self.class} @url=#{@url}>"
+      "<#{self.class} url=#{@transport.url}>"
     end
 
     alias to_s inspect
@@ -116,6 +123,10 @@ module Grumlin
           aliases: { g: :g }
         }
       }
+    end
+
+    def reset!
+      @requests = {}
     end
   end
 end

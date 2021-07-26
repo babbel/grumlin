@@ -15,11 +15,11 @@ module Grumlin
     end
 
     def toList # rubocop:disable Naming/MethodName
-      @toList ||= @client.submit(*steps) # rubocop:disable Naming/VariableName
+      @toList ||= @client.write(*steps) # rubocop:disable Naming/VariableName
     end
 
     def iterate
-      @client.submit(*(steps + [nil]))
+      @client.write(*(steps + [nil]))
     end
 
     private

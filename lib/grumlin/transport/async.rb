@@ -47,7 +47,7 @@ module Grumlin
       end
 
       # Raw message
-      def submit(message)
+      def write(message)
         raise NotConnectedError unless connected?
 
         uuid = message[:requestId]

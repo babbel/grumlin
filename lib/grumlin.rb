@@ -13,6 +13,7 @@ require_relative "grumlin/version"
 require_relative "grumlin/exceptions"
 
 require_relative "grumlin/transport/async"
+require_relative "grumlin/transport/async2"
 
 require_relative "grumlin/vertex"
 require_relative "grumlin/edge"
@@ -37,7 +38,7 @@ module Grumlin
     attr_accessor :url
 
     def default_client
-      @default_client ||= Grumlin::Client.new(url)
+      @default_client ||= Grumlin::Client.new(url).tap(&:connect)
     end
 
     def reset!

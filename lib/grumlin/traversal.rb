@@ -4,12 +4,8 @@ module Grumlin
   class Traversal
     attr_reader :connection
 
-    def initialize(client_or_url = Grumlin.config.default_client)
-      @client = if client_or_url.is_a?(String)
-                  Grumlin::Client.new(client_or_url)
-                else
-                  client_or_url
-                end
+    def initialize(client = Grumlin.config.default_client)
+      @client = client
     end
 
     # TODO: add other start steps
