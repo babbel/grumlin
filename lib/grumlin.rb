@@ -12,7 +12,7 @@ require "async/websocket/client"
 require_relative "grumlin/version"
 require_relative "grumlin/exceptions"
 
-require_relative "grumlin/transport/async"
+require_relative "grumlin/transport"
 
 require_relative "grumlin/vertex"
 require_relative "grumlin/edge"

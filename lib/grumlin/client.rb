@@ -24,7 +24,7 @@ module Grumlin
 
     def initialize(url, task: Async::Task.current)
       @task = task
-      @transport = Transport::Async.new(url)
+      @transport = Transport.new(url)
       reset!
     end
 
@@ -67,7 +67,7 @@ module Grumlin
           return []
         end
       end
-    rescue ::Async::Stop
+    rescue Async::Stop
       retry if ongoing_request?(request_id)
       raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
     end
