@@ -33,10 +33,12 @@ module Grumlin
       request = to_query(request_id, args)
       queue = @request_dispatcher.add_request(request)
       @transport.write(request)
-      queue.each do |msg, response|
-        return response.flat_map { |item| Typing.cast(item) } if msg == :result
+      begin
+        queue.each do |msg, response| # rubocop:disable Lint/UnreachableLoop
+          return response.flat_map { |item| Typing.cast(item) } if msg == :result
 
-        raise response
+          raise response
+        end
       rescue Async::Stop
         retry if @request_dispatcher.requests.key?(request_id)
         raise UnknownRequestStoppedError, "#{request_id} is not in the ongoing requests list"

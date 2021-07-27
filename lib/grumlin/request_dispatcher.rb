@@ -46,16 +46,16 @@ module Grumlin
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
-        request[:queue] << [:result, request[:result] + [response.dig(:result, :data)]]
         close_request(request_id)
+        request[:queue] << [:result, request[:result] + [response.dig(:result, :data)]]
       when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content
-        request[:queue] << [:result, []]
         close_request(request_id)
+        request[:queue] << [:result, []]
       end
     rescue StandardError => e
-      request[:queue] << [:error, e]
       close_request(request_id)
+      request[:queue] << [:error, e]
     end
 
     def close_request(request_id)
