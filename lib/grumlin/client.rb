@@ -31,10 +31,9 @@ module Grumlin
     def write(*args) # rubocop:disable Metrics/MethodLength
       request_id = SecureRandom.uuid
       request = to_query(request_id, args)
-      notification = @request_dispatcher.add_request(request)
+      queue = @request_dispatcher.add_request(request)
       @transport.write(request)
-      begin
-        msg, response = notification.wait
+      queue.each do |msg, response|
         return response.flat_map { |item| Typing.cast(item) } if msg == :result
 
         raise response

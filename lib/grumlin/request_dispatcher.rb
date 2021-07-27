@@ -29,12 +29,12 @@ module Grumlin
     def add_request(request)
       raise "ERROR" if @requests.key?(request[:requestId])
 
-      Async::Notification.new.tap do |notification|
-        @requests[request[:requestId]] = { result: [], notification: notification }
+      Async::Queue.new.tap do |queue|
+        @requests[request[:requestId]] = { request: request, result: [], queue: queue }
       end
     end
 
-    # builds a response object, when it's ready sends it to the client via a notification
+    # builds a response object, when it's ready sends it to the client via a queue
     # TODO: sometimes response does not include requestID, no idea how to handle it so far.
     def add_response(response) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       request_id = response[:requestId]
@@ -46,15 +46,15 @@ module Grumlin
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
-        request[:notification].signal([:result, request[:result] + [response.dig(:result, :data)]])
+        request[:queue] << [:result, request[:result] + [response.dig(:result, :data)]]
         close_request(request_id)
       when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content
-        request[:notification].signal([:result, []])
+        request[:queue] << [:result, []]
         close_request(request_id)
       end
     rescue StandardError => e
-      request[:notification].signal([:error, e])
+      request[:queue] << [:error, e]
       close_request(request_id)
     end
 
