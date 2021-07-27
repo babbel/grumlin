@@ -46,16 +46,16 @@ module Grumlin
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
-        close_request(request_id)
         request[:notification].signal([:result, request[:result] + [response.dig(:result, :data)]])
+        close_request(request_id)
       when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content
-        close_request(request_id)
         request[:notification].signal([:result, []])
+        close_request(request_id)
       end
     rescue StandardError => e
-      close_request(request_id)
       request[:notification].signal([:error, e])
+      close_request(request_id)
     end
 
     def close_request(request_id)
