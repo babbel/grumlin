@@ -12,8 +12,7 @@ module Grumlin
         let(:g) { Grumlin::Traversal.new }
 
         after do
-          expect(Grumlin.config.default_client.requests).to be_empty
-          Grumlin.config.default_client.disconnect
+          Grumlin.config.default_pool.close
           Grumlin.config.reset!
         end
       end

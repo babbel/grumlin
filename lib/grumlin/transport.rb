@@ -45,12 +45,14 @@ module Grumlin
     end
 
     def write(message)
-      raise NotConnectedError unless connected?
+      return unless connected?
 
       @request_queue << message
     end
 
     def disconnect
+      return unless connected?
+
       @request_queue << nil
       @request_task.wait
 

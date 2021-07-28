@@ -5,6 +5,8 @@ require "json"
 
 require "async"
 require "async/pool"
+require "async/pool/resource"
+require "async/pool/controller"
 require "async/queue"
 require "async/barrier"
 require "async/http/endpoint"
@@ -36,14 +38,19 @@ require_relative "grumlin/sugar"
 
 module Grumlin
   class Config
-    attr_accessor :url
+    attr_accessor :url, :pool_size, :client_concurrency
 
-    def default_client
-      @default_client ||= Grumlin::Client.new(url).tap(&:connect)
+    def initialize
+      @pool_size = 10
+      @client_concurrency = 5
+    end
+
+    def default_pool
+      @default_pool ||= Async::Pool::Controller.new(Grumlin::Client::PoolResource, limit: pool_size)
     end
 
     def reset!
-      @default_client = nil
+      @default_pool = nil
     end
   end
 
@@ -54,6 +61,12 @@ module Grumlin
 
     def config
       @config ||= Config.new
+    end
+
+    def with_client
+      config.default_pool.acquire do |resource|
+        yield resource.client
+      end
     end
   end
 end

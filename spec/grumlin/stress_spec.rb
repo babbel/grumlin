@@ -60,8 +60,6 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
       end
 
       barrier.wait
-
-      expect(Grumlin.config.default_client.requests).to be_empty
     end
   end
 
@@ -80,8 +78,6 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
       reactor.sleep(duration)
       barrier.tasks.each(&:stop)
       barrier.wait
-
-      expect(Grumlin.config.default_client.requests).to be_empty
     end
   end
 
@@ -97,8 +93,6 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
 
       barrier.tasks.each(&:stop)
       barrier.wait
-
-      expect(Grumlin.config.default_client.requests).to be_empty
     end
   end
 end

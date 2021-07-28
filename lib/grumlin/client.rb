@@ -2,6 +2,20 @@
 
 module Grumlin
   class Client
+    class PoolResource < Async::Pool::Resource
+      attr_reader :client
+
+      def initialize
+        super(Grumlin.config.client_concurrency)
+
+        @client = Grumlin::Client.new(Grumlin.config.url).tap(&:connect)
+      end
+
+      def close
+        @client.disconnect
+      end
+    end
+
     def initialize(url, parent: Async::Task.current)
       @parent = parent
       @transport = Transport.new(url)
@@ -20,13 +34,7 @@ module Grumlin
 
     def disconnect
       @transport.disconnect
-      raise ResourceLeakError, "Request list is not empty: #{requests}" if requests.any?
-
       reset!
-    end
-
-    def requests
-      @request_dispatcher.requests
     end
 
     # TODO: support yielding
