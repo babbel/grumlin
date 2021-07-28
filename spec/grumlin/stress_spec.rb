@@ -42,7 +42,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
       -> { error_query },
       -> { paginated_query }
     ].sample.call
-    Async::Task.current.sleep(Float(rand(10)) / 100) if rand(3) == 0
+    reactor.sleep(Float(rand(10)) / 100) if rand(3) == 0
   end
 
   context "when number of iterations is limited" do
@@ -69,7 +69,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
     let(:duration) { 10 }
 
     it "succeeds", timeout: 20 do
-      barrier = Async::Barrier.new
+      barrier = Async::Barrier.new(parent: reactor)
 
       concurrency.times do
         barrier.async do
@@ -77,7 +77,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
         end
       end
 
-      Async::Task.current.sleep(duration)
+      reactor.sleep(duration)
       barrier.tasks.each(&:stop)
       barrier.wait
 
