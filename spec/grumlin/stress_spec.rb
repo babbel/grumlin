@@ -66,12 +66,12 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
   end
 
   context "when time is limited" do
-    let(:duration) { 3 }
+    let(:duration) { 10 }
 
     it "succeeds", timeout: 20 do
       barrier = Async::Barrier.new
 
-      Array.new(concurrency) do |_id|
+      concurrency.times do
         barrier.async do
           random_query
         end
@@ -89,7 +89,7 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
     it "succeeds" do
       barrier = Async::Barrier.new
 
-      Array.new(1) do |_id|
+      concurrency.times do
         barrier.async do
           paginated_query
         end
