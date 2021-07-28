@@ -2,8 +2,8 @@
 
 module Grumlin
   class Client
-    def initialize(url, task: Async::Task.current)
-      @task = task
+    def initialize(url, parent: Async::Task.current)
+      @parent = parent
       @transport = Transport.new(url)
       reset!
     end
@@ -11,7 +11,7 @@ module Grumlin
     def connect
       response_queue = @transport.connect
       @request_dispatcher = RequestDispatcher.new
-      @task.async do
+      @parent.async do
         response_queue.each do |response|
           @request_dispatcher.add_response(response)
         end
@@ -20,6 +20,8 @@ module Grumlin
 
     def disconnect
       @transport.disconnect
+      raise ResourceLeakError, "Request list is not empty: #{requests}" if requests.any?
+
       reset!
     end
 
@@ -69,7 +71,6 @@ module Grumlin
 
     def reset!
       @request_dispatcher = nil
-      @response_queue = nil
     end
   end
 end

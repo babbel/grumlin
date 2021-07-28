@@ -4,10 +4,11 @@ module Grumlin
   class Transport
     # A transport based on https://github.com/socketry/async
     # and https://github.com/socketry/async-websocket
-    # Version 2
-    def initialize(url, task: Async::Task.current)
+    def initialize(url, parent: Async::Task.current)
       @endpoint = Async::HTTP::Endpoint.parse(url)
-      @task = task
+      @parent = parent
+      @request_queue = Async::Queue.new
+      @response_queue = Async::Queue.new
       reset!
     end
 
@@ -19,13 +20,10 @@ module Grumlin
       @connected
     end
 
-    def connect # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
-      @client = Async::WebSocket::Client.open(@endpoint)
-      @connection = @client.connect(@endpoint.authority, @endpoint.path)
-      @request_queue = Async::Queue.new
-      @response_queue = Async::Queue.new
+    def connect # rubocop:disable Metrics/MethodLength
+      @connection = Async::WebSocket::Client.connect(@endpoint)
 
-      @response_task = @task.async do
+      @response_task = @parent.async do
         loop do
           data = @connection.read
           @response_queue << data
@@ -34,7 +32,7 @@ module Grumlin
         @response_queue << nil
       end
 
-      @request_task = @task.async do
+      @request_task = @parent.async do
         @request_queue.each do |message|
           @connection.write(message)
           @connection.flush
@@ -60,7 +58,6 @@ module Grumlin
       @response_task.wait
 
       @connection.close
-      @client.close
 
       reset!
     end
@@ -69,11 +66,7 @@ module Grumlin
 
     def reset!
       @connected = false
-      @response_queue = nil
-      @client = nil
       @connection = nil
-      @request_queue = nil
-      @response_queue = nil
       @response_task = nil
       @request_task = nil
     end
