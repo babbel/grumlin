@@ -66,24 +66,36 @@ RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/De
   end
 
   context "when time is limited" do
-    let(:duration) { 10 }
+    let(:duration) { 3 }
 
     it "succeeds", timeout: 20 do
-      working = true
-
       barrier = Async::Barrier.new
 
       Array.new(concurrency) do |_id|
         barrier.async do
-          random_query while working
+          random_query
         end
       end
 
       Async::Task.current.sleep(duration)
-      working = false
+      barrier.tasks.each(&:stop)
+      barrier.wait
+
+      expect(Grumlin.config.default_client.requests).to be_empty
+    end
+  end
+
+  context "when stopping during a long running query" do
+    it "succeeds" do
+      barrier = Async::Barrier.new
+
+      Array.new(1) do |_id|
+        barrier.async do
+          paginated_query
+        end
+      end
 
       barrier.tasks.each(&:stop)
-
       barrier.wait
 
       expect(Grumlin.config.default_client.requests).to be_empty

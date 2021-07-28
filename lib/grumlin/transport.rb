@@ -19,7 +19,7 @@ module Grumlin
       @connected
     end
 
-    def connect # rubocop:disable Metrics/MethodLength
+    def connect # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
       @client = Async::WebSocket::Client.open(@endpoint)
       @connection = @client.connect(@endpoint.authority, @endpoint.path)
       @request_queue = Async::Queue.new
@@ -27,8 +27,11 @@ module Grumlin
 
       @response_task = @task.async do
         loop do
-          @response_queue << @connection.read
+          data = @connection.read
+          @response_queue << data
         end
+      rescue Async::Stop
+        @response_queue << nil
       end
 
       @request_task = @task.async do
@@ -50,7 +53,7 @@ module Grumlin
     end
 
     def disconnect
-      @request_task.stop
+      @request_queue << nil
       @request_task.wait
 
       @response_task.stop
@@ -71,8 +74,8 @@ module Grumlin
       @connection = nil
       @request_queue = nil
       @response_queue = nil
-      @request_task = nil
       @response_task = nil
+      @request_task = nil
     end
   end
 end

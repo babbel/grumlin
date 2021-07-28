@@ -38,7 +38,7 @@ module Grumlin
     # TODO: sometimes response does not include requestID, no idea how to handle it so far.
     def add_response(response) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       request_id = response[:requestId]
-      raise "ERROR" unless @requests.key?(request_id)
+      raise "ERROR" unless ongoing_request?(request_id)
 
       request = @requests[request_id]
 
@@ -46,22 +46,27 @@ module Grumlin
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
-        close_request(request_id)
         request[:queue] << [:result, request[:result] + [response.dig(:result, :data)]]
+        close_request(request_id)
       when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content
-        close_request(request_id)
         request[:queue] << [:result, []]
+        close_request(request_id)
       end
     rescue StandardError => e
-      close_request(request_id)
       request[:queue] << [:error, e]
+      close_request(request_id)
     end
 
     def close_request(request_id)
-      raise "ERROR" unless @requests.key?(request_id)
+      raise "ERROR" unless ongoing_request?(request_id)
 
-      @requests.delete(request_id)
+      request = @requests.delete(request_id)
+      request[:queue] << nil
+    end
+
+    def ongoing_request?(request_id)
+      @requests.key?(request_id)
     end
 
     private
