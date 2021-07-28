@@ -12,7 +12,7 @@ require "async/websocket/client"
 require_relative "grumlin/version"
 require_relative "grumlin/exceptions"
 
-require_relative "grumlin/transport/async"
+require_relative "grumlin/transport"
 
 require_relative "grumlin/vertex"
 require_relative "grumlin/edge"
@@ -20,6 +20,7 @@ require_relative "grumlin/path"
 require_relative "grumlin/typing"
 require_relative "grumlin/client"
 require_relative "grumlin/traversal"
+require_relative "grumlin/request_dispatcher"
 
 require_relative "grumlin/anonymous_step"
 require_relative "grumlin/step"
@@ -37,7 +38,7 @@ module Grumlin
     attr_accessor :url
 
     def default_client
-      @default_client ||= Grumlin::Client.new(url)
+      @default_client ||= Grumlin::Client.new(url).tap(&:connect)
     end
 
     def reset!
