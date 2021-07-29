@@ -4,14 +4,14 @@ module Grumlin
   class Traversal
     attr_reader :connection
 
-    def initialize(client = Grumlin.config.default_client)
-      @client = client
+    def initialize(pool = Grumlin.config.default_pool)
+      @pool = pool
     end
 
     # TODO: add other start steps
     %w[addV addE V E].each do |step|
       define_method step do |*args|
-        Step.new(@client, step, *args)
+        Step.new(@pool, step, *args)
       end
     end
 

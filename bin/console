@@ -19,5 +19,5 @@ Async do
 rescue StandardError
   raise
 ensure
-  Grumlin.config.default_client&.disconnect
+  Grumlin.config.default_pool.close
 end
