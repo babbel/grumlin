@@ -40,9 +40,10 @@ module Grumlin
   class Config
     attr_accessor :url, :pool_size, :client_concurrency
 
+    # For some reason, client_concurrency must be greather pool_size
     def initialize
       @pool_size = 10
-      @client_concurrency = 5
+      @client_concurrency = 20
     end
 
     def default_pool
@@ -61,12 +62,6 @@ module Grumlin
 
     def config
       @config ||= Config.new
-    end
-
-    def with_client
-      config.default_pool.acquire do |resource|
-        yield resource.client
-      end
     end
   end
 end

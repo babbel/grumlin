@@ -15,14 +15,14 @@ module Grumlin
     end
 
     def toList # rubocop:disable Naming/MethodName
-      @pool.acquire do |res|
-        res.client.write(*steps)
+      @pool.acquire do |client|
+        client.write(*steps)
       end
     end
 
     def iterate
-      @pool.acquire do |res|
-        res.client.write(*(steps + [nil]))
+      @pool.acquire do |client|
+        client.write(*(steps + [nil]))
       end
     end
 

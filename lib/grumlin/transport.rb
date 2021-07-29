@@ -21,6 +21,8 @@ module Grumlin
     end
 
     def connect # rubocop:disable Metrics/MethodLength
+      raise AlreadyConnectedError if connected?
+
       @connection = Async::WebSocket::Client.connect(@endpoint)
 
       @response_task = @parent.async do
@@ -45,13 +47,13 @@ module Grumlin
     end
 
     def write(message)
-      return unless connected?
+      raise NotConnectedError unless connected?
 
       @request_queue << message
     end
 
-    def disconnect
-      return unless connected?
+    def close
+      raise NotConnectedError unless connected?
 
       @request_queue << nil
       @request_task.wait

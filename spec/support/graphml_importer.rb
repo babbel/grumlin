@@ -13,6 +13,7 @@ class GraphMLImporter
     @graphml = Nokogiri::XML(graphml)
   end
 
+  # TODO: make it concurrent
   def import!
     import_nodes!
     import_edges!
