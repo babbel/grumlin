@@ -32,9 +32,6 @@ module Grumlin
         end
       rescue Async::Stop
         @response_channel.close
-      rescue EOFError # Server disconnected
-        print("!!!")
-        raise
       end
 
       @request_task = @parent.async do

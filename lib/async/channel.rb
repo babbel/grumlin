@@ -2,27 +2,36 @@
 
 module Async
   # Channel is a wrapper around Async::Queue that provides
-  # a protocol and handy tools for passing data, exceptions and closing
+  # a protocol and handy tools for passing data, exceptions and closing.
+  # It is designed to be used with only one publisher and one subscriber
   class Channel
+    class ChannelClosedError < StandardError; end
+
     def initialize
       @queue = Async::Queue.new
       @closed = false
     end
 
-    # Methods for publishers
-    def <<(data)
-      raise "Cannot send to a closed channel" if @closed # TODO: use a proper exception
+    def closed?
+      @closed
+    end
 
-      @queue << [:data, data]
+    # Methods for a publisher
+    def <<(payload)
+      raise(ChannelClosedError, "Cannot send to a closed channel") if @closed
+
+      @queue << [:payload, payload]
     end
 
     def exception(exception)
-      raise "Cannot send to a closed channel" if @closed # TODO: use a proper exception
+      raise(ChannelClosedError, "Cannot send to a closed channel") if closed?
 
       @queue << [:exception, exception]
     end
 
     def close
+      raise(ChannelClosedError, "Cannot close a closed channel") if closed?
+
       @queue << [:close]
       @closed = true
     end
@@ -34,12 +43,14 @@ module Async
       end
     end
 
-    def each
+    def each # rubocop:disable Metrics/MethodLength
+      raise(ChannelClosedError, "Cannot receive from a closed channel") if closed?
+
       @queue.each do |type, payload|
         case type
         when :exception
           raise payload
-        when :data
+        when :payload
           yield(payload)
         when :close
           break

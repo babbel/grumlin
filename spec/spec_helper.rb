@@ -36,6 +36,8 @@ RSpec.configure do |config|
     c.syntax = :expect
   end
 
+  config.include_context(Async::RSpec::Reactor, async: true)
+
   config.include_context(Async::RSpec::Reactor, gremlin_server: true)
   config.include_context(Grumlin::Test::RSpec::GremlinContext, gremlin_server: true)
   config.include_context(Grumlin::Test::RSpec::DBCleanerContext, gremlin_server: true)
