@@ -59,11 +59,11 @@ module Grumlin
     def write(*args)
       request_id = SecureRandom.uuid
       request = to_query(request_id, args)
-      queue = @request_dispatcher.add_request(request)
+      channel = @request_dispatcher.add_request(request)
       @transport.write(request)
 
       begin
-        queue.dequeue.flat_map { |item| Typing.cast(item) }
+        channel.dequeue.flat_map { |item| Typing.cast(item) }
       rescue Async::Stop
         retry if @request_dispatcher.ongoing_request?(request_id)
         raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
