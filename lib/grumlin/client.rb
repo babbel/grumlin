@@ -41,6 +41,8 @@ module Grumlin
         response_channel.each do |response|
           @request_dispatcher.add_response(response)
         end
+      rescue StandardError
+        close
       end
     end
 

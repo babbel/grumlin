@@ -51,7 +51,7 @@ module Async
         when :exception
           raise payload
         when :payload
-          yield(payload)
+          yield payload
         when :close
           break
         end
