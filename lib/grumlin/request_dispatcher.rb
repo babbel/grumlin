@@ -29,12 +29,12 @@ module Grumlin
     def add_request(request)
       raise "ERROR" if @requests.key?(request[:requestId])
 
-      Async::Queue.new.tap do |queue|
-        @requests[request[:requestId]] = { request: request, result: [], queue: queue }
+      Async::Channel.new.tap do |channel|
+        @requests[request[:requestId]] = { request: request, result: [], channel: channel }
       end
     end
 
-    # builds a response object, when it's ready sends it to the client via a queue
+    # builds a response object, when it's ready sends it to the client via a channel
     # TODO: sometimes response does not include requestID, no idea how to handle it so far.
     def add_response(response) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       request_id = response[:requestId]
@@ -46,15 +46,15 @@ module Grumlin
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
-        request[:queue] << [:result, request[:result] + [response.dig(:result, :data)]]
+        request[:channel] << request[:result] + [response.dig(:result, :data)]
         close_request(request_id)
       when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content
-        request[:queue] << [:result, []]
+        request[:channel] << []
         close_request(request_id)
       end
     rescue StandardError => e
-      request[:queue] << [:error, e]
+      request[:channel].exception(e)
       close_request(request_id)
     end
 
@@ -62,7 +62,7 @@ module Grumlin
       raise "ERROR" unless ongoing_request?(request_id)
 
       request = @requests.delete(request_id)
-      request[:queue] << nil
+      request[:channel].close
     end
 
     def ongoing_request?(request_id)

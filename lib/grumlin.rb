@@ -12,6 +12,8 @@ require "async/barrier"
 require "async/http/endpoint"
 require "async/websocket/client"
 
+require_relative "async/channel"
+
 require_relative "grumlin/version"
 require_relative "grumlin/exceptions"
 
