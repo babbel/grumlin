@@ -29,7 +29,7 @@ module Grumlin
     def add_request(request)
       raise "ERROR" if @requests.key?(request[:requestId])
 
-      Async::Queue.new.tap do |queue|
+      Async::Channel.new.tap do |queue|
         @requests[request[:requestId]] = { request: request, result: [], queue: queue }
       end
     end
@@ -46,15 +46,15 @@ module Grumlin
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
-        request[:queue] << [:result, request[:result] + [response.dig(:result, :data)]]
+        request[:queue] << request[:result] + [response.dig(:result, :data)]
         close_request(request_id)
       when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content
-        request[:queue] << [:result, []]
+        request[:queue] << []
         close_request(request_id)
       end
     rescue StandardError => e
-      request[:queue] << [:error, e]
+      request[:queue].exception(e)
       close_request(request_id)
     end
 
@@ -62,7 +62,7 @@ module Grumlin
       raise "ERROR" unless ongoing_request?(request_id)
 
       request = @requests.delete(request_id)
-      request[:queue] << nil
+      request[:queue].close
     end
 
     def ongoing_request?(request_id)

@@ -7,8 +7,8 @@ module Grumlin
     def initialize(url, parent: Async::Task.current)
       @endpoint = Async::HTTP::Endpoint.parse(url)
       @parent = parent
-      @request_queue = Async::Queue.new
-      @response_queue = Async::Queue.new
+      @request_queue = Async::Channel.new
+      @response_queue = Async::Channel.new
       reset!
     end
 
@@ -31,7 +31,10 @@ module Grumlin
           @response_queue << data
         end
       rescue Async::Stop
-        @response_queue << nil
+        @response_queue.close
+      rescue EOFError # Server disconnected
+        print("!!!")
+        raise
       end
 
       @request_task = @parent.async do
@@ -55,7 +58,7 @@ module Grumlin
     def close
       raise NotConnectedError unless connected?
 
-      @request_queue << nil
+      @request_queue.close
       @request_task.wait
 
       @response_task.stop
