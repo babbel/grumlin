@@ -20,7 +20,7 @@ module Grumlin
       end
 
       def closed?
-        connected?
+        !connected?
       end
 
       def reusable?
