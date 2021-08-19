@@ -36,7 +36,7 @@ module Grumlin
     end
 
     def connect
-      @transport = Transport.new(@url, parent: @parent, **@client_options)
+      @transport = build_transport
       response_channel = @transport.connect
       @request_dispatcher = RequestDispatcher.new
       @parent.async do
@@ -99,6 +99,10 @@ module Grumlin
     def reset!
       @request_dispatcher = nil
       @transport = nil
+    end
+
+    def build_transport
+      Transport.new(@url, parent: @parent, **@client_options)
     end
   end
 end
