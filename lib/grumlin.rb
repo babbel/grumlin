@@ -40,12 +40,13 @@ require_relative "grumlin/sugar"
 
 module Grumlin
   class Config
-    attr_accessor :url, :pool_size, :client_concurrency
+    attr_accessor :url, :pool_size, :client_concurrency, :client_factory
 
     # For some reason, client_concurrency must be greater than pool_size
     def initialize
       @pool_size = 10
       @client_concurrency = 20
+      @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent: parent) }
     end
 
     def default_pool

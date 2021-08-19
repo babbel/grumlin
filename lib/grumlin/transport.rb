@@ -4,26 +4,26 @@ module Grumlin
   class Transport
     # A transport based on https://github.com/socketry/async
     # and https://github.com/socketry/async-websocket
-    def initialize(url, parent: Async::Task.current)
-      @endpoint = Async::HTTP::Endpoint.parse(url)
+
+    attr_reader :url
+
+    def initialize(url, parent: Async::Task.current, **client_options)
+      @url = url
       @parent = parent
+      @client_options = client_options
       @request_channel = Async::Channel.new
       @response_channel = Async::Channel.new
       reset!
-    end
-
-    def url
-      @endpoint.url
     end
 
     def connected?
       @connected
     end
 
-    def connect # rubocop:disable Metrics/MethodLength
+    def connect # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
       raise AlreadyConnectedError if connected?
 
-      @connection = Async::WebSocket::Client.connect(@endpoint)
+      @connection = Async::WebSocket::Client.connect(Async::HTTP::Endpoint.parse(@url), **@client_options)
 
       @response_task = @parent.async do
         loop do

@@ -6,12 +6,13 @@ module Grumlin
       attr_reader :client
 
       def self.call
-        new(Grumlin.config.url, concurrency: Grumlin.config.client_concurrency)
+        config = Grumlin.config
+        new(config.url, client_factory: config.client_factory, concurrency: config.client_concurrency)
       end
 
-      def initialize(url, concurrency: 1, parent: Async::Task.current)
+      def initialize(url, client_factory:, concurrency: 1, parent: Async::Task.current)
         super(concurrency)
-        @client = Grumlin::Client.new(url, parent: parent).tap(&:connect)
+        @client = client_factory.call(url, parent).tap(&:connect)
       end
 
       def closed?
@@ -27,9 +28,9 @@ module Grumlin
       end
     end
 
-    def initialize(url, parent: Async::Task.current)
+    def initialize(url, parent: Async::Task.current, **client_options)
       @parent = parent
-      @transport = Transport.new(url)
+      @transport = Transport.new(url, parent: parent, **client_options)
       reset!
     end
 
