@@ -41,6 +41,8 @@ module Grumlin
           @connection.write(message)
           @connection.flush
         end
+      rescue StandardError => e
+        @response_channel.exception(e)
       end
 
       @connected = true
