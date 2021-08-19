@@ -2,29 +2,28 @@
 
 module Grumlin
   class Client
-    class PoolResource < self
-      attr :concurrency, :count
+    class PoolResource < Async::Pool::Resource
+      attr_reader :client
 
       def self.call
-        new(Grumlin.config.url, concurrency: Grumlin.config.client_concurrency).tap(&:connect)
+        new(Grumlin.config.url, concurrency: Grumlin.config.client_concurrency)
       end
 
       def initialize(url, concurrency: 1, parent: Async::Task.current)
-        super(url, parent: parent)
-        @concurrency = concurrency
-        @count = 0
-      end
-
-      def viable?
-        connected?
+        super(concurrency)
+        @client = Grumlin::Client.new(url, parent: parent).tap(&:connect)
       end
 
       def closed?
-        !connected?
+        !@client.connected?
       end
 
-      def reusable?
-        true
+      def close
+        @client.close
+      end
+
+      def write(*args)
+        @client.write(*args)
       end
     end
 
