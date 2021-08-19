@@ -42,7 +42,7 @@ module Grumlin
   class Config
     attr_accessor :url, :pool_size, :client_concurrency
 
-    # For some reason, client_concurrency must be greather pool_size
+    # For some reason, client_concurrency must be greater than pool_size
     def initialize
       @pool_size = 10
       @client_concurrency = 20

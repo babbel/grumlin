@@ -32,6 +32,8 @@ module Grumlin
         end
       rescue Async::Stop
         @response_channel.close
+      rescue StandardError => e
+        @response_channel.exception(e)
       end
 
       @request_task = @parent.async do
@@ -39,6 +41,8 @@ module Grumlin
           @connection.write(message)
           @connection.flush
         end
+      rescue StandardError => e
+        @response_channel.exception(e)
       end
 
       @connected = true
@@ -52,8 +56,8 @@ module Grumlin
       @request_channel << message
     end
 
-    def close
-      raise NotConnectedError unless connected?
+    def close # rubocop:disable Metrics/MethodLength
+      return unless connected?
 
       @request_channel.close
       @request_task.wait
@@ -61,7 +65,11 @@ module Grumlin
       @response_task.stop
       @response_task.wait
 
-      @connection.close
+      begin
+        @connection.close
+      rescue Errno::EPIPE
+        nil
+      end
 
       reset!
     end

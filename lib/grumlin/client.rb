@@ -20,7 +20,7 @@ module Grumlin
       end
 
       def closed?
-        connected?
+        !connected?
       end
 
       def reusable?
@@ -41,6 +41,8 @@ module Grumlin
         response_channel.each do |response|
           @request_dispatcher.add_response(response)
         end
+      rescue StandardError
+        close
       end
     end
 
@@ -66,7 +68,7 @@ module Grumlin
         channel.dequeue.flat_map { |item| Typing.cast(item) }
       rescue Async::Stop
         retry if @request_dispatcher.ongoing_request?(request_id)
-        raise UnknownRequestStopped, "#{request_id} is not in the ongoing requests list"
+        raise Grumlin::UnknownRequestStoppedError, "#{request_id} is not in the ongoing requests list"
       end
     end
 
