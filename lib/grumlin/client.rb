@@ -29,12 +29,14 @@ module Grumlin
     end
 
     def initialize(url, parent: Async::Task.current, **client_options)
+      @url = url
+      @client_options = client_options
       @parent = parent
-      @transport = Transport.new(url, parent: parent, **client_options)
       reset!
     end
 
     def connect
+      @transport = Transport.new(@url, parent: @parent, **@client_options)
       response_channel = @transport.connect
       @request_dispatcher = RequestDispatcher.new
       @parent.async do
@@ -54,11 +56,13 @@ module Grumlin
     end
 
     def connected?
-      @transport.connected?
+      @transport&.connected? || false
     end
 
     # TODO: support yielding
-    def write(*args)
+    def write(*args) # rubocop:disable Metrics/MethodLength
+      raise NotConnectedError unless connected?
+
       request_id = SecureRandom.uuid
       request = to_query(request_id, args)
       channel = @request_dispatcher.add_request(request)
@@ -73,7 +77,7 @@ module Grumlin
     end
 
     def inspect
-      "<#{self.class} url=#{@transport.url}>"
+      "<#{self.class} url=#{@url} connected=#{connected?}>"
     end
 
     alias to_s inspect
@@ -94,6 +98,7 @@ module Grumlin
 
     def reset!
       @request_dispatcher = nil
+      @transport = nil
     end
   end
 end
