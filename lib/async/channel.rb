@@ -5,7 +5,9 @@ module Async
   # a protocol and handy tools for passing data, exceptions and closing.
   # It is designed to be used with only one publisher and one subscriber
   class Channel
-    class ChannelClosedError < StandardError; end
+    class ChannelError < StandardError; end
+
+    class ChannelClosedError < ChannelError; end
 
     def initialize
       @queue = Async::Queue.new
@@ -49,6 +51,7 @@ module Async
       @queue.each do |type, payload|
         case type
         when :exception
+          payload.set_backtrace(caller + (payload.backtrace || [])) # A hack to preserve full backtrace
           raise payload
         when :payload
           yield payload

@@ -22,9 +22,9 @@ RSpec.describe Async::Channel, async: true do
 
   describe "#exception" do
     context "when the channel is not closed" do
-      it "raises the exception on dequeue" do
-        channel.exception(StandardError.new)
-        expect { channel.dequeue }.to raise_error(StandardError)
+      it "raises ExceptionReceivedError on #dequeue" do
+        channel.exception(Grumlin::Error.new)
+        expect { channel.dequeue }.to raise_error(Grumlin::Error)
       end
     end
 
