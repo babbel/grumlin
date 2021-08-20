@@ -7,17 +7,6 @@ require:
   - rubocop-performance
   - rubocop-rspec
 
-Style/StringLiterals:
-  Enabled: true
-  EnforcedStyle: double_quotes
-
-Style/StringLiteralsInInterpolation:
-  Enabled: true
-  EnforcedStyle: double_quotes
-
-Style/Documentation:
-  Enabled: false
-
 Layout/LineLength:
   Max: 120
   Exclude:
@@ -27,26 +16,11 @@ Metrics/BlockLength:
   Exclude:
     - spec/**/*_spec.rb
 
-RSpec/NamedSubject:
-  Enabled: false
-
-RSpec/NestedGroups:
-  Enabled: false
-
-RSpec/ExampleLength:
-  Enabled: false
-
-Style/MultilineBlockChain:
-  Enabled: false
-
 Metrics/MethodLength:
   Max: 20
 
-RSpec/MultipleExpectations:
-  Enabled: false
-
-RSpec/DescribeClass:
-  Enabled: false
+Metrics/ParameterLists:
+  Max: 6
 
 Naming/MethodName:
   IgnoredPatterns:
@@ -71,9 +45,35 @@ Naming/MethodParameterName:
     - inVLabel
     - outVLabel
 
-Metrics/ParameterLists:
-  Max: 6
+RSpec/NamedSubject:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
 
 Style/WordArray:
   Exclude:
     - spec/**/*_spec.rb
+
+Style/StringLiterals:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/StringLiteralsInInterpolation:
+  Enabled: true
+  EnforcedStyle: double_quotes
+
+Style/Documentation:
+  Enabled: false
+
+Style/MultilineBlockChain:
+  Enabled: false
