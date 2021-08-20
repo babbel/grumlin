@@ -17,7 +17,7 @@ module Grumlin
 
     module ClassMethods
       def const_missing(name)
-        helper = HELPERS.find { |h| h.const_defined?(name) }
+        helper = HELPERS.find { |h| h.name.split("::").last.to_sym == name }
         super if helper.nil?
 
         const_set(name, helper)

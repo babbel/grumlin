@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::AnonymousStep do
-  let(:g) { Grumlin::U.V() }
+  let(:g) { described_class.new("V") }
 
   describe "#inspect" do
-    it "returns bytecode representation of the travesal" do
+    it "returns bytecode representation of the traversal" do
       t = g.addV.as("first")
            .addV.as("second")
            .addV.as("third")
