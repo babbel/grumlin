@@ -55,7 +55,7 @@ RSpec.describe Async::Channel, async: true do
 
   describe "#each" do
     context "when the channel is not closed" do
-      it "yields received payload" do # rubocop:disable RSpec/MultipleExpectations
+      it "yields received payload" do
         messages = %w[test1 test2 test3]
 
         reactor.async do

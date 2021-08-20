@@ -48,7 +48,7 @@ RSpec.describe Grumlin::Typing do
           end
 
           include_examples "raises TypeError",
-                           '["test2", {:@type=>"g:List", :@value=>[{:@type=>"g:Int32", :@value=>0}]}, "test1"] cannot be casted to Hash' # rubocop:disable Layout/LineLength
+                           '["test2", {:@type=>"g:List", :@value=>[{:@type=>"g:Int32", :@value=>0}]}, "test1"] cannot be casted to Hash'
         end
 
         context "when @value is a an array with a malformed value" do

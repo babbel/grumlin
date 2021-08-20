@@ -20,7 +20,7 @@ module Grumlin
       @connected
     end
 
-    def connect # rubocop:disable Metrics/MethodLength, Metrics/AbcSize
+    def connect # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       raise AlreadyConnectedError if connected?
 
       @connection = Async::WebSocket::Client.connect(Async::HTTP::Endpoint.parse(@url), **@client_options)
@@ -56,7 +56,7 @@ module Grumlin
       @request_channel << message
     end
 
-    def close # rubocop:disable Metrics/MethodLength
+    def close
       return unless connected?
 
       @request_channel.close

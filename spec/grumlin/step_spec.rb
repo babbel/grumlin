@@ -3,7 +3,7 @@
 RSpec.describe Grumlin::Step, gremlin_server: true do
   describe "chaining" do
     context "when using aliases" do
-      it "builds a chain" do # rubocop:disable RSpec/MultipleExpectations
+      it "builds a chain" do
         g.addV.as("first")
          .addV.as("second")
          .addV.as("third")
@@ -17,7 +17,7 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
     end
 
     context "when using anonymous queries" do
-      it "builds a chain" do # rubocop:disable RSpec/MultipleExpectations
+      it "builds a chain" do
         g.addV.property(Grumlin::T.id, 1)
          .addV.property(Grumlin::T.id, 2)
          .addV.property(Grumlin::T.id, 3).iterate

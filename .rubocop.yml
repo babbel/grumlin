@@ -20,6 +20,8 @@ Style/Documentation:
 
 Layout/LineLength:
   Max: 120
+  Exclude:
+    - spec/**/*_spec.rb
 
 Metrics/BlockLength:
   Exclude:
@@ -36,3 +38,42 @@ RSpec/ExampleLength:
 
 Style/MultilineBlockChain:
   Enabled: false
+
+Metrics/MethodLength:
+  Max: 20
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/DescribeClass:
+  Enabled: false
+
+Naming/MethodName:
+  IgnoredPatterns:
+    - toList
+    - inVLabel
+    - outVLabel
+    - inV
+    - outV
+
+Naming/VariableName:
+  AllowedIdentifiers:
+    - inV
+    - outV
+    - inVLabel
+    - outVLabel
+
+Naming/MethodParameterName:
+  AllowedNames:
+    - id
+    - inV
+    - outV
+    - inVLabel
+    - outVLabel
+
+Metrics/ParameterLists:
+  Max: 6
+
+Style/WordArray:
+  Exclude:
+    - spec/**/*_spec.rb

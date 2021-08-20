@@ -12,7 +12,7 @@ RSpec.describe Grumlin::Translator do
       end
 
       it "returns bytecode" do
-        expect(subject).to eq([["addE", "follows"], ["from", "first"], ["to", "second"]]) # rubocop:disable Style/WordArray
+        expect(subject).to eq([["addE", "follows"], ["from", "first"], ["to", "second"]])
       end
     end
 
@@ -22,7 +22,7 @@ RSpec.describe Grumlin::Translator do
       end
 
       it "returns bytecode" do
-        expect(subject).to eq([["addE", "follows"], ["from", [["V", 1]]], ["to", [["V", 2]]]])  # rubocop:disable Style/WordArray
+        expect(subject).to eq([["addE", "follows"], ["from", [["V", 1]]], ["to", [["V", 2]]]])
       end
     end
 

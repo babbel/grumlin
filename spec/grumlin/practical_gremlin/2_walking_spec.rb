@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/DescribeClass
+RSpec.describe "Practical Gramlin: walking" do
   it "1" do
     expect(g.V().has("airport", "code", "AUS").out.values("code").fold.next).to eq(%w[YYZ
                                                                                       LHR
@@ -125,7 +125,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     expect(g.V().has("airport", "code", "LCY").outE.inV.path.count.next).to eq(42)
   end
 
-  it "6" do # rubocop:disable RSpec/MultipleExpectations
+  it "6" do
     expect(
       g.V().has("airport", "code", "LCY").outE.inV
             .path.by("code").by("dist").count.next
@@ -158,7 +158,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     ).to eq(5)
   end
 
-  it "9" do # rubocop:disable RSpec/MultipleExpectations
+  it "9" do
     expect(
       g.V().has("airport", "code", "AUS").out.out.path.by("code").limit(10).count.next
     ).to eq(10)
@@ -193,7 +193,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     expect(g.V().has("code", "AUS").out("route").has("code", "DFW").hasNext).to eq([])
   end
 
-  it "11" do # rubocop:disable RSpec/MultipleExpectations
+  it "11" do
     expect(
       g.V().has("code", "DFW").as("from").out
             .has("region", "US-CA").as("to")
@@ -213,7 +213,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     ).to eq(11)
   end
 
-  it "12" do # rubocop:disable RSpec/MultipleExpectations
+  it "12" do
     expect(
       g.V().has("type", "airport").limit(10).as("a", "b", "c")
             .select("a", "b", "c")
@@ -227,7 +227,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
     ).to eq(10)
   end
 
-  it "13" do # rubocop:disable RSpec/MultipleExpectations
+  it "13" do
     expect(g.V(1).as("a").V(2).as("a").select("a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
     expect(g.V(1).as("a").V(2).as("a").select(Grumlin::Pop.first,
                                               "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 1))
@@ -239,7 +239,7 @@ RSpec.describe "Practical Gramlin: walking" do #  rubocop:disable RSpec/Describe
                                                                 Grumlin::Vertex.new(label: "airport", id: 2)])
   end
 
-  it "14" do # rubocop:disable RSpec/MultipleExpectations
+  it "14" do
     expect(
       g.V().has("code", "AUS").as("a")
     .out.as("a").limit(10)

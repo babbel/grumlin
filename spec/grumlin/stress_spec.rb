@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "stress test", gremlin_server: true do # rubocop:disable RSpec/DescribeClass
+RSpec.describe "stress test", gremlin_server: true do
   let(:uuids) { Array.new(1000) { SecureRandom.uuid } }
 
   let(:concurrency) { 20 }
