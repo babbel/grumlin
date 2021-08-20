@@ -24,13 +24,6 @@ module Grumlin
       end
     end
 
-    def const_missing(name)
-      helper = HELPERS.find { |h| h.const_defined?(name) }
-      super if helper.nil?
-
-      const_set(name, helper)
-    end
-
     def __
       Grumlin::U
     end
