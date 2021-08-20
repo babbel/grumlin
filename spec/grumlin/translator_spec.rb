@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Translator do
-  let(:g) { Grumlin::Traversal.new(nil) }
-
+RSpec.describe Grumlin::Translator, gremlin_server: true do
   describe ".to_bytecode" do
     subject { described_class.to_bytecode(steps) }
 
@@ -18,7 +16,7 @@ RSpec.describe Grumlin::Translator do
 
     context "when there are simple subtraversals" do
       let(:steps) do
-        g.addE("follows").from(Grumlin::U.V(1)).to(Grumlin::U.V(2)).steps
+        g.addE("follows").from(U.V(1)).to(U.V(2)).steps
       end
 
       it "returns bytecode" do
@@ -28,7 +26,7 @@ RSpec.describe Grumlin::Translator do
 
     context "when there are long subtraversals" do
       let(:steps) do
-        g.V().hasLabel("continent").group.by("code").by(Grumlin::U.out.count).steps
+        g.V().hasLabel("continent").group.by("code").by(U.out.count).steps
       end
 
       it "returns bytecode" do

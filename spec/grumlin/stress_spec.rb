@@ -7,7 +7,7 @@ RSpec.describe "stress test", gremlin_server: true do
 
   before do
     uuids.each_with_index do |uuid, i|
-      g.addV("test_vertex").property(Grumlin::T.id, uuid).property("index", i).iterate
+      g.addV("test_vertex").property(T.id, uuid).property("index", i).iterate
     end
   end
 
@@ -19,7 +19,7 @@ RSpec.describe "stress test", gremlin_server: true do
 
   def create_query
     uuid = SecureRandom.uuid
-    result = g.addV("test_vertex").property(Grumlin::T.id, uuid).toList
+    result = g.addV("test_vertex").property(T.id, uuid).toList
     expect(result[0].id).to eq(uuid)
   end
 

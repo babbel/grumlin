@@ -148,13 +148,13 @@ RSpec.describe "Practical Gramlin: walking" do
 
   it "7" do
     expect(
-      g.V(3).out.limit(5).path.by(Grumlin::U.values("code", "city").fold).count.next
+      g.V(3).out.limit(5).path.by(U.values("code", "city").fold).count.next
     ).to eq(5)
   end
 
   it "8" do
     expect(
-      g.V(3).out.limit(5).path.by(Grumlin::U.out.count.fold).count.next
+      g.V(3).out.limit(5).path.by(U.out.count.fold).count.next
     ).to eq(5)
   end
 
@@ -217,47 +217,44 @@ RSpec.describe "Practical Gramlin: walking" do
     expect(
       g.V().has("type", "airport").limit(10).as("a", "b", "c")
             .select("a", "b", "c")
-              .by("code").by("region").by(Grumlin::U.out.count).count.next
+              .by("code").by("region").by(U.out.count).count.next
     ).to eq(10)
 
     expect(
       g.V().has("type", "airport").limit(10)
             .project("a", "b", "c")
-              .by("code").by("region").by(Grumlin::U.out.count).count.next
+              .by("code").by("region").by(U.out.count).count.next
     ).to eq(10)
   end
 
   it "13" do
     expect(g.V(1).as("a").V(2).as("a").select("a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
-    expect(g.V(1).as("a").V(2).as("a").select(Grumlin::Pop.first,
-                                              "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 1))
-    expect(g.V(1).as("a").V(2).as("a").select(Grumlin::Pop.last,
-                                              "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
+    expect(g.V(1).as("a").V(2).as("a").select(Pop.first, "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 1))
+    expect(g.V(1).as("a").V(2).as("a").select(Pop.last, "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
 
-    expect(g.V(1).as("a").V(2).as("a").select(Grumlin::Pop.all,
-                                              "a").next).to eq([Grumlin::Vertex.new(label: "airport", id: 1),
-                                                                Grumlin::Vertex.new(label: "airport", id: 2)])
+    expect(g.V(1).as("a").V(2).as("a").select(Pop.all, "a").next).to eq([Grumlin::Vertex.new(label: "airport", id: 1),
+                                                                         Grumlin::Vertex.new(label: "airport", id: 2)])
   end
 
   it "14" do
     expect(
       g.V().has("code", "AUS").as("a")
     .out.as("a").limit(10)
-    .select(Grumlin::Pop.last, "a").by("code").fold.next
+    .select(Pop.last, "a").by("code").fold.next
     ).to eq(%w[YYZ LHR FRA MEX PIT PDX CLT
                CUN MEM CVG])
 
     expect(
       g.V().has("code", "AUS").as("a")
     .out.as("a").limit(10)
-    .select(Grumlin::Pop.first, "a").by("code").fold.next
+    .select(Pop.first, "a").by("code").fold.next
     ).to eq(%w[AUS AUS AUS AUS AUS AUS AUS
                AUS AUS AUS])
 
     expect(
       g.V().has("code", "AUS").as("a")
     .out.as("a").limit(10)
-    .select(Grumlin::Pop.all, "a").unfold.values("code").fold.next
+    .select(Pop.all, "a").unfold.values("code").fold.next
     ).to eq(%w[AUS AUS AUS AUS AUS AUS
                AUS AUS AUS AUS YYZ LHR FRA MEX PIT PDX CLT CUN MEM CVG])
   end

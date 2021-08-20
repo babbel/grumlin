@@ -18,13 +18,13 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
 
     context "when using anonymous queries" do
       it "builds a chain" do
-        g.addV.property(Grumlin::T.id, 1)
-         .addV.property(Grumlin::T.id, 2)
-         .addV.property(Grumlin::T.id, 3).iterate
+        g.addV.property(T.id, 1)
+         .addV.property(T.id, 2)
+         .addV.property(T.id, 3).iterate
 
-        t = g.addE("follows").from(Grumlin::U.V(1)).to(Grumlin::U.V(2))
-             .addE("follows").from(Grumlin::U.V(2)).to(Grumlin::U.V(3))
-             .addE("follows").from(Grumlin::U.V(3)).to(Grumlin::U.V(1))
+        t = g.addE("follows").from(U.V(1)).to(U.V(2))
+             .addE("follows").from(U.V(2)).to(U.V(3))
+             .addE("follows").from(U.V(3)).to(U.V(1))
         t.iterate
 
         expect(g.V().count.toList).to eq([3])
@@ -34,9 +34,9 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
 
     context "when using elementMap" do
       before do
-        g.addV(:test_label).property(Grumlin::T.id, 1).property("foo1", "bar").property("foo3", 3)
-         .addV(:test_label).property(Grumlin::T.id, 2).property("foo2", "bar")
-         .addV(:test_label).property(Grumlin::T.id, 3).property("foo3", 3).iterate
+        g.addV(:test_label).property(T.id, 1).property("foo1", "bar").property("foo3", 3)
+         .addV(:test_label).property(T.id, 2).property("foo2", "bar")
+         .addV(:test_label).property(T.id, 3).property("foo3", 3).iterate
       end
 
       it "returns a map" do
@@ -48,13 +48,13 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
 
     context "when using within" do
       before do
-        g.addV(:test_label).property(Grumlin::T.id, 1)
-         .addV(:test_label).property(Grumlin::T.id, 2)
-         .addV(:test_label).property(Grumlin::T.id, 3).iterate
+        g.addV(:test_label).property(T.id, 1)
+         .addV(:test_label).property(T.id, 2)
+         .addV(:test_label).property(T.id, 3).iterate
       end
 
       it "returns a list of nodes" do
-        expect(g.V().has(Grumlin::T.id, Grumlin::P.within(1, 3)).toList).not_to be_empty
+        expect(g.V().has(T.id, P.within(1, 3)).toList).not_to be_empty
       end
     end
   end

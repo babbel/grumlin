@@ -2,7 +2,6 @@
 
 module Grumlin
   module Sugar
-    # TODO: how to use it in specs?
     HELPERS = [
       Grumlin::U,
       Grumlin::T,
@@ -12,15 +11,9 @@ module Grumlin
     ].freeze
 
     def self.included(base)
-      base.extend ClassMethods
-    end
-
-    module ClassMethods
-      def const_missing(name)
-        helper = HELPERS.find { |h| h.name.split("::").last.to_sym == name }
-        super if helper.nil?
-
-        const_set(name, helper)
+      HELPERS.each do |helper|
+        name = helper.name.split("::").last
+        base.const_set(name, helper)
       end
     end
 
