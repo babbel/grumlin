@@ -2,39 +2,41 @@
 
 module Grumlin
   class Client
-    class PoolResource < self
-      attr :concurrency, :count
+    class PoolResource < Async::Pool::Resource
+      attr_reader :client
 
       def self.call
-        new(Grumlin.config.url, concurrency: Grumlin.config.client_concurrency).tap(&:connect)
+        config = Grumlin.config
+        new(config.url, client_factory: config.client_factory, concurrency: config.client_concurrency)
       end
 
-      def initialize(url, concurrency: 1, parent: Async::Task.current)
-        super(url, parent: parent)
-        @concurrency = concurrency
-        @count = 0
-      end
-
-      def viable?
-        connected?
+      def initialize(url, client_factory:, concurrency: 1, parent: Async::Task.current)
+        super(concurrency)
+        @client = client_factory.call(url, parent).tap(&:connect)
       end
 
       def closed?
-        !connected?
+        !@client.connected?
       end
 
-      def reusable?
-        true
+      def close
+        @client.close
+      end
+
+      def write(*args)
+        @client.write(*args)
       end
     end
 
-    def initialize(url, parent: Async::Task.current)
+    def initialize(url, parent: Async::Task.current, **client_options)
+      @url = url
+      @client_options = client_options
       @parent = parent
-      @transport = Transport.new(url)
       reset!
     end
 
     def connect
+      @transport = build_transport
       response_channel = @transport.connect
       @request_dispatcher = RequestDispatcher.new
       @parent.async do
@@ -54,11 +56,13 @@ module Grumlin
     end
 
     def connected?
-      @transport.connected?
+      @transport&.connected? || false
     end
 
     # TODO: support yielding
-    def write(*args)
+    def write(*args) # rubocop:disable Metrics/MethodLength
+      raise NotConnectedError unless connected?
+
       request_id = SecureRandom.uuid
       request = to_query(request_id, args)
       channel = @request_dispatcher.add_request(request)
@@ -73,7 +77,7 @@ module Grumlin
     end
 
     def inspect
-      "<#{self.class} url=#{@transport.url}>"
+      "<#{self.class} url=#{@url} connected=#{connected?}>"
     end
 
     alias to_s inspect
@@ -94,6 +98,11 @@ module Grumlin
 
     def reset!
       @request_dispatcher = nil
+      @transport = nil
+    end
+
+    def build_transport
+      Transport.new(@url, parent: @parent, **@client_options)
     end
   end
 end
