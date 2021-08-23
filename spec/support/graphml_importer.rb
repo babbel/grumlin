@@ -21,7 +21,7 @@ class GraphMLImporter
 
   private
 
-  def import_nodes! # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def import_nodes! # rubocop:disable Metrics/AbcSize
     nodes.each_slice(100) do |slice|
       t = g
       slice.each do |node|
@@ -38,7 +38,7 @@ class GraphMLImporter
     end
   end
 
-  def import_edges! # rubocop:disable Metrics/AbcSize,Metrics/MethodLength
+  def import_edges! # rubocop:disable Metrics/AbcSize
     edges.each_slice(100) do |slice|
       t = g
       slice.each do |edge|

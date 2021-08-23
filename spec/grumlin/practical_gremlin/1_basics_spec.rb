@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Practical Gremlin: basics" do # rubocop:disable RSpec/DescribeClass
+RSpec.describe "Practical Gremlin: basics" do
   it "1" do
     expect(g.V().hasLabel("airport").count.next).to eq(3374)
   end
@@ -9,7 +9,7 @@ RSpec.describe "Practical Gremlin: basics" do # rubocop:disable RSpec/DescribeCl
     expect(g.V().has("code", "DFW").count.next).to eq(1)
   end
 
-  it "3" do # rubocop:disable RSpec/MultipleExpectations
+  it "3" do
     expect(g.V().hasLabel("airport").has("code", "DFW").count.next).to eq(1)
     expect(g.V().has("airport", "code", "DFW").count.next).to eq(1)
   end
@@ -29,11 +29,11 @@ RSpec.describe "Practical Gremlin: basics" do # rubocop:disable RSpec/DescribeCl
     expect(g.V().has("airport", "code", "DFW").values("runways", "icao").toList).to eq(["KDFW", 7])
   end
 
-  it "7" do # rubocop:disable RSpec/MultipleExpectations
+  it "7" do
     expect(g.E().has("dist").count.next).to eq(43_400)
     expect(g.V().has("region").count.next).to eq(3374)
     expect(g.V().hasNot("region").count.next).to eq(245)
-    expect(g.V().not(Grumlin::U.has("region")).count.next).to eq(245)
+    expect(g.V().not(U.has("region")).count.next).to eq(245)
   end
 
   it "8" do
@@ -44,23 +44,23 @@ RSpec.describe "Practical Gremlin: basics" do # rubocop:disable RSpec/DescribeCl
     expect(g.E().hasLabel("route").count.next).to eq(43_400)
   end
 
-  it "10" do # rubocop:disable RSpec/MultipleExpectations
+  it "10" do
     result = { airport: 3374,
                continent: 7,
                country: 237,
                version: 1 }
-    expect(g.V().groupCount.by(Grumlin::T.label).next).to eq(result)
+    expect(g.V().groupCount.by(T.label).next).to eq(result)
     expect(g.V().label.groupCount.next).to eq(result)
-    expect(g.V().group.by(Grumlin::T.label).by(Grumlin::U.count).next).to eq(result)
+    expect(g.V().group.by(T.label).by(U.count).next).to eq(result)
   end
 
-  it "11" do # rubocop:disable RSpec/MultipleExpectations
+  it "11" do
     result = { contains: 6748, route: 43_400 }
-    expect(g.E().groupCount.by(Grumlin::T.label).next).to eq(result)
+    expect(g.E().groupCount.by(T.label).next).to eq(result)
     expect(g.E().label.groupCount.next).to eq(result)
   end
 
-  it "12" do # rubocop:disable RSpec/MultipleExpectations
+  it "12" do
     result = {
       PR: 6,
       PT: 14,
@@ -296,16 +296,16 @@ RSpec.describe "Practical Gremlin: basics" do # rubocop:disable RSpec/DescribeCl
       PM: 1
     }
     expect(g.V().hasLabel("airport").groupCount.by("country").next).to eq(result)
-    expect(g.V().hasLabel("country").group.by("code").by(Grumlin::U.out.count).next).to eq(result.merge(AD: 0, LI: 0,
-                                                                                                        MC: 0, PN: 0,
-                                                                                                        SM: 0))
+    expect(g.V().hasLabel("country").group.by("code").by(U.out.count).next).to eq(result.merge(AD: 0, LI: 0,
+                                                                                               MC: 0, PN: 0,
+                                                                                               SM: 0))
   end
 
   it "13" do
-    expect(g.V().hasLabel("continent").group.by("code").by(Grumlin::U.out.count).next).to eq({ EU: 583, AS: 932,
-                                                                                               NA: 978, OC: 284,
-                                                                                               AF: 294, AN: 0,
-                                                                                               SA: 303 })
+    expect(g.V().hasLabel("continent").group.by("code").by(U.out.count).next).to eq({ EU: 583, AS: 932,
+                                                                                      NA: 978, OC: 284,
+                                                                                      AF: 294, AN: 0,
+                                                                                      SA: 303 })
   end
 
   it "14" do

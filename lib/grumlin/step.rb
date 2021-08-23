@@ -14,7 +14,7 @@ module Grumlin
       @enum.next
     end
 
-    def toList # rubocop:disable Naming/MethodName
+    def toList
       @pool.acquire do |client|
         client.write(*steps)
       end

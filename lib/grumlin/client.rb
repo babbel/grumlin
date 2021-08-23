@@ -60,7 +60,7 @@ module Grumlin
     end
 
     # TODO: support yielding
-    def write(*args) # rubocop:disable Metrics/MethodLength
+    def write(*args)
       raise NotConnectedError unless connected?
 
       request_id = SecureRandom.uuid

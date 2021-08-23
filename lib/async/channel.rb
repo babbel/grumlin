@@ -45,7 +45,7 @@ module Async
       end
     end
 
-    def each # rubocop:disable Metrics/MethodLength
+    def each
       raise(ChannelClosedError, "Cannot receive from a closed channel") if closed?
 
       @queue.each do |type, payload|

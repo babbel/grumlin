@@ -36,7 +36,7 @@ module Grumlin
 
     # builds a response object, when it's ready sends it to the client via a channel
     # TODO: sometimes response does not include requestID, no idea how to handle it so far.
-    def add_response(response) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def add_response(response) # rubocop:disable Metrics/AbcSize
       request_id = response[:requestId]
       raise "ERROR" unless ongoing_request?(request_id)
 

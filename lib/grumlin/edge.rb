@@ -1,11 +1,10 @@
 # frozen_string_literal: true
 
-# rubocop:disable Naming/VariableName,Naming/MethodParameterName,Naming/MethodName
 module Grumlin
   class Edge
     attr_reader :label, :id, :inVLabel, :outVLabel, :inV, :outV
 
-    def initialize(label:, id:, inVLabel:, outVLabel:, inV:, outV:) # rubocop:disable Metrics/ParameterLists
+    def initialize(label:, id:, inVLabel:, outVLabel:, inV:, outV:)
       @label = label
       @id = Typing.cast(id)
       @inVLabel = inVLabel
@@ -24,4 +23,3 @@ module Grumlin
     alias to_s inspect
   end
 end
-# rubocop:enable Naming/MethodParameterName,Naming/VariableName,Naming/MethodName
