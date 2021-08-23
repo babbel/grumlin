@@ -4,7 +4,7 @@ module Grumlin
   module Order
     class << self
       DESC = { "@type": "g:Order", "@value": "desc" }.freeze
-      ASC = { "@type": "g:Order", "@value": "desc" }.freeze
+      ASC = { "@type": "g:Order", "@value": "asc" }.freeze
 
       def asc
         ASC
