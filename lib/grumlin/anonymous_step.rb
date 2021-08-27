@@ -4,22 +4,22 @@ module Grumlin
   class AnonymousStep
     attr_reader :name, :args
 
+    # TODO: add other steps
+    SUPPORTED_STEPS = %w[E V addE addV as by coalesce count dedup drop elementMap emit fold from group groupCount has
+                         hasLabel hasNot in inV label limit not order out outE path project property repeat select to
+                         unfold valueMap values where].freeze
+
     def initialize(name, *args, previous_steps: [])
       @name = name
       @previous_steps = previous_steps
       @args = args
     end
 
-    %w[addV addE V E limit count drop property valueMap select from to as order by has hasLabel values hasNot
-       not outE groupCount label group in out fold unfold inV path dedup project coalesce repeat emit
-       elementMap where].each do |step|
+    SUPPORTED_STEPS.each do |step|
       define_method step do |*args|
         add_step(step, args, previous_steps: steps)
       end
     end
-
-    alias addVertex addV
-    alias addEdge addE
 
     def inspect
       @inspect ||= to_bytecode.to_s

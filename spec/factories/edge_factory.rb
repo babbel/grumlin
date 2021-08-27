@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :edge, class: "Grumlin::Edge" do
-    initialize_with { Grumlin::Edge.new(**attributes) } # TODO: find a way to get class from the factory
+    initialize_with { new(**attributes) }
 
     label { "test_edge" }
     sequence(:id)

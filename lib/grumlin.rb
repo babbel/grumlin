@@ -19,6 +19,7 @@ require_relative "grumlin/exceptions"
 
 require_relative "grumlin/transport"
 require_relative "grumlin/client"
+require_relative "grumlin/typed_value"
 
 require_relative "grumlin/vertex"
 require_relative "grumlin/edge"

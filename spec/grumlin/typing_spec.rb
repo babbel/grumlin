@@ -4,7 +4,7 @@ RSpec.describe Grumlin::Typing do
   describe ".cast" do
     subject { described_class.cast(value_to_cast) }
 
-    let(:value_to_cast) { { :@type => type, :@value => value } }
+    let(:value_to_cast) { { "@type": type, "@value": value } }
 
     context "when value is a hash" do
       context "when @type is g:List" do
@@ -12,8 +12,8 @@ RSpec.describe Grumlin::Typing do
 
         context "when @value is a list array" do
           let(:value) do
-            [{ :@type => "g:Vertex",
-               :@value => { id: { :@type => "g:Int32", :@value => 0 }, label: "test_vertex" } }]
+            [{ "@type": "g:Vertex",
+               "@value": { id: { "@type": "g:Int32", "@value": 0 }, label: "test_vertex" } }]
           end
 
           it "returns an array" do
@@ -22,7 +22,7 @@ RSpec.describe Grumlin::Typing do
         end
 
         context "when @value is a an array with a malformed value" do
-          let(:value) { [{ :@type => "g:Vertex", :@value => { id: nil, label: "test_vertex" } }] }
+          let(:value) { [{ "@type": "g:Vertex", "@value": { id: nil, label: "test_vertex" } }] }
 
           include_examples "raises TypeError", '{:id=>nil, :label=>"test_vertex"} cannot be casted to Grumlin::Vertex'
         end
@@ -33,8 +33,8 @@ RSpec.describe Grumlin::Typing do
 
         context "when @value is a value map array" do
           let(:value) do
-            ["test2", { :@type => "g:List", :@value => [{ :@type => "g:Int32", :@value => 0 }] },
-             "test1", { :@type => "g:List", :@value => [{ :@type => "g:Int32", :@value => 0 }] }]
+            ["test2", { "@type": "g:List", "@value": [{ "@type": "g:Int32", "@value": 0 }] },
+             "test1", { "@type": "g:List", "@value": [{ "@type": "g:Int32", "@value": 0 }] }]
           end
 
           it "returns a hash" do
@@ -44,7 +44,7 @@ RSpec.describe Grumlin::Typing do
 
         context "when @value is a malformed array" do
           let(:value) do
-            ["test2", { :@type => "g:List", :@value => [{ :@type => "g:Int32", :@value => 0 }] }, "test1"]
+            ["test2", { "@type": "g:List", "@value": [{ "@type": "g:Int32", "@value": 0 }] }, "test1"]
           end
 
           include_examples "raises TypeError",
@@ -53,8 +53,8 @@ RSpec.describe Grumlin::Typing do
 
         context "when @value is a an array with a malformed value" do
           let(:value) do
-            ["test2", { :@type => "g:List", :@value => [{ :@type => "g:Int32", :@value => 0 }] },
-             "test1", { :@type => "g:List", :@value => nil }]
+            ["test2", { "@type": "g:List", "@value": [{ "@type": "g:Int32", "@value": 0 }] },
+             "test1", { "@type": "g:List", "@value": nil }]
           end
 
           include_examples "raises TypeError", '{:@type=>"g:List", :@value=>nil} cannot be casted, @value is missing'

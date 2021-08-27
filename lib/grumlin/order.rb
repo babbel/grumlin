@@ -2,16 +2,15 @@
 
 module Grumlin
   module Order
+    # TODO: share the code?
     class << self
-      DESC = { "@type": "g:Order", "@value": "desc" }.freeze
-      ASC = { "@type": "g:Order", "@value": "asc" }.freeze
+      %i[asc desc].each do |step|
+        define_method step do
+          name = "@#{step}"
+          return instance_variable_get(name) if instance_variable_defined?(name)
 
-      def asc
-        ASC
-      end
-
-      def desc
-        DESC
+          instance_variable_set(name, TypedValue.new("Order", step))
+        end
       end
     end
   end

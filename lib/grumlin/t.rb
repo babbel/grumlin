@@ -2,16 +2,15 @@
 
 module Grumlin
   module T
+    # TODO: share the code?
     class << self
-      T_ID = { :@type => "g:T", :@value => "id" }.freeze # TODO: replace with a class?
-      T_LABEL = { :@type => "g:T", :@value => "label" }.freeze # TODO: replace with a class?
+      %i[id label].each do |step|
+        define_method step do
+          name = "@#{step}"
+          return instance_variable_get(name) if instance_variable_defined?(name)
 
-      def id
-        T_ID
-      end
-
-      def label
-        T_LABEL
+          instance_variable_set(name, TypedValue.new("T", step))
+        end
       end
     end
   end

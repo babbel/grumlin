@@ -2,8 +2,11 @@
 
 module Grumlin
   module U
+    # TODO: add other start steps
+    SUPPORTED_START_STEPS = %w[V addV count has out unfold values].freeze
+
     class << self
-      %w[addV V has count out values unfold].each do |step|
+      SUPPORTED_START_STEPS.each do |step|
         define_method step do |*args|
           AnonymousStep.new(step, *args)
         end

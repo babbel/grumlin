@@ -3,6 +3,12 @@
 RSpec.describe Grumlin::AnonymousStep do
   let(:g) { described_class.new("V") }
 
+  describe "::SUPPORTED_STEPS" do
+    it "is sorted" do
+      expect(described_class::SUPPORTED_STEPS).to eq(described_class::SUPPORTED_STEPS.sort)
+    end
+  end
+
   describe "#inspect" do
     it "returns bytecode representation of the traversal" do
       t = g.addV.as("first")
