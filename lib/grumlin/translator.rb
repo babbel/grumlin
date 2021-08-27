@@ -20,6 +20,7 @@ module Grumlin
       private
 
       def arg_to_bytecode(arg)
+        return arg.to_bytecode if arg.is_a?(TypedValue)
         return arg unless arg.is_a?(AnonymousStep)
 
         args = arg.args.flatten.map do |a|

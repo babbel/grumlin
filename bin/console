@@ -10,7 +10,7 @@ Grumlin.configure do |config|
 end
 
 Async do
-  g = Grumlin::Traversal.new
+  include Grumlin::Sugar
 
   IRB.setup(nil)
   workspace = IRB::WorkSpace.new(binding)
