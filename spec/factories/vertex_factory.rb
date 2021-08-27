@@ -2,7 +2,7 @@
 
 FactoryBot.define do
   factory :vertex, class: "Grumlin::Vertex" do
-    initialize_with { Grumlin::Vertex.new(**attributes) } # TODO: find a way to get class from the factory
+    initialize_with { new(**attributes) }
 
     label { "test_vertex" }
     sequence(:id)
