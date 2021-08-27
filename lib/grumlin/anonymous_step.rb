@@ -20,9 +20,6 @@ module Grumlin
       end
     end
 
-    alias addVertex addV
-    alias addEdge addE
-
     def inspect
       @inspect ||= to_bytecode.to_s
     end
