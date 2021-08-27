@@ -2,26 +2,15 @@
 
 module Grumlin
   module Pop
+    # TODO: share the code?
     class << self
-      FIRST = { "@type": "g:Pop", "@value": "first" }.freeze
-      LAST = { "@type": "g:Pop", "@value": "last" }.freeze
-      ALL = { "@type": "g:Pop", "@value": "all" }.freeze
-      MIXED = { "@type": "g:Pop", "@value": "mixed" }.freeze
+      %i[first last all mixed].each do |step|
+        define_method step do
+          name = "@#{step}"
+          return instance_variable_get(name) if instance_variable_defined?(name)
 
-      def first
-        FIRST
-      end
-
-      def last
-        LAST
-      end
-
-      def all
-        ALL
-      end
-
-      def mixed
-        MIXED
+          instance_variable_set(name, TypedValue.new("Pop", step))
+        end
       end
     end
   end

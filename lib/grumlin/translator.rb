@@ -30,7 +30,10 @@ module Grumlin
 
       def arg_to_query_bytecode(arg)
         return ["none"] if arg.nil?
+        return arg.to_bytecode if arg.is_a?(TypedValue)
         return arg unless arg.is_a?(AnonymousStep)
+
+        # return arg.to_bytecode if arg.is_a?(TypedValue)
 
         args = arg.args.flatten.map do |a|
           a.instance_of?(AnonymousStep) ? Typing.to_bytecode(to_bytecode(a.steps)) : arg_to_query_bytecode(a)
