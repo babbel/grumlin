@@ -49,8 +49,10 @@ module Grumlin
     end
 
     def close
-      @transport.close
-      raise ResourceLeakError, "Request list is not empty: #{requests}" if @request_dispatcher.requests.any?
+      @transport&.close
+      if @request_dispatcher&.requests&.any?
+        raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}"
+      end
 
       reset!
     end
