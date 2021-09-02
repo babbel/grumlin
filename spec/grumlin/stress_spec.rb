@@ -107,4 +107,20 @@ RSpec.describe "stress test", gremlin_server: true do
       barrier.wait
     end
   end
+
+  context "when running multiple concurrent upserts" do
+    it "succeeds" do
+      barrier = Async::Barrier.new
+
+      concurrency.times do
+        barrier.async do
+          1000.times do
+            upsert_query
+          end
+        end
+      end
+
+      barrier.wait
+    end
+  end
 end
