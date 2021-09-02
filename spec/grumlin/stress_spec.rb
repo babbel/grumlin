@@ -2,7 +2,7 @@
 
 RSpec.describe "stress test", gremlin_server: true do
   let(:uuids) { Array.new(1000) { SecureRandom.uuid } }
-  let(:upsert_uuids) { Array.new(1) { SecureRandom.uuid } }
+  let(:upsert_uuids) { Array.new(5) { SecureRandom.uuid } }
 
   let(:concurrency) { 20 }
 
@@ -32,7 +32,7 @@ RSpec.describe "stress test", gremlin_server: true do
 
   def upsert_query # rubocop:disable Metrics/AbcSize
     uuid = upsert_uuids.sample
-    expect(g.V().has(T.id, uuid)
+    expect(g.V().hasId(uuid)
      .fold
      .coalesce(
        __.unfold,
