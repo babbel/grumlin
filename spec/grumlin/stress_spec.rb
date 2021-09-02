@@ -2,6 +2,7 @@
 
 RSpec.describe "stress test", gremlin_server: true do
   let(:uuids) { Array.new(1000) { SecureRandom.uuid } }
+  let(:upsert_uuids) { Array.new(1) { SecureRandom.uuid } }
 
   let(:concurrency) { 20 }
 
@@ -29,16 +30,27 @@ RSpec.describe "stress test", gremlin_server: true do
     end.to raise_error(Grumlin::ServerSerializationError)
   end
 
+  def upsert_query # rubocop:disable Metrics/AbcSize
+    uuid = upsert_uuids.sample
+    expect(g.V().has(T.id, uuid)
+     .fold
+     .coalesce(
+       __.unfold,
+       __.addV("test_vertext").property(T.id, uuid)
+     ).next.id).to eq(uuid)
+  end
+
   def paginated_query
     vertices = g.V().limit(100).toList
     expect(vertices.count).to eq(100)
     expect(vertices.map(&:id).uniq.count).to eq(100)
   end
 
-  def random_query
+  def random_query # rubocop:disable Metrics/AbcSize
     [
       -> { find_query },
       -> { create_query },
+      -> { upsert_query },
       -> { error_query },
       -> { paginated_query }
     ].sample.call
