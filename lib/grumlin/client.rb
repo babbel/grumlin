@@ -26,6 +26,14 @@ module Grumlin
       def write(*args)
         @client.write(*args)
       end
+
+      def viable?
+        !closed?
+      end
+
+      def reusable?
+        !closed?
+      end
     end
 
     def initialize(url, parent: Async::Task.current, **client_options)
