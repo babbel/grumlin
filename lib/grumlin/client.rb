@@ -58,21 +58,27 @@ module Grumlin
           @request_dispatcher.add_response(response)
         end
       rescue Async::Stop, Async::TimeoutError, StandardError
-        close
+        close(check_requests: false)
       end
     end
 
-    def close
+    # Before calling close the user must ensure that:
+    # 1) There are no ongoing requests
+    # 2) There will be no new writes after
+    def close(check_requests: true) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       return if @closed
 
       @closed = true
 
       @transport&.close
       @response_task&.stop
+      @transport&.wait
 
       return if @request_dispatcher&.requests&.empty?
 
-      raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}"
+      @request_dispatcher.clear unless check_requests
+
+      raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}" if check_requests
     end
 
     def connected?
@@ -91,9 +97,8 @@ module Grumlin
       begin
         channel.dequeue.flat_map { |item| Typing.cast(item) }
       rescue Async::Stop, Async::TimeoutError
-        logger.info("Retry...")
-        retry if @request_dispatcher.ongoing_request?(request_id)
-        raise Grumlin::UnknownRequestStoppedError, "#{request_id} is not in the ongoing requests list"
+        close(check_requests: false)
+        raise
       end
     end
 

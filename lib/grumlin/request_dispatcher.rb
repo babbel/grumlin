@@ -71,6 +71,10 @@ module Grumlin
       @requests.key?(request_id)
     end
 
+    def clear
+      @requests.clear
+    end
+
     private
 
     def check_errors!(status)

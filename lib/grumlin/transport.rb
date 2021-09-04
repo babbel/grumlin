@@ -5,6 +5,8 @@ module Grumlin
     # A transport based on https://github.com/socketry/async
     # and https://github.com/socketry/async-websocket
 
+    include Console
+
     attr_reader :url
 
     # Transport is not reusable. Once closed should be recreated.
@@ -25,6 +27,7 @@ module Grumlin
       raise AlreadyConnectedError if connected?
 
       @connection = Async::WebSocket::Client.connect(Async::HTTP::Endpoint.parse(@url), **@client_options)
+      logger.debug(self) { "Connected to #{@url}." }
 
       @response_task = @parent.async { run_response_task }
 
@@ -40,18 +43,23 @@ module Grumlin
     end
 
     def close
-      @closed = true
-      return unless connected?
+      return if @closed
 
+      logger.debug(self) { "Closing." }
+      @closed = true
+
+      logger.debug(self) { "Closing channels." }
       @request_channel.close
-      @response_task.stop
       @response_channel.close
+      logger.debug(self) { "Closing connection." }
 
       begin
         @connection.close
-      rescue Errno::EPIPE
+      rescue StandardError
         nil
       end
+      @response_task.stop
+      logger.debug(self) { "Closed." }
     end
 
     def wait
@@ -62,25 +70,27 @@ module Grumlin
     private
 
     def run_response_task
-      loop do
-        data = @connection.read
-        @response_channel << data
+      with_guard do
+        loop do
+          data = @connection.read
+          @response_channel << data
+        end
       end
-    rescue Async::Stop, Async::TimeoutError, StandardError => e
-      begin
-        @response_channel.exception(e)
-      rescue Async::Channel::ChannelClosedError
-        nil
-      end
-      close
     end
 
     def run_request_task
-      @request_channel.each do |message|
-        @connection.write(message)
-        @connection.flush
+      with_guard do
+        @request_channel.each do |message|
+          @connection.write(message)
+          @connection.flush
+        end
       end
+    end
+
+    def with_guard
+      yield
     rescue Async::Stop, Async::TimeoutError, StandardError => e
+      logger.debug(self) { "Guard error, closing." }
       begin
         @response_channel.exception(e)
       rescue Async::Channel::ChannelClosedError
