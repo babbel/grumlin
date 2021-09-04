@@ -36,14 +36,18 @@ module Grumlin
       end
     end
 
+    # Client is not reusable. Once closed should be recreated.
     def initialize(url, parent: Async::Task.current, **client_options)
       @url = url
       @client_options = client_options
       @parent = parent
-      reset!
+      @request_dispatcher = nil
+      @transport = nil
     end
 
     def connect
+      raise "ClientClosed" if @closed
+
       @transport = build_transport
       response_channel = @transport.connect
       @request_dispatcher = RequestDispatcher.new
@@ -57,12 +61,11 @@ module Grumlin
     end
 
     def close
+      @closed = true
       @transport&.close
-      if @request_dispatcher&.requests&.any?
-        raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}"
-      end
+      return if @request_dispatcher&.requests&.empty?
 
-      reset!
+      raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}"
     end
 
     def connected?
@@ -104,11 +107,6 @@ module Grumlin
           aliases: { g: :g }
         }
       }
-    end
-
-    def reset!
-      @request_dispatcher = nil
-      @transport = nil
     end
 
     def build_transport

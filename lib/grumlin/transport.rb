@@ -7,11 +7,13 @@ module Grumlin
 
     attr_reader :url
 
+    # Transport is not reusable. Once closed should be recreated.
     def initialize(url, parent: Async::Task.current, **client_options)
       @url = url
       @parent = parent
       @client_options = client_options
-      reset!
+      @request_channel = Async::Channel.new
+      @response_channel = Async::Channel.new
     end
 
     def connected?
@@ -19,6 +21,7 @@ module Grumlin
     end
 
     def connect # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+      raise "ClientClosed" if @closed
       raise AlreadyConnectedError if connected?
 
       @connection = Async::WebSocket::Client.connect(Async::HTTP::Endpoint.parse(@url), **@client_options)
@@ -55,6 +58,7 @@ module Grumlin
     end
 
     def close
+      @closed = true
       return unless connected?
 
       @request_channel.close
@@ -70,18 +74,6 @@ module Grumlin
       rescue Errno::EPIPE
         nil
       end
-
-      reset!
-    end
-
-    private
-
-    def reset!
-      @connection = nil
-      @response_task = nil
-      @request_task = nil
-      @request_channel = Async::Channel.new
-      @response_channel = Async::Channel.new
     end
   end
 end
