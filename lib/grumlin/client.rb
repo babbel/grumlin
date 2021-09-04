@@ -36,6 +36,8 @@ module Grumlin
       end
     end
 
+    include Console
+
     # Client is not reusable. Once closed should be recreated.
     def initialize(url, parent: Async::Task.current, **client_options)
       @url = url
@@ -51,18 +53,23 @@ module Grumlin
       @transport = build_transport
       response_channel = @transport.connect
       @request_dispatcher = RequestDispatcher.new
-      @parent.async do
+      @response_task = @parent.async do
         response_channel.each do |response|
           @request_dispatcher.add_response(response)
         end
-      rescue StandardError
+      rescue Async::Stop, Async::TimeoutError, StandardError
         close
       end
     end
 
     def close
+      return if @closed
+
       @closed = true
+
       @transport&.close
+      @response_task&.stop
+
       return if @request_dispatcher&.requests&.empty?
 
       raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}"
@@ -83,7 +90,8 @@ module Grumlin
 
       begin
         channel.dequeue.flat_map { |item| Typing.cast(item) }
-      rescue Async::Stop
+      rescue Async::Stop, Async::TimeoutError
+        logger.info("Retry...")
         retry if @request_dispatcher.ongoing_request?(request_id)
         raise Grumlin::UnknownRequestStoppedError, "#{request_id} is not in the ongoing requests list"
       end

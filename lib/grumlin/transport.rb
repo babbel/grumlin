@@ -20,33 +20,15 @@ module Grumlin
       !@connection.nil?
     end
 
-    def connect # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
+    def connect
       raise "ClientClosed" if @closed
       raise AlreadyConnectedError if connected?
 
       @connection = Async::WebSocket::Client.connect(Async::HTTP::Endpoint.parse(@url), **@client_options)
 
-      @response_task = @parent.async do
-        loop do
-          data = @connection.read
-          @response_channel << data
-        end
-      rescue Async::Stop
-        @response_channel.close
-      rescue StandardError => e
-        @response_channel.exception(e)
-      end
+      @response_task = @parent.async { run_response_task }
 
-      @request_task = @parent.async do
-        @request_channel.each do |message|
-          @connection.write(message)
-          @connection.flush
-        end
-      rescue Async::Stop
-        @response_channel.close
-      rescue StandardError => e
-        @response_channel.exception(e)
-      end
+      @request_task = @parent.async { run_request_task }
 
       @response_channel
     end
@@ -62,11 +44,7 @@ module Grumlin
       return unless connected?
 
       @request_channel.close
-      @request_task.wait
-
       @response_task.stop
-      @response_task.wait
-
       @response_channel.close
 
       begin
@@ -74,6 +52,41 @@ module Grumlin
       rescue Errno::EPIPE
         nil
       end
+    end
+
+    def wait
+      @request_task.wait
+      @response_task.wait
+    end
+
+    private
+
+    def run_response_task
+      loop do
+        data = @connection.read
+        @response_channel << data
+      end
+    rescue Async::Stop, Async::TimeoutError, StandardError => e
+      begin
+        @response_channel.exception(e)
+      rescue Async::Channel::ChannelClosedError
+        nil
+      end
+      close
+    end
+
+    def run_request_task
+      @request_channel.each do |message|
+        @connection.write(message)
+        @connection.flush
+      end
+    rescue Async::Stop, Async::TimeoutError, StandardError => e
+      begin
+        @response_channel.exception(e)
+      rescue Async::Channel::ChannelClosedError
+        nil
+      end
+      close
     end
   end
 end

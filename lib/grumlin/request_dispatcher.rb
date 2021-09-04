@@ -22,6 +22,8 @@ module Grumlin
       498 => ClientSideError
     }.freeze
 
+    include Console
+
     def initialize
       @requests = {}
     end
