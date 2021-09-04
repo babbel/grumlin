@@ -109,13 +109,31 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
   end
 
   context "when running multiple concurrent upserts" do
-    it "succeeds" do
+    xit "succeeds" do
       barrier = Async::Barrier.new
 
       concurrency.times do
         barrier.async do
           1000.times do
             upsert_query
+          end
+        end
+      end
+
+      barrier.wait
+    end
+  end
+
+  context "when task is stopped by timeout" do
+    xit "succeeds" do
+      barrier = Async::Barrier.new
+
+      concurrency.times do
+        barrier.async do |task|
+          task.with_timeout(3) do
+            loop do
+              upsert_query
+            end
           end
         end
       end

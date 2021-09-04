@@ -11,13 +11,11 @@ module Grumlin
       @url = url
       @parent = parent
       @client_options = client_options
-      @request_channel = Async::Channel.new
-      @response_channel = Async::Channel.new
       reset!
     end
 
     def connected?
-      @connected
+      !@connection.nil?
     end
 
     def connect # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
@@ -41,11 +39,11 @@ module Grumlin
           @connection.write(message)
           @connection.flush
         end
+      rescue Async::Stop
+        @response_channel.close
       rescue StandardError => e
         @response_channel.exception(e)
       end
-
-      @connected = true
 
       @response_channel
     end
@@ -65,6 +63,8 @@ module Grumlin
       @response_task.stop
       @response_task.wait
 
+      @response_channel.close
+
       begin
         @connection.close
       rescue Errno::EPIPE
@@ -77,10 +77,11 @@ module Grumlin
     private
 
     def reset!
-      @connected = false
       @connection = nil
       @response_task = nil
       @request_task = nil
+      @request_channel = Async::Channel.new
+      @response_channel = Async::Channel.new
     end
   end
 end
