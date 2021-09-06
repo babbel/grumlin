@@ -32,7 +32,7 @@ module Grumlin
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: Typing.to_bytecode(Translator.to_bytecode_query(steps)),
+          gremlin: Typing.as_bytecode(Translator.to_bytecode_query(steps)),
           aliases: { g: :g }
         }
       }

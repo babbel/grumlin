@@ -31,7 +31,7 @@ module Grumlin
         type.call(value[:@value])
       end
 
-      def to_bytecode(step)
+      def as_bytecode(step)
         {
           "@type": "g:Bytecode",
           "@value": { step: step }
