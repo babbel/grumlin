@@ -40,10 +40,8 @@ module Grumlin
 
       private
 
-      def castable_type?(value); end
-
       def verify_type!(value)
-        raise TypeError, "#{value.inspect} cannot be casted" unless CASTABLE_TYPES.any? { |t| value.is_a?(t) }
+        raise TypeError, "#{value.inspect} cannot be casted" unless CASTABLE_TYPES.include?(value.class)
       end
 
       def verify_castable_hash!(value, type)
