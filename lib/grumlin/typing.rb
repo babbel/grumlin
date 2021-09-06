@@ -31,13 +31,6 @@ module Grumlin
         type.call(value[:@value])
       end
 
-      def as_bytecode(step)
-        {
-          "@type": "g:Bytecode",
-          "@value": { step: step }
-        }
-      end
-
       private
 
       def verify_type!(value)
