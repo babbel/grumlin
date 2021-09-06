@@ -5,6 +5,7 @@ PATH
       async-pool (~> 0.3)
       async-websocket (~> 0.19)
       oj (~> 3.12)
+      zeitwerk (~> 2.4)
 
 GEM
   remote: https://rubygems.org/

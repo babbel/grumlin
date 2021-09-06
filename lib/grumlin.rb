@@ -15,34 +15,83 @@ require "async/barrier"
 require "async/http/endpoint"
 require "async/websocket/client"
 
-require_relative "async/channel"
+require "zeitwerk"
 
-require_relative "grumlin/version"
-require_relative "grumlin/exceptions"
-
-require_relative "grumlin/transport"
-require_relative "grumlin/client"
-require_relative "grumlin/typed_value"
-
-require_relative "grumlin/vertex"
-require_relative "grumlin/edge"
-require_relative "grumlin/path"
-require_relative "grumlin/typing"
-require_relative "grumlin/traversal"
-require_relative "grumlin/request_dispatcher"
-require_relative "grumlin/translator"
-
-require_relative "grumlin/anonymous_step"
-require_relative "grumlin/step"
-
-require_relative "grumlin/t"
-require_relative "grumlin/order"
-require_relative "grumlin/u"
-require_relative "grumlin/p"
-require_relative "grumlin/pop"
-require_relative "grumlin/sugar"
+loader = Zeitwerk::Loader.for_gem
+loader.inflector.inflect(
+  "rspec" => "RSpec",
+  "db_cleaner_context" => "DBCleanerContext"
+)
 
 module Grumlin
+  class Error < StandardError; end
+
+  class UnknownError < Error; end
+
+  class ConnectionError < Error; end
+
+  class CannotConnectError < ConnectionError; end
+
+  class DisconnectError < ConnectionError; end
+
+  class ConnectionStatusError < Error; end
+
+  class NotConnectedError < ConnectionStatusError; end
+
+  class AlreadyConnectedError < ConnectionStatusError; end
+
+  class ProtocolError < Error; end
+
+  class UnknownResponseStatus < ProtocolError
+    attr_reader :status
+
+    def initialize(status)
+      super("unknown response status code #{status[:code]}")
+      @status = status
+    end
+  end
+
+  class UnknownTypeError < ProtocolError; end
+
+  class StatusError < Error
+    attr_reader :status
+
+    def initialize(status)
+      super(status[:message])
+      @status = status
+    end
+  end
+
+  class ClientSideError < StatusError; end
+
+  class ServerSideError < StatusError; end
+
+  class ScriptEvaluationError < ServerSideError; end
+
+  class InvalidRequestArgumentsError < ServerSideError; end
+
+  class ServerError < ServerSideError; end
+
+  class ServerSerializationError < ServerSideError; end
+
+  class ServerTimeoutError < ServerSideError; end
+
+  class InternalClientError < Error; end
+
+  class UnknownRequestStoppedError < InternalClientError; end
+
+  class ResourceLeakError < InternalClientError; end
+
+  class UnknownMapKey < InternalClientError
+    attr_reader :key, :map
+
+    def initialize(key, map)
+      @key = key
+      @map = map
+      super("Cannot cast key #{key} in map #{map}")
+    end
+  end
+
   class Config
     attr_accessor :url, :pool_size, :client_concurrency, :client_factory
 
@@ -71,3 +120,6 @@ module Grumlin
     end
   end
 end
+
+loader.setup
+loader.eager_load
