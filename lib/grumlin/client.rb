@@ -24,8 +24,8 @@ module Grumlin
         @client.close
       end
 
-      def write(*args)
-        @client.write(*args)
+      def write(bytecode)
+        @client.write(bytecode)
       ensure
         @count += 1
       end
@@ -94,11 +94,10 @@ module Grumlin
     end
 
     # TODO: support yielding
-    def write(*args)
+    def write(bytecode)
       raise NotConnectedError unless connected?
 
-      request_id = SecureRandom.uuid
-      request = to_query(request_id, args)
+      request = bytecode.to_query
       channel = @request_dispatcher.add_request(request)
       @transport.write(request)
 
@@ -117,18 +116,6 @@ module Grumlin
     alias to_s inspect
 
     private
-
-    def to_query(request_id, message)
-      {
-        requestId: request_id,
-        op: "bytecode",
-        processor: "traversal",
-        args: {
-          gremlin: Typing.to_bytecode(Translator.to_bytecode_query(message)),
-          aliases: { g: :g }
-        }
-      }
-    end
 
     def build_transport
       Transport.new(@url, parent: @parent, **@client_options)

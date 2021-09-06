@@ -30,7 +30,7 @@ module Grumlin
       end
 
       def arg_to_query_bytecode(arg)
-        return ["none"] if arg.nil?
+        return ["none"] if arg.is_a?(AnonymousStep) && arg.name == "None" # TODO: FIX ME
         return arg.to_bytecode if arg.is_a?(TypedValue)
         return arg unless arg.is_a?(AnonymousStep)
 
