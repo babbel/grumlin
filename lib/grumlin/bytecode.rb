@@ -46,11 +46,7 @@ module Grumlin
       return arg unless arg.is_a?(AnonymousStep)
 
       args = arg.args.flatten.map do |a|
-        if a.instance_of?(AnonymousStep)
-          as_bytecode(a.bytecode.to_bytecode)
-        else
-          arg_to_query_bytecode(a)
-        end
+        a.instance_of?(AnonymousStep) ? as_bytecode(a.bytecode.to_bytecode) : arg_to_query_bytecode(a)
       end
       [arg.name, *args]
     end
@@ -60,7 +56,7 @@ module Grumlin
       return arg unless arg.is_a?(AnonymousStep)
 
       args = arg.args.flatten.map do |a|
-        a.instance_of?(AnonymousStep) ? a.steps.map(&:to_bytecode) : translate_arg_to_bytecode(a)
+        a.instance_of?(AnonymousStep) ? a.bytecode.to_bytecode : translate_arg_to_bytecode(a)
       end
       [arg.name, *args]
     end
