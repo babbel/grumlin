@@ -40,14 +40,14 @@ module Grumlin
 
     private
 
-    def arg_to_query_bytecode(arg) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def arg_to_query_bytecode(arg)
       return ["none"] if arg.is_a?(AnonymousStep) && arg.name == "None" # TODO: FIX ME
       return arg.to_bytecode if arg.is_a?(TypedValue)
       return arg unless arg.is_a?(AnonymousStep)
 
       args = arg.args.flatten.map do |a|
         if a.instance_of?(AnonymousStep)
-          as_bytecode(a.steps.map { |s| translate_arg_to_bytecode(s) })
+          as_bytecode(a.bytecode.to_bytecode)
         else
           arg_to_query_bytecode(a)
         end
@@ -60,7 +60,7 @@ module Grumlin
       return arg unless arg.is_a?(AnonymousStep)
 
       args = arg.args.flatten.map do |a|
-        a.instance_of?(AnonymousStep) ? a.steps.map { |s| translate_arg_to_bytecode(s) } : translate_arg_to_bytecode(a)
+        a.instance_of?(AnonymousStep) ? a.steps.map(&:to_bytecode) : translate_arg_to_bytecode(a)
       end
       [arg.name, *args]
     end

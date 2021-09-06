@@ -27,10 +27,6 @@ module Grumlin
 
     alias to_s inspect
 
-    def to_bytecode
-      bytecode.to_bytecode
-    end
-
     def steps
       bytecode.steps
     end
