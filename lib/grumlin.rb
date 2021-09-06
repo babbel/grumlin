@@ -23,6 +23,9 @@ loader.inflector.inflect(
   "db_cleaner_context" => "DBCleanerContext"
 )
 
+db_adapters = "#{__dir__}/grumlin/test"
+loader.do_not_eager_load(db_adapters)
+
 module Grumlin
   class Error < StandardError; end
 
