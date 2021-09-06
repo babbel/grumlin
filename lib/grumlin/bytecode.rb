@@ -19,7 +19,7 @@ module Grumlin
     end
 
     def to_bytecode
-      @to_bytecode ||= steps.map { |s| translate_arg_to_bytecode(s) }
+      @to_bytecode ||= steps.map { |s| arg_to_query_bytecode(s) }
     end
 
     def to_s
@@ -32,7 +32,7 @@ module Grumlin
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: as_bytecode(steps.map { |s| arg_to_query_bytecode(s) }),
+          gremlin: as_bytecode(to_bytecode),
           aliases: { g: :g }
         }
       }
@@ -47,16 +47,6 @@ module Grumlin
 
       args = arg.args.flatten.map do |a|
         a.instance_of?(AnonymousStep) ? as_bytecode(a.bytecode.to_bytecode) : arg_to_query_bytecode(a)
-      end
-      [arg.name, *args]
-    end
-
-    def translate_arg_to_bytecode(arg)
-      return arg.to_bytecode if arg.is_a?(TypedValue)
-      return arg unless arg.is_a?(AnonymousStep)
-
-      args = arg.args.flatten.map do |a|
-        a.instance_of?(AnonymousStep) ? a.bytecode.to_bytecode : translate_arg_to_bytecode(a)
       end
       [arg.name, *args]
     end
