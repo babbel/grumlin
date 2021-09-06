@@ -45,21 +45,20 @@ module Grumlin
     def close
       return if @closed
 
-      logger.debug(self) { "Closing." }
       @closed = true
 
-      logger.debug(self) { "Closing channels." }
       @request_channel.close
       @response_channel.close
-      logger.debug(self) { "Closing connection." }
 
       begin
         @connection.close
       rescue StandardError
         nil
       end
-      @response_task.stop
-      logger.debug(self) { "Closed." }
+      @connection = nil
+
+      @request_task&.stop(true)
+      @response_task&.stop(true)
     end
 
     def wait

@@ -24,6 +24,7 @@ module Grumlin
       end
 
       def write(*args)
+        @count += 1
         @client.write(*args)
       end
 
@@ -60,6 +61,7 @@ module Grumlin
       rescue Async::Stop, Async::TimeoutError, StandardError
         close(check_requests: false)
       end
+      logger.debug(self, "Connected")
     end
 
     # Before calling close the user must ensure that:
@@ -71,14 +73,18 @@ module Grumlin
       @closed = true
 
       @transport&.close
-      @response_task&.stop
       @transport&.wait
+
+      @response_task&.stop
+      @response_task&.wait
 
       return if @request_dispatcher&.requests&.empty?
 
       @request_dispatcher.clear unless check_requests
 
       raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}" if check_requests
+    ensure
+      logger.debug(self, "Closed")
     end
 
     def connected?

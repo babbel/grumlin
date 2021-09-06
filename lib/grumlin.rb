@@ -45,7 +45,7 @@ module Grumlin
 
     def initialize
       @pool_size = 10
-      @client_concurrency = 2
+      @client_concurrency = 5
       @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent: parent) }
     end
 
