@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 require "securerandom"
-require "json"
+require "oj"
+
+Oj.mimic_JSON
+Oj.add_to_json
 
 require "async"
 require "async/pool"

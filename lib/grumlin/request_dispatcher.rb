@@ -48,7 +48,7 @@ module Grumlin
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
-        request[:channel] << request[:result] + [response.dig(:result, :data)]
+        request[:channel] << [*request[:result], response.dig(:result, :data)]
         close_request(request_id)
       when :partial_content then request[:result] << response.dig(:result, :data)
       when :no_content

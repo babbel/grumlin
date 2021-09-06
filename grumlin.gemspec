@@ -25,4 +25,5 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "async-pool", "~> 0.3"
   spec.add_dependency "async-websocket", "~> 0.19"
+  spec.add_dependency "oj", "~> 3.12"
 end
