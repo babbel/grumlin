@@ -2,8 +2,9 @@
 
 module Grumlin
   class Bytecode
-    def initialize(step)
+    def initialize(step, no_return: false)
       @step = step
+      @no_return = no_return
     end
 
     def steps
@@ -18,10 +19,6 @@ module Grumlin
       end
     end
 
-    def to_bytecode
-      @to_bytecode ||= steps.map { |s| arg_to_query_bytecode(s) }
-    end
-
     def to_s
       to_bytecode.to_s
     end
@@ -32,17 +29,22 @@ module Grumlin
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: as_bytecode(to_bytecode),
+          gremlin: as_bytecode(to_bytecode + (@no_return ? [["none"]] : [])),
           aliases: { g: :g }
         }
       }
     end
 
+    protected
+
+    def to_bytecode
+      @to_bytecode ||= steps.map { |s| arg_to_query_bytecode(s) }
+    end
+
     private
 
     def arg_to_query_bytecode(arg)
-      return ["none"] if arg.is_a?(AnonymousStep) && arg.name == "None" # TODO: FIX ME
-      return arg.to_bytecode if arg.is_a?(TypedValue)
+      return arg.to_bytecode if arg.respond_to?(:to_bytecode)
       return arg unless arg.is_a?(AnonymousStep)
 
       args = arg.args.flatten.map do |a|

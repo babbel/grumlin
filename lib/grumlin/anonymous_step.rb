@@ -31,8 +31,8 @@ module Grumlin
       bytecode.steps
     end
 
-    def bytecode
-      @bytecode ||= Bytecode.new(self)
+    def bytecode(no_return: false)
+      @bytecode ||= Bytecode.new(self, no_return: no_return)
     end
 
     private

@@ -24,7 +24,7 @@ module Grumlin
 
     def iterate
       @pool.acquire do |client|
-        client.write(none_step.bytecode)
+        client.write(bytecode(no_return: true))
       end
     end
 
