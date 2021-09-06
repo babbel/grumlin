@@ -43,14 +43,6 @@ RSpec.describe Async::Channel, async: true do
         expect { channel.close }.to change(channel, :closed?).from(false).to(true)
       end
     end
-
-    context "when the channel is closed" do
-      before { channel.close }
-
-      it "raises ChannelClosedError" do
-        expect { channel.close }.to raise_error(described_class::ChannelClosedError)
-      end
-    end
   end
 
   describe "#each" do

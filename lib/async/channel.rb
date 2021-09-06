@@ -32,7 +32,7 @@ module Async
     end
 
     def close
-      raise(ChannelClosedError, "Cannot close a closed channel") if closed?
+      return if closed?
 
       @queue << [:close]
       @closed = true

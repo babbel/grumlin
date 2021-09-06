@@ -13,6 +13,7 @@ module Grumlin
       def initialize(url, client_factory:, concurrency: 1, parent: Async::Task.current)
         super(concurrency)
         @client = client_factory.call(url, parent).tap(&:connect)
+        @parent = parent
       end
 
       def closed?
@@ -25,6 +26,8 @@ module Grumlin
 
       def write(*args)
         @client.write(*args)
+      ensure
+        @count += 1
       end
 
       def viable?
@@ -36,33 +39,54 @@ module Grumlin
       end
     end
 
+    include Console
+
+    # Client is not reusable. Once closed should be recreated.
     def initialize(url, parent: Async::Task.current, **client_options)
       @url = url
       @client_options = client_options
       @parent = parent
-      reset!
+      @request_dispatcher = nil
+      @transport = nil
     end
 
     def connect
+      raise "ClientClosed" if @closed
+
       @transport = build_transport
       response_channel = @transport.connect
       @request_dispatcher = RequestDispatcher.new
-      @parent.async do
+      @response_task = @parent.async do
         response_channel.each do |response|
           @request_dispatcher.add_response(response)
         end
-      rescue StandardError
-        close
+      rescue Async::Stop, Async::TimeoutError, StandardError
+        close(check_requests: false)
       end
+      logger.debug(self, "Connected")
     end
 
-    def close
-      @transport&.close
-      if @request_dispatcher&.requests&.any?
-        raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}"
-      end
+    # Before calling close the user must ensure that:
+    # 1) There are no ongoing requests
+    # 2) There will be no new writes after
+    def close(check_requests: true) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+      return if @closed
 
-      reset!
+      @closed = true
+
+      @transport&.close
+      @transport&.wait
+
+      @response_task&.stop
+      @response_task&.wait
+
+      return if @request_dispatcher&.requests&.empty?
+
+      @request_dispatcher.clear unless check_requests
+
+      raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}" if check_requests
+    ensure
+      logger.debug(self, "Closed")
     end
 
     def connected?
@@ -80,9 +104,9 @@ module Grumlin
 
       begin
         channel.dequeue.flat_map { |item| Typing.cast(item) }
-      rescue Async::Stop
-        retry if @request_dispatcher.ongoing_request?(request_id)
-        raise Grumlin::UnknownRequestStoppedError, "#{request_id} is not in the ongoing requests list"
+      rescue Async::Stop, Async::TimeoutError
+        close(check_requests: false)
+        raise
       end
     end
 
@@ -104,11 +128,6 @@ module Grumlin
           aliases: { g: :g }
         }
       }
-    end
-
-    def reset!
-      @request_dispatcher = nil
-      @transport = nil
     end
 
     def build_transport

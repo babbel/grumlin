@@ -22,6 +22,8 @@ module Grumlin
       498 => ClientSideError
     }.freeze
 
+    include Console
+
     def initialize
       @requests = {}
     end
@@ -67,6 +69,10 @@ module Grumlin
 
     def ongoing_request?(request_id)
       @requests.key?(request_id)
+    end
+
+    def clear
+      @requests.clear
     end
 
     private

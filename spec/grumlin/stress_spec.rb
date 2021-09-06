@@ -25,9 +25,9 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
   end
 
   def error_query
-    expect do
-      g.addE.iterate
-    end.to raise_error(Grumlin::ServerSerializationError)
+    g.addE.iterate
+  rescue Grumlin::ServerSerializationError => e
+    expect(e).to be_an_instance_of(Grumlin::ServerSerializationError)
   end
 
   def upsert_query # rubocop:disable Metrics/AbcSize
@@ -83,26 +83,13 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
 
       concurrency.times do
         barrier.async do
-          random_query
+          loop do
+            random_query
+          end
         end
       end
 
       reactor.sleep(duration)
-      barrier.tasks.each(&:stop)
-      barrier.wait
-    end
-  end
-
-  context "when stopping during a long running query" do
-    it "succeeds" do
-      barrier = Async::Barrier.new
-
-      concurrency.times do
-        barrier.async do
-          paginated_query
-        end
-      end
-
       barrier.tasks.each(&:stop)
       barrier.wait
     end
@@ -121,6 +108,20 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
       end
 
       barrier.wait
+    end
+  end
+
+  context "when task is stopped by timeout" do
+    it "succeeds" do
+      t = reactor.async do |task|
+        task.with_timeout(3) do
+          loop do
+            upsert_query
+          end
+        end
+      end
+
+      expect { t.wait }.to raise_error(Async::TimeoutError)
     end
   end
 end
