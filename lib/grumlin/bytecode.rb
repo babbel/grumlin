@@ -32,10 +32,23 @@ module Grumlin
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: Typing.as_bytecode(Translator.to_bytecode_query(steps)),
+          gremlin: Typing.as_bytecode(steps.map { |s| arg_to_query_bytecode(s) }),
           aliases: { g: :g }
         }
       }
+    end
+
+    private
+
+    def arg_to_query_bytecode(arg)
+      return ["none"] if arg.is_a?(AnonymousStep) && arg.name == "None" # TODO: FIX ME
+      return arg.to_bytecode if arg.is_a?(TypedValue)
+      return arg unless arg.is_a?(AnonymousStep)
+
+      args = arg.args.flatten.map do |a|
+        a.instance_of?(AnonymousStep) ? Typing.as_bytecode(Translator.to_bytecode(a.steps)) : arg_to_query_bytecode(a)
+      end
+      [arg.name, *args]
     end
   end
 end
