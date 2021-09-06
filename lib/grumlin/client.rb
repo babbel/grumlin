@@ -13,6 +13,7 @@ module Grumlin
       def initialize(url, client_factory:, concurrency: 1, parent: Async::Task.current)
         super(concurrency)
         @client = client_factory.call(url, parent).tap(&:connect)
+        @parent = parent
       end
 
       def closed?
@@ -24,8 +25,9 @@ module Grumlin
       end
 
       def write(*args)
-        @count += 1
         @client.write(*args)
+      ensure
+        @count += 1
       end
 
       def viable?
