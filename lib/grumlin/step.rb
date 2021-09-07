@@ -16,13 +16,13 @@ module Grumlin
 
     def toList
       @pool.acquire do |client|
-        client.write(*steps)
+        client.write(bytecode)
       end
     end
 
     def iterate
       @pool.acquire do |client|
-        client.write(*steps, nil)
+        client.write(bytecode(no_return: true))
       end
     end
 

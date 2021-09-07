@@ -22,25 +22,13 @@ module Grumlin
     end
 
     def inspect
-      @inspect ||= to_bytecode.to_s
+      bytecode.inspect
     end
 
     alias to_s inspect
 
-    def to_bytecode
-      @to_bytecode ||= steps.map { |s| Translator.to_bytecode(s) }
-    end
-
-    def steps
-      @steps ||= begin
-        step = self
-        [].tap do |result|
-          until step.nil?
-            result << step
-            step = step.previous_step
-          end
-        end.reverse
-      end
+    def bytecode(no_return: false)
+      @bytecode ||= Bytecode.new(self, no_return: no_return)
     end
 
     private

@@ -18,8 +18,7 @@ module Grumlin
         end
 
         after do
-          Grumlin.config.default_pool.close
-          Grumlin.config.reset!
+          Grumlin.close
         end
       end
     end

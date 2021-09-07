@@ -121,6 +121,17 @@ module Grumlin
     def config
       @config ||= Config.new
     end
+
+    def default_pool
+      config.default_pool
+    end
+
+    def close
+      default_pool.wait while default_pool.busy?
+
+      default_pool.close
+      config.reset!
+    end
   end
 end
 
