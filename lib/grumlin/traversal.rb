@@ -7,7 +7,7 @@ module Grumlin
     # TODO: add other start steps
     SUPPORTED_START_STEPS = %w[E V addE addV].freeze
 
-    def initialize(pool = Grumlin.config.default_pool)
+    def initialize(pool = Grumlin.default_pool)
       @pool = pool
     end
 
