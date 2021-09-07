@@ -16,5 +16,6 @@ module Grumlin
       "<#{@type}.#{@value}>"
     end
     alias to_s inspect
+    alias to_readable_bytecode inspect
   end
 end

@@ -18,7 +18,7 @@ module Grumlin
     end
 
     def inspect
-      @inspect ||= steps.map { |s| serialize_arg(s, serialization_method: :to_s) }.to_s
+      to_readable_bytecode.to_s
     end
     alias to_s inspect
 
@@ -34,24 +34,22 @@ module Grumlin
       }
     end
 
-    protected
+    def to_readable_bytecode
+      @to_readable_bytecode ||= steps.map { |s| serialize_arg(s, serialization_method: :to_readable_bytecode) }
+    end
 
     def to_bytecode
-      {
+      @to_bytecode ||= {
         "@type": "g:Bytecode",
-        "@value": { step: serialize }
+        "@value": { step: (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) } }
       }
     end
 
     private
 
-    def serialize
-      @serialize ||= (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) }
-    end
-
     # Serializes step or a step argument to either an executable query or a human readable string representation
-    # depending on the `serialization_method` parameter. I should be either `:to_s` for human readable representation
-    # or `:to_bytecode` for query.
+    # depending on the `serialization_method` parameter. I should be either `:to_readable_bytecode` for human readable
+    # representation or `:to_bytecode` for query.
     def serialize_arg(arg, serialization_method: :to_bytecode)
       return arg.send(serialization_method) if arg.respond_to?(:to_bytecode)
       return arg unless arg.is_a?(AnonymousStep)

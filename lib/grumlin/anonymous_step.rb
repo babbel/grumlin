@@ -22,7 +22,7 @@ module Grumlin
     end
 
     def inspect
-      bytecode.to_s
+      bytecode.inspect
     end
 
     alias to_s inspect

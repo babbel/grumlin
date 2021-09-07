@@ -33,7 +33,7 @@ RSpec.describe Grumlin::Bytecode do
     subject { bytecode.inspect }
 
     it "returns string representation of the bytecode" do
-      expect(subject).to eq('[["V"], ["hasLabel", :node], ["has", "<T.id>", "node_id"], ["order"], ["by", :property, "<Order.desc>"], ["repeat", "[[\\"out\\", :connection]]"], ["emit"], ["hasLabel", :node]]')
+      expect(subject).to eq('[["V"], ["hasLabel", :node], ["has", "<T.id>", "node_id"], ["order"], ["by", :property, "<Order.desc>"], ["repeat", [["out", :connection]]], ["emit"], ["hasLabel", :node]]')
     end
   end
 
