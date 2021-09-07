@@ -65,10 +65,10 @@ module Grumlin
       @steps ||= [].tap do |result|
         step = @step
         until step.nil?
-          result << step
+          result.unshift(step)
           step = step.previous_step
         end
-      end.reverse
+      end
     end
   end
 end

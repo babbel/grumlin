@@ -21,30 +21,10 @@ RSpec.describe Grumlin::AnonymousStep do
     end
   end
 
-  describe "#to_bytecode" do
-    xit "returns bytecode representation of the travesal" do
-      t = g.addV.as("first")
-           .addV.as("second")
-           .addV.as("third")
-           .addE("follows").from("first").to("second")
-           .addE("follows").from("second").to("third")
-           .addE("follows").from("third").to("first")
-      expect(t.to_bytecode).to eq([["V"],
-                                   ["addV"],
-                                   ["as", "first"],
-                                   ["addV"],
-                                   ["as", "second"],
-                                   ["addV"],
-                                   ["as", "third"],
-                                   ["addE", "follows"],
-                                   ["from", "first"],
-                                   ["to", "second"],
-                                   ["addE", "follows"],
-                                   ["from", "second"],
-                                   ["to", "third"],
-                                   ["addE", "follows"],
-                                   ["from", "third"],
-                                   ["to", "first"]])
+  describe "#bytecode" do
+    it "returns a Bytecode instance" do
+      t = g.addV
+      expect(t.bytecode).to be_an(Grumlin::Bytecode)
     end
   end
 end
