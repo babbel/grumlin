@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 module Grumlin
+  # Incapsulates logic of converting step chains and step arguments to queries that can be sent to the server
+  # and to human readable strings.
   class Bytecode
     class NoneStep
       def to_bytecode
