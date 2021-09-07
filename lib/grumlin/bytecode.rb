@@ -18,7 +18,7 @@ module Grumlin
     end
 
     def inspect
-      @inspect = steps.map { |s| serialize_arg(s, serialization_method: :to_s) }.to_s
+      @inspect ||= steps.map { |s| serialize_arg(s, serialization_method: :to_s) }.to_s
     end
     alias to_s inspect
 
@@ -33,6 +33,8 @@ module Grumlin
         }
       }
     end
+
+    protected
 
     def to_bytecode
       {
