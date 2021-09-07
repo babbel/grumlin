@@ -27,10 +27,6 @@ module Grumlin
 
     alias to_s inspect
 
-    def steps
-      bytecode.steps
-    end
-
     def bytecode(no_return: false)
       @bytecode ||= Bytecode.new(self, no_return: no_return)
     end
