@@ -2,26 +2,23 @@
 
 module Grumlin
   class Bytecode
+    class NoneStep
+      def to_bytecode
+        ["none"]
+      end
+    end
+
+    NONE_STEP = NoneStep.new
+
     def initialize(step, no_return: false)
       @step = step
       @no_return = no_return
     end
 
-    def steps
-      @steps ||= begin
-        step = @step
-        [].tap do |result|
-          until step.nil?
-            result << step
-            step = step.previous_step
-          end
-        end.reverse
-      end
+    def inspect
+      @inspect = steps.map { |s| serialize_arg(s, serialization_method: :to_s) }.to_s
     end
-
-    def to_s
-      to_bytecode.to_s
-    end
+    alias to_s inspect
 
     def to_query
       {
@@ -29,35 +26,49 @@ module Grumlin
         op: "bytecode",
         processor: "traversal",
         args: {
-          gremlin: as_bytecode(to_bytecode + (@no_return ? [["none"]] : [])),
+          gremlin: to_bytecode,
           aliases: { g: :g }
         }
       }
     end
 
-    protected
-
     def to_bytecode
-      @to_bytecode ||= steps.map { |s| arg_to_query_bytecode(s) }
+      {
+        "@type": "g:Bytecode",
+        "@value": { step: serialize }
+      }
     end
 
     private
 
-    def arg_to_query_bytecode(arg)
-      return arg.to_bytecode if arg.respond_to?(:to_bytecode)
-      return arg unless arg.is_a?(AnonymousStep)
-
-      args = arg.args.flatten.map do |a|
-        a.instance_of?(AnonymousStep) ? as_bytecode(a.bytecode.to_bytecode) : arg_to_query_bytecode(a)
-      end
-      [arg.name, *args]
+    def serialize
+      @serialize ||= (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) }
     end
 
-    def as_bytecode(step)
-      {
-        "@type": "g:Bytecode",
-        "@value": { step: step }
-      }
+    # Serializes step or a step argument to either an executable query or a human readable string representation
+    # depending on the `serialization_method` parameter. I should be either `:to_s` for human readable representation
+    # or `:to_bytecode` for query.
+    def serialize_arg(arg, serialization_method: :to_bytecode)
+      return arg.send(serialization_method) if arg.respond_to?(:to_bytecode)
+      return arg unless arg.is_a?(AnonymousStep)
+
+      arg.args.flatten.each.with_object([arg.name]) do |a, res|
+        res << if a.instance_of?(AnonymousStep)
+                 a.bytecode.send(serialization_method)
+               else
+                 serialize_arg(a, serialization_method: serialization_method)
+               end
+      end
+    end
+
+    def steps
+      @steps ||= [].tap do |result|
+        step = @step
+        until step.nil?
+          result << step
+          step = step.previous_step
+        end
+      end.reverse
     end
   end
 end

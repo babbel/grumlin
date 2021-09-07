@@ -4,8 +4,6 @@ module Grumlin
   class Step < AnonymousStep
     attr_reader :client
 
-    NONE_STEP = AnonymousStep.new("None")
-
     def initialize(pool, name, *args, previous_step: nil)
       super(name, *args, previous_step: previous_step)
       @pool = pool
@@ -29,10 +27,6 @@ module Grumlin
     end
 
     private
-
-    def none_step
-      self.class.new(@pool, "None", previous_step: self)
-    end
 
     def add_step(step_name, args)
       self.class.new(@pool, step_name, *args, previous_step: self)
