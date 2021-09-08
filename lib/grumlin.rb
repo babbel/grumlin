@@ -57,11 +57,12 @@ module Grumlin
   class UnknownTypeError < ProtocolError; end
 
   class StatusError < Error
-    attr_reader :status
+    attr_reader :status, :query
 
-    def initialize(status)
+    def initialize(status, query)
       super(status[:message])
       @status = status
+      @query = query
     end
   end
 
