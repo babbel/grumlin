@@ -15,7 +15,7 @@ RSpec.describe Grumlin do
 
   describe Grumlin::ServerSideError do
     it "properly assigns message" do
-      exception = described_class.new({ code: 999, message: "error message" })
+      exception = described_class.new({ code: 999, message: "error message" }, {})
       expect(exception.message).to eq("error message")
       expect(exception.status).to eq({ code: 999, message: "error message" })
     end

@@ -44,7 +44,7 @@ module Grumlin
 
       request = @requests[request_id]
 
-      check_errors!(response[:status])
+      check_errors!(response[:status], request[:request])
 
       case SUCCESS[response.dig(:status, :code)]
       when :success
@@ -77,9 +77,9 @@ module Grumlin
 
     private
 
-    def check_errors!(status)
+    def check_errors!(status, query)
       if (error = ERRORS[status[:code]])
-        raise(error, status)
+        raise error.new(status, query)
       end
 
       return unless SUCCESS[status[:code]].nil?
