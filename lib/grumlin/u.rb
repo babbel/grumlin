@@ -3,7 +3,7 @@
 module Grumlin
   module U
     # TODO: add other start steps
-    SUPPORTED_START_STEPS = %w[V addV count has out unfold values].freeze
+    SUPPORTED_START_STEPS = %w[V addV count fold has out repeat unfold values].freeze
 
     class << self
       SUPPORTED_START_STEPS.each do |step|
