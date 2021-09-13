@@ -10,8 +10,18 @@ module Grumlin
     end
 
     def next
-      @enum ||= toList.to_enum
-      @enum.next
+      to_enum.next
+    end
+
+    def hasNext # rubocop:disable Naming/MethodName
+      to_enum.peek
+      true
+    rescue StopIteration
+      false
+    end
+
+    def to_enum
+      @to_enum ||= toList.to_enum
     end
 
     def toList

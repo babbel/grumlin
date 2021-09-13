@@ -188,9 +188,8 @@ RSpec.describe "Practical Gramlin: walking" do
     ).to eq(1)
   end
 
-  xit "10" do
-    # TODO: add support for hasNext
-    expect(g.V().has("code", "AUS").out("route").has("code", "DFW").hasNext).to eq([])
+  it "10" do
+    expect(g.V().has("code", "AUS").out("route").has("code", "DFW").hasNext).to be_truthy
   end
 
   it "11" do

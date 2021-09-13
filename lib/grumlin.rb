@@ -104,14 +104,6 @@ module Grumlin
       @client_concurrency = 5
       @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent: parent) }
     end
-
-    def default_pool
-      @default_pool ||= Async::Pool::Controller.new(Grumlin::Client::PoolResource, limit: pool_size)
-    end
-
-    def reset!
-      @default_pool = nil
-    end
   end
 
   class << self
@@ -124,14 +116,15 @@ module Grumlin
     end
 
     def default_pool
-      config.default_pool
+      Thread.current[:grumlin_default_pool] ||= Async::Pool::Controller.new(Grumlin::Client::PoolResource,
+                                                                            limit: config.pool_size)
     end
 
     def close
       default_pool.wait while default_pool.busy?
 
       default_pool.close
-      config.reset!
+      Thread.current[:grumlin_default_pool] = nil
     end
   end
 end
