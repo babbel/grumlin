@@ -104,15 +104,9 @@ module Grumlin
       @client_concurrency = 5
       @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent: parent) }
     end
-
-    def default_pool
-      @default_pool ||= Async::Pool::Controller.new(Grumlin::Client::PoolResource, limit: pool_size)
-    end
-
-    def reset!
-      @default_pool = nil
-    end
   end
+
+  @pool_mutex = Mutex.new
 
   class << self
     def configure
@@ -124,14 +118,26 @@ module Grumlin
     end
 
     def default_pool
-      config.default_pool
+      if Thread.current.thread_variable_get(:grumlin_default_pool)
+        return Thread.current.thread_variable_get(:grumlin_default_pool)
+      end
+
+      @pool_mutex.synchronize do
+        Thread.current.thread_variable_set(:grumlin_default_pool,
+                                           Async::Pool::Controller.new(Grumlin::Client::PoolResource,
+                                                                       limit: config.pool_size))
+      end
     end
 
     def close
-      default_pool.wait while default_pool.busy?
+      return if Thread.current.thread_variable_get(:grumlin_default_pool).nil?
 
-      default_pool.close
-      config.reset!
+      @pool_mutex.synchronize do
+        pool = Thread.current.thread_variable_get(:grumlin_default_pool)
+        pool.wait while pool.busy?
+        pool.close
+        Thread.current.thread_variable_set(:grumlin_default_pool, nil)
+      end
     end
   end
 end
