@@ -190,6 +190,7 @@ RSpec.describe "Practical Gramlin: walking" do
 
   it "10" do
     expect(g.V().has("code", "AUS").out("route").has("code", "DFW").hasNext).to be_truthy
+    expect(g.V().has("code", "AUS").out("route").has("code", "SYD").hasNext).to be_falsey
   end
 
   it "11" do
