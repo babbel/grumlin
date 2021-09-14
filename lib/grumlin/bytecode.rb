@@ -39,10 +39,9 @@ module Grumlin
     end
 
     def to_bytecode
-      @to_bytecode ||= {
-        "@type": "g:Bytecode",
-        "@value": { step: (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) } }
-      }
+      @to_bytecode ||= TypedValue.new("Bytecode", { step: (steps + (@no_return ? [NONE_STEP] : [])).map do |s|
+                                                            serialize_arg(s)
+                                                          end }).to_bytecode
     end
 
     private

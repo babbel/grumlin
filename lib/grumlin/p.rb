@@ -12,14 +12,14 @@ module Grumlin
 
         def build_value(name, args)
           type, args = cast_args(args)
-          { predicate: name, value: { "@type": type, "@value": args } }
+          { predicate: name, value: TypedValue.new(type, args).to_bytecode }
         end
 
         def cast_args(args)
           if args.count > 1
-            ["g:List", args]
+            ["List", args]
           else
-            ["g:String", args[0]] # TODO: support other types
+            ["String", args[0]] # TODO: support other types
           end
         end
       end
