@@ -3,7 +3,7 @@
 module Grumlin
   # TODO: find a better name
   class TypedValue
-    def initialize(type, value)
+    def initialize(value, type: nil)
       @type = type
       @value = value
     end

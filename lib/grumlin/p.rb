@@ -5,14 +5,14 @@ module Grumlin
     module P
       class Predicate < TypedValue
         def initialize(name, args)
-          super("P", build_value(name, args))
+          super(build_value(name, args), type: "P")
         end
 
         private
 
         def build_value(name, args)
           type, args = cast_args(args)
-          { predicate: name, value: TypedValue.new(type, args).to_bytecode }
+          { predicate: name, value: TypedValue.new(args, type: type).to_bytecode }
         end
 
         def cast_args(args)
