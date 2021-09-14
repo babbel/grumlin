@@ -22,18 +22,6 @@ module Grumlin
     end
     alias to_s inspect
 
-    def to_query
-      {
-        requestId: SecureRandom.uuid,
-        op: "bytecode",
-        processor: "traversal",
-        args: {
-          gremlin: to_bytecode,
-          aliases: { g: :g }
-        }
-      }
-    end
-
     def to_readable_bytecode
       @to_readable_bytecode ||= steps.map { |s| serialize_arg(s, serialization_method: :to_readable_bytecode) }
     end
