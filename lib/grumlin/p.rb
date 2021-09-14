@@ -3,6 +3,7 @@
 module Grumlin
   module P
     module P
+      # TODO: support more predicates
       %w[within].each do |step|
         define_method step do |*args|
           { # TODO: replace with a TypedValue?
