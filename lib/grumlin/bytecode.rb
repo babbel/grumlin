@@ -27,13 +27,14 @@ module Grumlin
     end
 
     def to_bytecode
-      @to_bytecode ||= TypedValue.new({
-                                        step: (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) }
-                                      },
-                                      type: "Bytecode").to_bytecode
+      @to_bytecode ||= TypedValue.new(type: "Bytecode", value: { step: serialize_step }).to_bytecode
     end
 
     private
+
+    def serialize_step
+      (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) }
+    end
 
     # Serializes step or a step argument to either an executable query or a human readable string representation
     # depending on the `serialization_method` parameter. I should be either `:to_readable_bytecode` for human readable
