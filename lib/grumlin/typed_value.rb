@@ -11,7 +11,10 @@ module Grumlin
     end
 
     def to_bytecode
-      @to_bytecode ||= { "@type": "g:#{type}", "@value": value }
+      @to_bytecode ||= {
+        "@type": "g:#{type}",
+        "@value": value
+      }
     end
 
     def inspect

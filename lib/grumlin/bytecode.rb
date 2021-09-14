@@ -3,7 +3,7 @@
 module Grumlin
   # Incapsulates logic of converting step chains and step arguments to queries that can be sent to the server
   # and to human readable strings.
-  class Bytecode
+  class Bytecode < TypedValue
     class NoneStep
       def to_bytecode
         ["none"]
@@ -13,6 +13,8 @@ module Grumlin
     NONE_STEP = NoneStep.new
 
     def initialize(step, no_return: false)
+      super(type: "Bytecode")
+
       @step = step
       @no_return = no_return
     end
@@ -26,15 +28,11 @@ module Grumlin
       @to_readable_bytecode ||= steps.map { |s| serialize_arg(s, serialization_method: :to_readable_bytecode) }
     end
 
-    def to_bytecode
-      @to_bytecode ||= TypedValue.new(type: "Bytecode", value: { step: serialize_step }).to_bytecode
+    def value
+      { step: (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) } }
     end
 
     private
-
-    def serialize_step
-      (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) }
-    end
 
     # Serializes step or a step argument to either an executable query or a human readable string representation
     # depending on the `serialization_method` parameter. I should be either `:to_readable_bytecode` for human readable
