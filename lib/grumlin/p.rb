@@ -4,37 +4,39 @@ module Grumlin
   module P
     module P
       class Predicate < TypedValue
-        def initialize(name, args)
+        def initialize(name, args:, arg_type: nil)
           super(type: "P")
           @name = name
           @args = args
+          @arg_type = arg_type
         end
 
         def value
-          @value ||= begin
-            type, args = cast_args(@args) # TODO: Refactor me!
+          @value ||=
             {
               predicate: @name,
-              value: TypedValue.new(type: type, value: args).to_bytecode
+              value: TypedValue.new(type: @arg_type, value: @args).to_bytecode
             }
-          end
-        end
-
-        private
-
-        def cast_args(args)
-          if args.count > 1
-            ["List", args]
-          else
-            ["String", args[0]] # TODO: support other types
-          end
         end
       end
 
       # TODO: support more predicates
-      %w[neq within].each do |predicate|
+      %w[eq neq].each do |predicate|
         define_method predicate do |*args|
-          Predicate.new(predicate, args)
+          Predicate.new(predicate, args: args[0])
+        end
+      end
+
+      %w[within without].each do |predicate|
+        define_method predicate do |*args|
+          args = if args.count == 1 && args[0].is_a?(Array)
+                   args[0]
+                 elsif args.count == 1 && args[0].is_a?(Set)
+                   args[0].to_a
+                 else
+                   args.to_a
+                 end
+          Predicate.new(predicate, args: args, arg_type: "List")
         end
       end
     end

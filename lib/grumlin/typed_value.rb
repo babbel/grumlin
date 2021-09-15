@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 module Grumlin
-  # TODO: find a better name
   class TypedValue
     attr_reader :type, :value
 
@@ -11,10 +10,14 @@ module Grumlin
     end
 
     def to_bytecode
-      @to_bytecode ||= {
-        "@type": "g:#{type}",
-        "@value": value
-      }
+      @to_bytecode ||= if type.nil?
+                         value
+                       else
+                         {
+                           "@type": "g:#{type}",
+                           "@value": value
+                         }
+                       end
     end
 
     def inspect
