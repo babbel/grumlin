@@ -3,7 +3,7 @@
 module Grumlin
   # Incapsulates logic of converting step chains and step arguments to queries that can be sent to the server
   # and to human readable strings.
-  class Bytecode
+  class Bytecode < TypedValue
     class NoneStep
       def to_bytecode
         ["none"]
@@ -13,6 +13,8 @@ module Grumlin
     NONE_STEP = NoneStep.new
 
     def initialize(step, no_return: false)
+      super(type: "Bytecode")
+
       @step = step
       @no_return = no_return
     end
@@ -22,27 +24,12 @@ module Grumlin
     end
     alias to_s inspect
 
-    def to_query
-      {
-        requestId: SecureRandom.uuid,
-        op: "bytecode",
-        processor: "traversal",
-        args: {
-          gremlin: to_bytecode,
-          aliases: { g: :g }
-        }
-      }
-    end
-
     def to_readable_bytecode
       @to_readable_bytecode ||= steps.map { |s| serialize_arg(s, serialization_method: :to_readable_bytecode) }
     end
 
-    def to_bytecode
-      @to_bytecode ||= {
-        "@type": "g:Bytecode",
-        "@value": { step: (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) } }
-      }
+    def value
+      { step: (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) } }
     end
 
     private

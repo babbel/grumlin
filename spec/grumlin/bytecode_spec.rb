@@ -36,32 +36,4 @@ RSpec.describe Grumlin::Bytecode do
       expect(subject).to eq('[["V"], ["hasLabel", :node], ["has", "<T.id>", "node_id"], ["order"], ["by", :property, "<Order.desc>"], ["repeat", [["out", :connection]]], ["emit"], ["hasLabel", :node]]')
     end
   end
-
-  describe "#to_query" do
-    subject { bytecode.to_query }
-
-    it "returns a query ready for submitting to the server" do
-      expect(subject).to include({
-                                   op: "bytecode",
-                                   processor: "traversal",
-                                   args: {
-                                     gremlin: {
-                                       :@type => "g:Bytecode",
-                                       :@value => {
-                                         step: [["V"],
-                                                ["hasLabel", :node],
-                                                ["has", { :@type => "g:T", :@value => :id }, "node_id"],
-                                                ["order"],
-                                                ["by", :property, { :@type => "g:Order", :@value => :desc }],
-                                                ["repeat",
-                                                 { :@type => "g:Bytecode", :@value => { step: [["out", :connection]] } }],
-                                                ["emit"],
-                                                ["hasLabel", :node]]
-                                       }
-                                     },
-                                     aliases: { g: :g }
-                                   }
-                                 })
-    end
-  end
 end

@@ -46,7 +46,7 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
       end
     end
 
-    context "when using within" do
+    context "when using P.within" do
       before do
         g.addV(:test_label).property(T.id, 1)
          .addV(:test_label).property(T.id, 2)
@@ -55,6 +55,18 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
 
       it "returns a list of nodes" do
         expect(g.V().has(T.id, P.within(1, 3)).toList).not_to be_empty
+      end
+    end
+
+    context "when using P.neq" do
+      before do
+        g.addV(:test_label).property(T.id, 1)
+         .addV(:test_label).property(T.id, 2)
+         .addV(:test_label).property(T.id, 3).iterate
+      end
+
+      it "returns a list of nodes" do
+        expect(g.V().has(T.id, P.neq(3)).toList.length).to eq(2)
       end
     end
   end

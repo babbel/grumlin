@@ -97,7 +97,7 @@ module Grumlin
     def write(bytecode)
       raise NotConnectedError unless connected?
 
-      request = bytecode.to_query
+      request = to_query(bytecode.to_bytecode)
       channel = @request_dispatcher.add_request(request)
       @transport.write(request)
 
@@ -119,6 +119,18 @@ module Grumlin
 
     def build_transport
       Transport.new(@url, parent: @parent, **@client_options)
+    end
+
+    def to_query(bytecode)
+      {
+        requestId: SecureRandom.uuid,
+        op: "bytecode",
+        processor: "traversal",
+        args: {
+          gremlin: bytecode,
+          aliases: { g: :g }
+        }
+      }
     end
   end
 end
