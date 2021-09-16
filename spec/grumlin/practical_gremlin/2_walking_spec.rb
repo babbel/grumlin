@@ -361,5 +361,38 @@ RSpec.describe "Practical Gramlin: walking" do
                                                                                                          { icao: ["KAUS"] },
                                                                                                          { desc: ["Austin Bergstrom International Airport"] }])
     expect(g.E(5161).valueMap(true).next).to eq({ dist: 1357, id: 5161, label: "route" })
+    expect(g.V().has("code", "SFO").valueMap.with(WithOptions.tokens).unfold.toList).to eq([{ id: 23 },
+                                                                                            { label: "airport" },
+                                                                                            { country: ["US"] },
+                                                                                            { code: ["SFO"] },
+                                                                                            { longest: [11_870] },
+                                                                                            { city: ["San Francisco"] },
+                                                                                            { elev: [13] },
+                                                                                            { icao: ["KSFO"] },
+                                                                                            { lon: [-122.375] },
+                                                                                            { type: ["airport"] },
+                                                                                            { region: ["US-CA"] },
+                                                                                            { runways: [4] },
+                                                                                            { lat: [37.6189994812012] },
+                                                                                            { desc: ["San Francisco International Airport"] }])
+    expect(g.V().has("code", "SFO").valueMap("code").with(WithOptions.tokens).unfold.toList).to eq([{ id: 23 }, { label: "airport" }, { code: ["SFO"] }])
+    expect(g.V().has("code", "SFO")
+      .valueMap("code").with(WithOptions.tokens, WithOptions.labels)
+      .unfold.toList).to eq([{ label: "airport" }, { code: ["SFO"] }])
+    expect(g.V().has("code", "SFO")
+      .valueMap("code").with(WithOptions.tokens, WithOptions.ids)
+      .unfold.toList).to eq([{ id: 23 }, { code: ["SFO"] }])
+    expect(g.V().has("code", "SFO").valueMap.by(__.unfold).unfold.toList).to eq([{ country: "US" },
+                                                                                 { code: "SFO" },
+                                                                                 { longest: 11_870 },
+                                                                                 { city: "San Francisco" },
+                                                                                 { elev: 13 },
+                                                                                 { icao: "KSFO" },
+                                                                                 { lon: -122.375 },
+                                                                                 { type: "airport" },
+                                                                                 { region: "US-CA" },
+                                                                                 { runways: 4 },
+                                                                                 { lat: 37.6189994812012 },
+                                                                                 { desc: "San Francisco International Airport" }])
   end
 end

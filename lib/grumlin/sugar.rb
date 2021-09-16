@@ -8,7 +8,8 @@ module Grumlin
       Grumlin::Tools::Pop,
       Grumlin::Tools::Scope,
       Grumlin::Tools::T,
-      Grumlin::Tools::U
+      Grumlin::Tools::U,
+      Grumlin::Tools::WithOptions
     ].freeze
 
     def self.included(base)
