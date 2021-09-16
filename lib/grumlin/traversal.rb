@@ -5,7 +5,7 @@ module Grumlin
     attr_reader :connection
 
     # TODO: add other start steps
-    SUPPORTED_START_STEPS = %w[E V addE addV].freeze
+    SUPPORTED_START_STEPS = %i[E V addE addV].freeze
 
     def initialize(pool = Grumlin.default_pool)
       @pool = pool

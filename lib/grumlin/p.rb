@@ -2,7 +2,7 @@
 
 module Grumlin
   module P
-    module P
+    class << self
       class Predicate < TypedValue
         def initialize(name, args:, arg_type: nil)
           super(type: "P")
@@ -21,13 +21,13 @@ module Grumlin
       end
 
       # TODO: support more predicates
-      %w[eq neq].each do |predicate|
+      %i[eq neq].each do |predicate|
         define_method predicate do |*args|
           Predicate.new(predicate, args: args[0])
         end
       end
 
-      %w[within without].each do |predicate|
+      %i[within without].each do |predicate|
         define_method predicate do |*args|
           args = if args.count == 1 && args[0].is_a?(Array)
                    args[0]
@@ -40,7 +40,5 @@ module Grumlin
         end
       end
     end
-
-    extend P
   end
 end
