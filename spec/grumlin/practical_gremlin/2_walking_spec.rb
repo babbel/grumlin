@@ -318,5 +318,48 @@ RSpec.describe "Practical Gramlin: walking" do
     expect(g.V().has("region", "GB-ENG").values("runways").dedup.fold.toList[0]).to eq([2, 1, 3, 4])
     expect(g.V().has("region", "GB-ENG").dedup.by("runways")
       .values("code", "runways").fold.toList[0]).to eq(["LHR", 2, "LCY", 1, "BLK", 3, "LEQ", 4])
+
+    expect(g.V(3).as("a").V(4).as("c").both.as("b").limit(10)
+      .select("a", "b", "c").toList.count).to eq(10)
+    expect(g.V(3).as("a").V(4).as("c").both.as("b").limit(10)
+      .dedup("a", "c").select("a", "b", "c").toList.count).to eq(1)
+  end
+
+  it "20" do
+    expect(g.V().has("code", "AUS").valueMap.unfold.toList).to eq([{ country: ["US"] },
+                                                                   { code: ["AUS"] },
+                                                                   { longest: [12_250] },
+                                                                   { city: ["Austin"] },
+                                                                   { elev: [542] },
+                                                                   { icao: ["KAUS"] },
+                                                                   { lon: [-97.6698989868164] },
+                                                                   { type: ["airport"] },
+                                                                   { region: ["US-TX"] },
+                                                                   { runways: [2] },
+                                                                   { lat: [30.1944999694824] },
+                                                                   { desc: ["Austin Bergstrom International Airport"] }])
+    expect(g.V().has("code", "AUS").valueMap(true).unfold.toList).to eq([{ id: 3 },
+                                                                         { label: "airport" },
+                                                                         { country: ["US"] },
+                                                                         { code: ["AUS"] },
+                                                                         { longest: [12_250] },
+                                                                         { city: ["Austin"] },
+                                                                         { elev: [542] },
+                                                                         { icao: ["KAUS"] },
+                                                                         { lon: [-97.6698989868164] },
+                                                                         { type: ["airport"] },
+                                                                         { region: ["US-TX"] },
+                                                                         { runways: [2] },
+                                                                         { lat: [30.1944999694824] },
+                                                                         { desc: ["Austin Bergstrom International Airport"] }])
+    expect(g.V().has("code", "AUS").valueMap(true, "region").next).to eq({ id: 3, label: "airport", region: ["US-TX"] })
+    expect(g.V().has("code", "AUS").valueMap.select("code", "icao", "desc").next).to eq({ code: ["AUS"], desc: ["Austin Bergstrom International Airport"], icao: ["KAUS"] })
+    expect(g.V().has("code", "AUS").valueMap(true, "code", "icao", "desc", "city").unfold.toList).to eq([{ id: 3 },
+                                                                                                         { label: "airport" },
+                                                                                                         { code: ["AUS"] },
+                                                                                                         { city: ["Austin"] },
+                                                                                                         { icao: ["KAUS"] },
+                                                                                                         { desc: ["Austin Bergstrom International Airport"] }])
+    expect(g.E(5161).valueMap(true).next).to eq({ dist: 1357, id: 5161, label: "route" })
   end
 end
