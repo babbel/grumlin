@@ -77,7 +77,7 @@ end
 
 Grumlin provides a couple of helpers to simplify testing code written with it.
 
-##### Rspec
+##### RSpec
 
 Make sure you have [async-rspec](https://github.com/socketry/async-rspec) installed.
 
