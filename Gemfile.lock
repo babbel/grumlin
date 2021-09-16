@@ -83,6 +83,7 @@ GEM
       protocol-http1 (~> 0.2)
     racc (1.5.2)
     rainbow (3.0.0)
+    rake (13.0.3)
     regexp_parser (2.1.1)
     reverse_markdown (2.0.0)
       nokogiri
@@ -161,6 +162,7 @@ DEPENDENCIES
   grumlin!
   nokogiri
   overcommit
+  rake
   rspec
   rubocop
   rubocop-performance
