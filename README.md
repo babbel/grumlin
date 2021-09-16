@@ -73,6 +73,25 @@ class MyRepository
 end
 ```
 
+#### Testing
+
+Grumlin provides a couple of helpers to simplify testing code written with it.
+
+##### Rspec
+
+Make sure you have [async-rspec](https://github.com/socketry/async-rspec) installed.
+
+`spec_helper.rb` or `rails_helper.rb`:
+```ruby
+require 'async/rspec'
+require require "grumlin/test/rspec"
+...
+config.include_context(Async::RSpec::Reactor) # Runs async reactor
+config.include_context(Grumlin::Test::RSpec::GremlinContext) # Injects sugar and makes sure client is closed after every test
+config.include_context(Grumlin::Test::RSpec::DBCleanerContext) # Cleans the database before every test
+...
+```
+
 It is highly recommended to use `Grumlin::Sugar` and not trying to use lower level APIs as they are subject to change. 
 
 ## Development
