@@ -395,4 +395,48 @@ RSpec.describe "Practical Gramlin: walking" do
                                                                                  { lat: 37.6189994812012 },
                                                                                  { desc: "San Francisco International Airport" }])
   end
+
+  it "21" do
+    expect(g.V().has("code", "AUS").elementMap.unfold.toList).to eq([{ id: 3 },
+                                                                     { label: "airport" },
+                                                                     { country: "US" },
+                                                                     { code: "AUS" },
+                                                                     { longest: 12_250 },
+                                                                     { city: "Austin" },
+                                                                     { elev: 542 },
+                                                                     { icao: "KAUS" },
+                                                                     { lon: -97.6698989868164 },
+                                                                     { type: "airport" },
+                                                                     { region: "US-TX" },
+                                                                     { runways: 2 },
+                                                                     { lat: 30.1944999694824 },
+                                                                     { desc: "Austin Bergstrom International Airport" }])
+
+    expect(g.V().has("code", "AUS").elementMap("city").toList).to eq([{ city: "Austin", id: 3, label: "airport" }])
+    expect(g.V(3).outE.limit(1).elementMap.toList).to eq([{ "IN" => { id: 47, label: "airport" },
+                                                            "OUT" => { id: 3, label: "airport" },
+                                                            :dist => 1357,
+                                                            :id => 5161,
+                                                            :label => "route" }])
+    expect(g.E(5161).project("v", "IN", "OUT")
+      .by(__.valueMap(true))
+      .by(__.inV.union(__.id, __.label).fold)
+      .by(__.outV.union(__.id, __.label).fold).toList).to eq([{ IN: [47, "airport"],
+                                                                OUT: [3, "airport"],
+                                                                v: { dist: 1357, id: 5161, label: "route" } }])
+
+    expect(
+      g.E(5161).project("v", "IN", "OUT")
+                  .by(__.valueMap(true))
+                  .by(__.project("id", "label")
+                    .by(__.inV.id)
+                    .by(__.inV.label))
+                  .by(__.project("id", "label")
+                    .by(__.outV.id)
+                    .by(__.outV.label))
+                  .unfold.toList
+    ).to eq([{ v: { dist: 1357, id: 5161, label: "route" } },
+             { IN: { id: 47, label: "airport" } },
+             { OUT: { id: 3, label: "airport" } }])
+  end
 end

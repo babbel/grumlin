@@ -4,7 +4,8 @@ module Grumlin
   module Tools
     module U
       # TODO: add other start steps
-      SUPPORTED_STEPS = %i[V addV count fold has out repeat timeLimit unfold values].freeze
+      SUPPORTED_STEPS = %i[V addV count fold has id inV label out outV project repeat timeLimit unfold valueMap
+                           values].freeze
 
       class << self
         SUPPORTED_STEPS.each do |step|

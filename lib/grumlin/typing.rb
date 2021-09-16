@@ -13,6 +13,7 @@ module Grumlin
       "g:Int32" => ->(value) { cast_int(value) },
       "g:Double" => ->(value) { cast_double(value) },
       "g:Traverser" => ->(value) { cast(value[:value]) }, # TODO: wtf is bulk?
+      "g:Direction" => ->(value) { value },
       "g:T" => ->(value) { value.to_sym }
     }.freeze
 
