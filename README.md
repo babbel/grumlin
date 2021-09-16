@@ -21,6 +21,7 @@ event loop.
 - [Usage](#usage)
 - [Development](#development)
 - [Contributing](#contributing)
+- [License](#license)
 - [Code Of Conduct](#code-of-conduct)
 
 ## Install
