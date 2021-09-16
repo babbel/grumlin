@@ -5,7 +5,7 @@
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 
 Grumlin is a [Gremlin](https://tinkerpop.apache.org/gremlin.html) graph traversal language DSL and client for Ruby. 
-Suitable for and testing with [gremlin-server](http://tinkerpop.apache.org/) and [AWS Neptune](https://aws.amazon.com/neptune/).
+Suitable for and tested with [gremlin-server](http://tinkerpop.apache.org/) and [AWS Neptune](https://aws.amazon.com/neptune/).
 
 **Important**: Grumlin and it's author are not affiliated with The Apache Software Foundation which develops gremlin
 and gremlin-server.
