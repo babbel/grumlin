@@ -73,7 +73,7 @@ class MyRepository
 end
 ```
 
-It is highly recommended to use `Grumlin::Sugar` and not trying to use lower level APIs as they are subject for change. 
+It is highly recommended to use `Grumlin::Sugar` and not trying to use lower level APIs as they are subject to change. 
 
 ## Development
 
