@@ -4,9 +4,11 @@ RSpec.describe Async::Channel, async: true do
   let(:channel) { described_class.new }
 
   describe "#<<" do
+    subject { channel << "test" }
+
     context "when the channel is not closed" do
       it "sends the payload" do
-        channel << "test"
+        subject
         expect(channel.dequeue).to eq("test")
       end
     end
@@ -14,9 +16,7 @@ RSpec.describe Async::Channel, async: true do
     context "when the channel is closed" do
       before { channel.close }
 
-      it "raises ChannelClosedError" do
-        expect { channel << "test" }.to raise_error(described_class::ChannelClosedError)
-      end
+      include_examples "raises an exception", described_class::ChannelClosedError
     end
   end
 
