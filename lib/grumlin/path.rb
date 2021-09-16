@@ -2,6 +2,8 @@
 
 module Grumlin
   class Path
+    attr_reader :objects
+
     def initialize(path)
       @labels = Typing.cast(path[:labels])
       @objects = Typing.cast(path[:objects])
