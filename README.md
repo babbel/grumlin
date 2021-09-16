@@ -17,11 +17,11 @@ event loop.
 **Warning:** Grumlin is in development, but ready for simple use cases
 
 ## Table of contents
-- [Install](#Install)
-- [Usage](#Usage)
-- [Development](#Development)
-- [Contributing](#Contributing)
-- [Code Of Conduct](#Code_Of_Conduct)
+- [Install](#install)
+- [Usage](#usage)
+- [Development](#development)
+- [Contributing](#contributing)
+- [Code Of Conduct](#code-of-conduct)
 
 ## Install
 
