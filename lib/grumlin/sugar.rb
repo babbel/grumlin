@@ -3,11 +3,11 @@
 module Grumlin
   module Sugar
     HELPERS = [
-      Grumlin::U,
-      Grumlin::T,
-      Grumlin::P,
-      Grumlin::Pop,
-      Grumlin::Order
+      Grumlin::Tools::Order,
+      Grumlin::Tools::P,
+      Grumlin::Tools::Pop,
+      Grumlin::Tools::T,
+      Grumlin::Tools::U
     ].freeze
 
     def self.included(base)
@@ -18,7 +18,7 @@ module Grumlin
     end
 
     def __
-      Grumlin::U
+      Grumlin::Tools::U
     end
 
     def g

@@ -5,7 +5,7 @@ module Grumlin
     attr_reader :name, :args, :previous_step
 
     # TODO: add other steps
-    SUPPORTED_STEPS = %w[E V addE addV as by coalesce count dedup drop elementMap emit fold from group groupCount has
+    SUPPORTED_STEPS = %i[E V addE addV as by coalesce count dedup drop elementMap emit fold from group groupCount has
                          hasId hasLabel hasNot in inV label limit not order out outE path project property repeat select
                          to unfold union valueMap values where].freeze
 

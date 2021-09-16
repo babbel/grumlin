@@ -3,7 +3,7 @@
 module Async
   # Channel is a wrapper around Async::Queue that provides
   # a protocol and handy tools for passing data, exceptions and closing.
-  # It is designed to be used with only one publisher and one subscriber
+  # It is designed to be used only with one publisher and one subscriber
   class Channel
     class ChannelError < StandardError; end
 

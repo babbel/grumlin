@@ -1,9 +1,9 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Traversal, gremlin_server: true do
-  describe "::SUPPORTED_START_STEPS" do
+  describe "::SUPPORTED_STEPS" do
     it "is sorted" do
-      expect(described_class::SUPPORTED_START_STEPS).to eq(described_class::SUPPORTED_START_STEPS.sort)
+      expect(described_class::SUPPORTED_STEPS).to eq(described_class::SUPPORTED_STEPS.sort)
     end
   end
 
