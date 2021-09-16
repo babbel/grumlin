@@ -60,7 +60,7 @@ constants and methods turning your class into an entrypoint for traversals.
 
 ```ruby
 class MyRepository
-  include Grumlin::Sugar # Does the magic and injects useful constants and the `g` method
+  include Grumlin::Sugar
   
   def nodes(property1:, property2:)
     g.V()
