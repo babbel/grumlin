@@ -75,8 +75,4 @@ class GraphMLImporter
       }
     end.group_by { |p| p[:for] }.transform_values { |v| v.group_by { |p| p[:id] } }.symbolize_keys
   end
-
-  def g
-    Grumlin::Traversal.new
-  end
 end
