@@ -12,11 +12,10 @@ module Grumlin
         end
 
         def value
-          @value ||=
-            {
-              predicate: @name,
-              value: TypedValue.new(type: @arg_type, value: @args).to_bytecode
-            }
+          @value ||= {
+            predicate: @name,
+            value: TypedValue.new(type: @arg_type, value: @args).to_bytecode
+          }
         end
       end
 
