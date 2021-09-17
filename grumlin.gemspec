@@ -8,8 +8,12 @@ Gem::Specification.new do |spec|
   spec.authors       = ["Gleb Sinyavskiy"]
   spec.email         = ["zhulik.gleb@gmail.com"]
 
-  spec.summary       = "Gremlin query language DSL for Ruby."
-  spec.description   = "Gremlin query language DSL for Ruby."
+  spec.summary       = "Gremlin graph traversal language DSL and client for Ruby."
+
+  spec.description   = <<~DESCRIPTION
+    Gremlin graph traversal language DSL and client for Ruby. Suitable and tested with gremlin-server and AWS Neptune.
+  DESCRIPTION
+
   spec.homepage      = "https://github.com/zhulik/grumlin"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.6.0")
