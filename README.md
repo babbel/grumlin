@@ -1,5 +1,7 @@
 # Grumlin
 
+**Warning**: This repository is archived, development has been moved to [babbel/grumlin](https://github.com/babbel/grumlin)
+
 [![Ruby](https://github.com/zhulik/grumlin/actions/workflows/main.yml/badge.svg)](https://github.com/zhulik/grumlin/actions/workflows/main.yml)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
