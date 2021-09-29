@@ -65,7 +65,7 @@ jobs:
           mkdir ~/.gem
           cat << EOF > ~/.gem/credentials
           ---
-          :rubygems_api_key: ${{ env.RUBYGEMS_TOKEN }}
+          :rubygems_api_key: ${{ secrets.RUBYGEMS_TOKEN }}
           EOF
           chmod 0600 /home/runner/.gem/credentials
 
