@@ -69,8 +69,5 @@ jobs:
           EOF
           chmod 0600 /home/runner/.gem/credentials
 
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
-
       - name: Push gem
         run: gem push *gem
