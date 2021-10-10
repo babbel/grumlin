@@ -1,9 +1,21 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Sugar do
-  describe "::HELPERS" do
-    it "is sorted" do
-      expect(described_class::HELPERS.map(&:to_s).sort).to eq(described_class::HELPERS.map(&:to_s))
+  let(:object) do
+    Class.new do
+      include(Grumlin::Sugar)
+    end.new
+  end
+
+  describe "#__" do
+    it "returns Grumlin::Tools::U" do
+      expect(object.__).to eq(Grumlin::Tools::U)
+    end
+  end
+
+  describe "#g" do
+    it "returns a traversal" do
+      expect(object.g).to be_a(Grumlin::Traversal)
     end
   end
 end

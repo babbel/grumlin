@@ -2,21 +2,8 @@
 
 module Grumlin
   module Sugar
-    HELPERS = [
-      Grumlin::Tools::Order,
-      Grumlin::Tools::P,
-      Grumlin::Tools::Pop,
-      Grumlin::Tools::Scope,
-      Grumlin::Tools::T,
-      Grumlin::Tools::U,
-      Grumlin::Tools::WithOptions
-    ].freeze
-
     def self.included(base)
-      HELPERS.each do |helper|
-        name = helper.name.split("::").last
-        base.const_set(name, helper)
-      end
+      base.include Grumlin::Tools
     end
 
     def __
