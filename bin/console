@@ -15,8 +15,6 @@ Async do
   include Grumlin::Sugar
 
   IRB.start
-rescue StandardError
-  raise
 ensure
   Grumlin.close
 end

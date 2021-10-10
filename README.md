@@ -73,6 +73,52 @@ class MyRepository
 end
 ```
 
+#### IRB
+
+An example of how to start an IRB session with support for executing gremlin queries:
+
+```ruby
+Async do
+  include Grumlin::Sugar
+
+  IRB.start
+ensure
+  Grumlin.close
+end
+```
+
+Please check out [bin/console](bin/console) for full source. A similar trick may be applied to PRY.
+
+#### Rails console
+
+In order to make it possible to execute gremlin queries from the rails console you need to define
+a custom console class. It should look somehow like
+
+```ruby
+class MyRailsConsole
+  def self.start
+    IRB::WorkSpace.prepend(Rails::Console::BacktraceCleaner)
+    IRB::ExtendCommandBundle.include(Rails::ConsoleMethods)
+
+    Async do
+      include Grumlin::Sugar
+
+      IRB.setup(binding.source_location[0], argv: [])
+      workspace = IRB::WorkSpace.new(binding)
+
+      IRB::Irb.new(workspace).run(IRB.conf)
+    ensure
+      Grumlin.close
+    end
+  end
+end
+```
+
+Then you need to reference it in your application.rb:
+```ruby
+config.console = MyRailsConsole
+```
+
 #### Testing
 
 Grumlin provides a couple of helpers to simplify testing code written with it.
