@@ -11,9 +11,8 @@ module Grumlin
         include Grumlin::Sugar
 
         before do
-          Grumlin::Sugar::HELPERS.each do |helper|
-            name = helper.name.split("::").last
-            stub_const(name, helper)
+          Grumlin::Tools.constants.each do |tool|
+            stub_const(tool.to_s, Grumlin::Tools.const_get(tool))
           end
         end
 

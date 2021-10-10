@@ -3,7 +3,9 @@
 
 require "bundler/setup"
 require "grumlin"
+
 require "irb"
+require "irb/completion"
 
 Grumlin.configure do |config|
   config.url = ENV["GREMLIN_URL"] || "ws://localhost:8182/gremlin"
@@ -12,10 +14,7 @@ end
 Async do
   include Grumlin::Sugar
 
-  IRB.setup(nil)
-  workspace = IRB::WorkSpace.new(binding)
-  irb = IRB::Irb.new(workspace)
-  irb.eval_input
+  IRB.start
 rescue StandardError
   raise
 ensure
