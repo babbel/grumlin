@@ -12,10 +12,10 @@ module Grumlin
       @shortcuts = shortcuts
     end
 
-    def method_missing(name, *args)
-      return wrap_result(@object.send(name, *args)) if @object.respond_to?(name)
+    def method_missing(name, *args, **params)
+      return wrap_result(@object.send(name, *args, **params)) if @object.respond_to?(name)
 
-      return wrap_result(@object.instance_exec(*args, &@shortcuts[name])) if @shortcuts.key?(name)
+      return wrap_result(instance_exec(*args, **params, &@shortcuts[name])) if @shortcuts.key?(name)
 
       super
     end

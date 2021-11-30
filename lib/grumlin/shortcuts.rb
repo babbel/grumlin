@@ -18,7 +18,7 @@ module Grumlin
 
     def shortcut(name, &block)
       name = name.to_sym
-      if Grumlin::AnonymousStep::SUPPORTED_STEPS.include?(name) || Grumlin::Tools::U::SUPPORTED_STEPS.include?(name)
+      if @object.respond_to?(name) || Grumlin::Tools::U::SUPPORTED_STEPS.include?(name)
         raise ArgumentError, "cannot use names of standard gremlin steps"
       end
 

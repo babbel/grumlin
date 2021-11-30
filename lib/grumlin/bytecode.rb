@@ -42,7 +42,7 @@ module Grumlin
       return arg unless arg.is_a?(AnonymousStep)
 
       arg.args.flatten.each.with_object([arg.name.to_s]) do |a, res|
-        res << if a.instance_of?(AnonymousStep)
+        res << if a.respond_to?(:bytecode)
                  a.bytecode.send(serialization_method)
                else
                  serialize_arg(a, serialization_method: serialization_method)

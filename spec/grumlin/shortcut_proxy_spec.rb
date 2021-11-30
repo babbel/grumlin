@@ -6,7 +6,7 @@ RSpec.describe Grumlin::ShortcutProxy do
   let(:object) { double(fold: true, property: true) } # rubocop:disable RSpec/VerifiedDoubles
   let(:shortcuts) do
     {
-      custom_step: ->(arg) { property(:a, arg) }
+      custom_step: proc { |arg| property(:a, arg) }
     }
   end
 
@@ -63,9 +63,9 @@ RSpec.describe Grumlin::ShortcutProxy do
         let(:method_name) { :custom_step }
         let(:args) { [1] }
 
-        it "executes the shortcut in the context of the wrapper_object" do
+        it "executes the shortcut in the context of the proxy" do
           subject
-          expect(object).to have_received(:property).with(:a, 1)
+          expect(object).to have_received(:property).with(:a, 1, {})
         end
 
         it "returns a ShortcutProxy" do
@@ -96,7 +96,7 @@ RSpec.describe Grumlin::ShortcutProxy do
 
         it "executes the shortcut in the context of the wrapper_object" do
           subject
-          expect(object).to have_received(:property).with(:a, 1)
+          expect(object).to have_received(:property).with(:a, 1, {})
         end
 
         it "returns a ShortcutProxy" do
