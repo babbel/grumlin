@@ -27,7 +27,7 @@ module Grumlin
       shortcuts[name] = block
     end
 
-    def from(other_shortcuts)
+    def shortcuts_from(other_shortcuts)
       other_shortcuts.shortcuts.each do |name, block|
         shortcut(name, &block)
       end

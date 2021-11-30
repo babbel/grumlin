@@ -107,7 +107,7 @@ RSpec.describe Grumlin::ShortcutProxy do
       context "when method is neither a shortcut nor object's method" do
         let(:method_name) { :unknown }
 
-        include_examples "raises an exception", NoMethodError
+        include_examples "raises an exception", NameError
       end
     end
   end

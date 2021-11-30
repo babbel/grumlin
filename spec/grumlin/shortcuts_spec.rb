@@ -31,7 +31,7 @@ RSpec.describe Grumlin::Shortcuts do
     end
   end
 
-  describe ".from" do
+  describe ".shortcuts_from" do
     let(:another_klass) do
       Class.new do
         extend Grumlin::Shortcuts
@@ -42,7 +42,7 @@ RSpec.describe Grumlin::Shortcuts do
     end
 
     it "adds all shortcuts from another class" do
-      klass.from(another_klass)
+      klass.shortcuts_from(another_klass)
       expect(klass.shortcuts.keys).to eq(%i[test_step1 test_step2 test_step3])
     end
   end
