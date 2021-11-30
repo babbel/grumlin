@@ -4,6 +4,8 @@ module Grumlin
   class ShortcutProxy
     extend Forwardable
 
+    attr_reader :object, :shortcuts
+
     # shortcuts: {"name": ->() {}}
     def initialize(object, shortcuts)
       @object = object

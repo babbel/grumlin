@@ -3,7 +3,7 @@
 module Grumlin
   module Sugar
     def self.included(base)
-      base.include Grumlin::Tools
+      base.include(Grumlin::Tools)
     end
 
     def __
