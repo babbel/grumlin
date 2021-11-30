@@ -35,7 +35,7 @@ module Grumlin
     end
 
     def shortcut(name, &block)
-      shortcuts[name] = block
+      shortcuts[name.to_sym] = block
     end
 
     def shortcuts
