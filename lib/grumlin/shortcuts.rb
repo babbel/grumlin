@@ -23,9 +23,8 @@ module Grumlin
 
     def shortcut(name, &block)
       name = name.to_sym
-      if @object.respond_to?(name) || Grumlin::Tools::U::SUPPORTED_STEPS.include?(name)
-        raise ArgumentError, "cannot use names of standard gremlin steps"
-      end
+      # TODO: blocklist of names to avoid conflicts with standard methods?
+      raise ArgumentError, "cannot use names of standard gremlin steps" if Grumlin.supported_steps.include?(name)
 
       raise ArgumentError, "shortcut '#{name}' already exists" if shortcuts.key?(name)
 

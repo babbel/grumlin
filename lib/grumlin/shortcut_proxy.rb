@@ -6,7 +6,7 @@ module Grumlin
 
     attr_reader :object, :shortcuts
 
-    # shortcuts: {"name": ->() {}}
+    # shortcuts: {"name": ->(arg) {}}
     def initialize(object, shortcuts)
       @object = object
       @shortcuts = shortcuts

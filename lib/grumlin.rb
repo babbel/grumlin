@@ -106,6 +106,10 @@ module Grumlin
     end
   end
 
+  def self.supported_steps
+    @supported_steps ||= (Grumlin::AnonymousStep::SUPPORTED_STEPS + Grumlin::Tools::U::SUPPORTED_STEPS).sort.uniq
+  end
+
   @pool_mutex = Mutex.new
 
   class << self
