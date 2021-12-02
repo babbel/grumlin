@@ -9,6 +9,20 @@ RSpec.describe Grumlin::Shortcuts do
     end
   end
 
+  describe "inheritance" do
+    let(:another_klass) do
+      Class.new(klass) do
+        shortcut :shortcut1 do
+          property(:some_property, true)
+        end
+      end
+    end
+
+    it "allows using shortcuts defined in the ancestor" do
+      expect(another_klass.shortcuts.keys).to eq(%i[test_step1 shortcut1])
+    end
+  end
+
   describe ".shortcut" do
     context "when shortcut name conflicts with gremlin steps" do
       subject { klass.shortcut(:has) { nil } }

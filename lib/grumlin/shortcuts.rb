@@ -16,6 +16,11 @@ module Grumlin
       base.include(InstanceMethods)
     end
 
+    def inherited(subclass)
+      super
+      subclass.shortcuts_from(self)
+    end
+
     def shortcut(name, &block)
       name = name.to_sym
       if @object.respond_to?(name) || Grumlin::Tools::U::SUPPORTED_STEPS.include?(name)

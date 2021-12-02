@@ -4,6 +4,10 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   let(:repository_klass) do
     Class.new do
       extend Grumlin::Repository
+
+      shortcut :shortcut do
+        property(:shortcut, true)
+      end
     end
   end
   let(:repository) { repository_klass.new }
@@ -25,8 +29,8 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   describe "included shortcuts" do
-    it "includes props and hasAll shortcuts" do
-      expect(repository_klass.shortcuts.keys).to eq(%i[props hasAll])
+    it "includes shortcuts" do
+      expect(repository_klass.shortcuts.keys).to eq(%i[props hasAll shortcut])
     end
   end
 end
