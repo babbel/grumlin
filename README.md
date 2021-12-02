@@ -160,8 +160,11 @@ class MyRepository
   # It can add shortcuts from another repository or a shortcuts module
   shortcuts_from ChooseShortcut
   
-  shortcut :hasColor do |color|
-    has(:color, color)
+  shortcut :red_triangles do |color|
+    # hasAll unwraps a hash of properties into a chain of `has` steps:
+    # hasAll(name1: :value, name2: :value) == has(:name1, :value).has(:name2, :value)
+    # the `props` shortcut does exactly the same but with `property` steps.
+    hasAll(T.label => :triangle, color: color)
   end
 
   # g and __ are already aware of shortcuts 
