@@ -13,7 +13,7 @@ module Grumlin
     end
 
     def method_missing(name, *args)
-      return wrap_result(@object.send(name, *args)) if @object.respond_to?(name)
+      return wrap_result(@object.public_send(name, *args)) if @object.respond_to?(name)
 
       return wrap_result(instance_exec(*args, &@shortcuts[name])) if @shortcuts.key?(name)
 
