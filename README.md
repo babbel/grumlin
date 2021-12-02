@@ -80,7 +80,7 @@ sequences of standard gremlin steps, other shortcuts and even add new initially 
 Remember ActiveRecord scopes? Shortcuts are very similar. `Grumlin::Shortcuts#with_shortcuts` wraps a given object into
 a proxy object that simply proxies all methods existing in the wrapped object to it and handles shortcuts.
 
-**Important**: if a shortcut's name matches a name of a method defined on the wrapper object, this shortcut will be
+**Important**: if a shortcut's name matches a name of a method defined on the wrapped object, this shortcut will be
 be ignored because methods have higher priority. You cannot override supported by Grumlin steps with shortcuts, 
 `Grumlin::Shortcuts.shortcut` will raise an `ArgumentError`. Please carefully choose names for your shortcuts.
 
