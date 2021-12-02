@@ -20,7 +20,7 @@ module Grumlin
       super
     end
 
-    # For some reason the interpreter thinks it's private for some reason
+    # For some reason the interpreter thinks it's private
     public def respond_to_missing?(name, include_private = false) # rubocop:disable Style/AccessModifierDeclarations
       name = name.to_sym
       @object.respond_to?(name) || @shortcuts.key?(name) || super
