@@ -61,13 +61,13 @@ RSpec.describe Grumlin::Shortcuts do
     end
   end
 
-  describe ".with_shortcuts" do
+  describe "#with_shortcuts" do
     before do
       klass.shortcut(:test_step4) { nil }
     end
 
     it "wraps given object and defined shortcuts into a ShortcutProxy" do
-      proxy = klass.with_shortcuts("test")
+      proxy = klass.new.with_shortcuts("test")
       expect(proxy).to be_a(Grumlin::ShortcutProxy)
       expect(proxy.object).to eq("test")
       expect(proxy.shortcuts.keys).to eq(%i[test_step1 test_step4])

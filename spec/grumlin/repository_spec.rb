@@ -13,7 +13,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   let(:repository) { repository_klass.new }
 
   describe "class methods" do
-    %i[shortcut shortcuts shortcuts_from with_shortcuts].each do |method|
+    %i[shortcut shortcuts shortcuts_from].each do |method|
       it "responds to ##{method}" do
         expect(repository_klass).to respond_to(method)
       end
@@ -21,7 +21,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   describe "instance methods" do
-    %i[__ g].each do |method|
+    %i[__ g with_shortcuts].each do |method|
       it "responds to ##{method}" do
         expect(repository).to respond_to(method)
       end

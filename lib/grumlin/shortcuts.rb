@@ -3,12 +3,8 @@
 module Grumlin
   module Shortcuts
     module InstanceMethods
-      def __
-        self.class.with_shortcuts(Grumlin::Tools::U)
-      end
-
-      def g
-        self.class.with_shortcuts(Grumlin::Traversal.new)
+      def with_shortcuts(obj)
+        ShortcutProxy.new(obj, self.class.shortcuts)
       end
     end
 
@@ -39,10 +35,6 @@ module Grumlin
 
     def shortcuts
       @shortcuts ||= {}
-    end
-
-    def with_shortcuts(obj)
-      ShortcutProxy.new(obj, shortcuts)
     end
   end
 end

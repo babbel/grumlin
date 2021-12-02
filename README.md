@@ -14,7 +14,7 @@ and gremlin-server.
 [async-websocket](https://github.com/socketry/async-websocket). Code using grumlin must be executed in an async
 event loop.
 
-**Warning:** Grumlin is in development, but ready for simple use cases
+**Warning**: Grumlin is in development, but ready for simple use cases
 
 ## Table of contents
 - [Install](#install)
@@ -51,12 +51,12 @@ end
 
 ### Traversing graphs
 
-**Warning:** Not all steps and tools described in the standard are supported
+**Warning**: Not all steps and tools described in the standard are supported
 
 #### Sugar
 
 Grumlin provides an easy to use module called `Grumlin::Sugar`. Once included in your class it injects some useful
-constants and methods turning your class into an entrypoint for traversals.
+constants and methods turning your class into an entrypoint for traversals with pure gremlin experience.
 
 ```ruby
 class MyRepository
@@ -69,6 +69,106 @@ class MyRepository
       .has(:property2, property2)
       .order.by(:property3, Order.asc).limit(10)
       .toList
+  end
+end
+```
+
+#### Shortcuts
+
+**Shortcuts** is a way to share and organize gremlin code. They let developers define their own steps consisting of
+sequences of standard gremlin steps, other shortcuts and even add new initially unsupported by Grumlin steps.
+Remember ActiveRecord scopes? Shortcuts are very similar. `Grumlin::Shortcuts#with_shortcuts` wraps a given object into
+a proxy object that simply proxies all methods existing in the wrapped object to it and handles shortcuts.
+
+**Important**: if a shortcut's name matches a name of a method defined on the wrapper object, this shortcut will be
+be ignored because methods have higher priority. You cannot override supported by Grumlin steps with shortcuts, 
+`Grumlin::Shortcuts.shortcut` will raise an `ArgumentError`. Please carefully choose names for your shortcuts.
+
+Shortcuts are designed to be used with `Grumlin::Repository` but still can be used separately, with `Grumlin::Sugar`
+for example.
+
+**Defining**:
+```ruby
+
+# Defining shortcuts
+class ColorShortcut
+  extend Grumlin::Shortcuts
+
+  # Custom step
+  shortcut :hasColor do |color|
+    has(:color, color)
+  end
+end
+
+class ChooseShortcut
+  extend Grumlin::Shortcuts
+
+  # Standard Gremlin step
+  shortcut :choose do |*args|
+    step(:choose, *args)
+  end
+end
+
+class AllShortcuts
+  extend Grumlin::Shortcuts
+
+  # Adding shortcuts from other modules
+  shortcuts_from ColorShortcut
+  shortcuts_from ChooseShortcut
+end
+```
+
+**Using with Grumlin::Sugar**:
+```ruby
+class MyRepository
+  include Grumlin::Sugar
+  extend Grumlin::Shortcuts
+
+  shortcuts_from AllShortcuts
+
+  # Wrapping a traversal
+  def red_triangles
+    with_shortcuts(g).V.hasLabel(:triangle)
+                       .hasColor("red")
+                       .toList
+  end
+
+  # Wrapping _
+  def something_else
+    with_shortcuts(g).V.hasColor("red")
+                       .repeat(with_shortcuts(__)
+                       .out(:has)
+                       .hasColor("blue")).toList
+  end
+end
+```
+
+#### Grumlin::Repository
+`Grumlin::Repository` combines functionality of `Grumlin::Sugar` and `Grumlin::Shortcuts` as well as adds a few useful
+shortcuts to make gremlin code more rubyish. Can be used as a drop in replacement for `Grumlin::Sugar`. Remember that
+`Grumlin::Sugar` needs to be included, but `Grumlin::Repository` - extended. **Classes extending `Grumlin::Repository`
+or `Grumlin::Shortcuts` can be inherited**, successors don't need to extend them again and have access to shortcuts 
+defined in the ancestor.
+
+**Using**:
+
+```ruby
+class MyRepository
+  extend Grumlin::Repository
+
+  # Repository supports all Grumlin::Shortcut and Grumlin::Sugar features.
+  # It can add shortcuts from another repository or a shortcuts module
+  shortcuts_from ChooseShortcut
+  
+  shortcut :hasColor do |color|
+    has(:color, color)
+  end
+
+  # g and __ are already aware of shortcuts 
+  def red_triangles
+    g.V.hasLabel(:triangle)
+       .hasColor("red")
+       .toList
   end
 end
 ```
