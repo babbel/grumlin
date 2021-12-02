@@ -36,9 +36,7 @@ module Grumlin
       end
     end
 
-    private
-
-    def add_step(step_name, args)
+    def step(step_name, args)
       self.class.new(@pool, step_name, *args, previous_step: self)
     end
   end
