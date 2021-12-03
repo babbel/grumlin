@@ -18,8 +18,12 @@ module Grumlin
 
     SUPPORTED_STEPS.each do |step|
       define_method(step) do |*args|
-        add_step(step, args)
+        step(step, args)
       end
+    end
+
+    def step(name, args)
+      self.class.new(name, *args, previous_step: self)
     end
 
     def inspect
@@ -30,12 +34,6 @@ module Grumlin
 
     def bytecode(no_return: false)
       @bytecode ||= Bytecode.new(self, no_return: no_return)
-    end
-
-    private
-
-    def add_step(step_name, args)
-      self.class.new(step_name, *args, previous_step: self)
     end
   end
 end

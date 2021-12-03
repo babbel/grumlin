@@ -38,12 +38,12 @@ module Grumlin
     # depending on the `serialization_method` parameter. I should be either `:to_readable_bytecode` for human readable
     # representation or `:to_bytecode` for query.
     def serialize_arg(arg, serialization_method: :to_bytecode)
-      return arg.send(serialization_method) if arg.respond_to?(serialization_method)
+      return arg.public_send(serialization_method) if arg.respond_to?(serialization_method)
       return arg unless arg.is_a?(AnonymousStep)
 
       arg.args.flatten.each.with_object([arg.name.to_s]) do |a, res|
-        res << if a.instance_of?(AnonymousStep)
-                 a.bytecode.send(serialization_method)
+        res << if a.respond_to?(:bytecode)
+                 a.bytecode.public_send(serialization_method)
                else
                  serialize_arg(a, serialization_method: serialization_method)
                end

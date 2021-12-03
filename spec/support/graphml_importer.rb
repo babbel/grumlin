@@ -31,7 +31,7 @@ class GraphMLImporter
         node.xpath("xmlns:data[not(@key='labelV')]").each do |attribute|
           key = attribute.attributes["key"].value
           cast_method = TYPES[properties[:node][key][0][:type]]
-          t = t.property(key, attribute.text.send(cast_method))
+          t = t.property(key, attribute.text.public_send(cast_method))
         end
       end
       t.iterate
@@ -50,7 +50,7 @@ class GraphMLImporter
         edge.xpath("xmlns:data[not(@key='labelE')]").each do |attribute|
           key = attribute.attributes["key"].value
           cast_method = TYPES[properties[:edge][key][0][:type]]
-          t = t.property(key, attribute.text.send(cast_method))
+          t = t.property(key, attribute.text.public_send(cast_method))
         end
       end
       t.iterate
