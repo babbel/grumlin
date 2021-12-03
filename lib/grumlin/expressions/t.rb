@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Grumlin
-  module Tools
+  module Expressions
     module T
       extend Tool
 

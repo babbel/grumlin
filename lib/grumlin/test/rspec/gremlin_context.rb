@@ -11,8 +11,8 @@ module Grumlin
         include Grumlin::Sugar
 
         before do
-          Grumlin::Tools.constants.each do |tool|
-            stub_const(tool.to_s, Grumlin::Tools.const_get(tool))
+          Grumlin::Expressions.constants.each do |tool|
+            stub_const(tool.to_s, Grumlin::Expressions.const_get(tool))
           end
         end
 
