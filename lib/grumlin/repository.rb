@@ -4,7 +4,7 @@ module Grumlin
   module Repository
     module InstanceMethods
       def __
-        with_shortcuts(Grumlin::Tools::U)
+        with_shortcuts(Grumlin::Expressions::U)
       end
 
       def g
@@ -14,7 +14,7 @@ module Grumlin
 
     def self.extended(base)
       base.extend(Grumlin::Shortcuts)
-      base.include(Grumlin::Tools)
+      base.include(Grumlin::Expressions)
       base.include(InstanceMethods)
 
       base.shortcuts_from(Grumlin::Shortcuts::Properties)
