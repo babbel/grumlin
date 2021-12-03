@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Grumlin
-  module Tools
+  module Expressions
     module P
       class << self
         class Predicate < TypedValue

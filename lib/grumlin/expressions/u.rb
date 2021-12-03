@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Grumlin
-  module Tools
+  module Expressions
     module U
       # TODO: add other start steps
       SUPPORTED_STEPS = %i[V addV count drop fold has hasLabel id in inE inV label out outE outV project repeat

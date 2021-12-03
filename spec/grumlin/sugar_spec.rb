@@ -8,8 +8,8 @@ RSpec.describe Grumlin::Sugar do
   end
 
   describe "#__" do
-    it "returns Grumlin::Tools::U" do
-      expect(object.__).to eq(Grumlin::Tools::U)
+    it "returns Grumlin::Expressions::U" do
+      expect(object.__).to eq(Grumlin::Expressions::U)
     end
   end
 
