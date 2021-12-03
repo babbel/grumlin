@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Grumlin
-  module Tools
+  module Expressions
     module Tool
       def define_steps(steps, tool_name)
         steps.each do |step|
