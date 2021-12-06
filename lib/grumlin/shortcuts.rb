@@ -10,6 +10,7 @@ module Grumlin
 
     def self.extended(base)
       base.include(InstanceMethods)
+      base.include(Grumlin::Expressions)
     end
 
     def inherited(subclass)
