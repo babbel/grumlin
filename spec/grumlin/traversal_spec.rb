@@ -2,6 +2,7 @@
 
 RSpec.describe Grumlin::Traversal, gremlin_server: true do
   include_examples "has sorted constant", "SUPPORTED_STEPS"
+  include_examples "has sorted constant", "CONFIGURATION_STEPS"
 
   describe "#V" do
     subject { g.V(*ids).toList }
