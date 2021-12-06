@@ -7,6 +7,8 @@ module Grumlin
 
     CONFIGURATION_STEPS = %i[withSideEffect].freeze
 
+    attr_reader :configuration_steps
+
     def initialize(pool = Grumlin.default_pool, configuration_steps: [])
       @pool = pool
       @configuration_steps = configuration_steps
