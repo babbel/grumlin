@@ -3,7 +3,7 @@
 RSpec.describe Grumlin::AnonymousStep do
   let(:g) { described_class.new("V") }
 
-  include_examples "SUPPORTED_STEPS"
+  include_examples "has sorted constant", "SUPPORTED_STEPS"
 
   describe "#inspect" do
     it "returns bytecode representation of the traversal" do
