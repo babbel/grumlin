@@ -65,7 +65,7 @@ RSpec.describe Grumlin::ShortcutProxy do
 
         it "executes the shortcut in the context of the proxy" do
           subject
-          expect(object).to have_received(:property).with(:a, 1)
+          expect(object).to have_received(:property).with(:a, 1, {})
         end
 
         it "returns a ShortcutProxy" do
@@ -96,7 +96,7 @@ RSpec.describe Grumlin::ShortcutProxy do
 
         it "executes the shortcut in the context of the wrapper_object" do
           subject
-          expect(object).to have_received(:property).with(:a, 1)
+          expect(object).to have_received(:property).with(:a, 1, {})
         end
 
         it "returns a ShortcutProxy" do

@@ -15,14 +15,14 @@ module Grumlin
     end
 
     CONFIGURATION_STEPS.each do |step|
-      define_method step do |*args|
-        self.class.new(@pool, configuration_steps: @configuration_steps + [AnonymousStep.new(step, *args)])
+      define_method step do |*args, **params|
+        self.class.new(@pool, configuration_steps: @configuration_steps + [AnonymousStep.new(step, *args, **params)])
       end
     end
 
     SUPPORTED_STEPS.each do |step|
-      define_method step do |*args|
-        Step.new(@pool, step, *args, configuration_steps: @configuration_steps)
+      define_method step do |*args, **params|
+        Step.new(@pool, step, *args, configuration_steps: @configuration_steps, **params)
       end
     end
   end

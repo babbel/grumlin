@@ -4,8 +4,8 @@ module Grumlin
   class Step < AnonymousStep
     attr_reader :client
 
-    def initialize(pool, name, *args, configuration_steps: [], previous_step: nil)
-      super(name, *args, previous_step: previous_step, configuration_steps: configuration_steps)
+    def initialize(pool, name, *args, configuration_steps: [], previous_step: nil, **params)
+      super(name, *args, previous_step: previous_step, configuration_steps: configuration_steps, **params)
       @pool = pool
     end
 
@@ -36,8 +36,8 @@ module Grumlin
       end
     end
 
-    def step(step_name, args)
-      self.class.new(@pool, step_name, *args, previous_step: self, configuration_steps: @configuration_steps)
+    def step(step_name, *args, **params)
+      self.class.new(@pool, step_name, *args, previous_step: self, configuration_steps: @configuration_steps, **params)
     end
   end
 end
