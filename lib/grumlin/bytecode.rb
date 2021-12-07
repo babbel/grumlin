@@ -28,9 +28,7 @@ module Grumlin
     alias to_s inspect
 
     def to_readable_bytecode
-      @to_readable_bytecode ||= steps.map do |s|
-        serialize_arg(s, serialization_method: :to_readable_bytecode)
-      end
+      @to_readable_bytecode ||= steps.map { |s| serialize_arg(s, serialization_method: :to_readable_bytecode) }
     end
 
     def value
