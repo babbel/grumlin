@@ -57,17 +57,14 @@ RSpec.describe Grumlin::Traversal, gremlin_server: true do
         g.addV("test_vertex").iterate
       end
 
-      it "returns a Traversal" do
-        expect(g.withSideEffect("test", "value")).to be_an_instance_of(described_class)
-      end
-
       it "returns a Traversal with configuration step" do
-        expect(g.withSideEffect("test", "value").configuration_steps).not_to be_empty
-        expect(g.withSideEffect("test", "value").configuration_steps.first.name).to eq(:withSideEffect)
+        expect(subject).to be_an_instance_of(described_class)
+        expect(subject.configuration_steps).not_to be_empty
+        expect(subject.configuration_steps.first.name).to eq(:withSideEffect)
       end
 
       context "when executed" do
-        it "properly sends confugration steps to the server" do
+        it "properly sends configuration steps to the server" do
           expect(subject.V.select("test").next).to eq("value")
         end
       end
