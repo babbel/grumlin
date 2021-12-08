@@ -14,6 +14,8 @@ module Grumlin
       @configuration_steps = configuration_steps
     end
 
+    alias inspect to_s
+
     CONFIGURATION_STEPS.each do |step|
       define_method step do |*args, **params|
         self.class.new(@pool, configuration_steps: @configuration_steps + [AnonymousStep.new(step, *args, **params)])
