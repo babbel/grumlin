@@ -9,8 +9,8 @@ module Grumlin
 
       class << self
         SUPPORTED_STEPS.each do |step|
-          define_method step do |*args|
-            AnonymousStep.new(step, *args)
+          define_method step do |*args, **params|
+            AnonymousStep.new(step, *args, **params)
           end
         end
       end

@@ -13,12 +13,12 @@ module Grumlin
       @parent = parent
     end
 
-    def method_missing(name, *args)
-      return @parent.public_send(name, *args) if %i[__ g].include?(name) && !@parent.nil?
+    def method_missing(name, *args, **params)
+      return @parent.public_send(name, *args, **params) if %i[__ g].include?(name) && !@parent.nil?
 
-      return wrap_result(@object.public_send(name, *args)) if @object.respond_to?(name)
+      return wrap_result(@object.public_send(name, *args, **params)) if @object.respond_to?(name)
 
-      return wrap_result(instance_exec(*args, &@shortcuts[name])) if @shortcuts.key?(name)
+      return wrap_result(instance_exec(*args, **params, &@shortcuts[name])) if @shortcuts.key?(name)
 
       super
     end

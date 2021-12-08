@@ -1,3 +1,10 @@
+## [0.14.0] - 2021-12-07
+
+- Add initial support for [configuration steps](https://tinkerpop.apache.org/docs/current/reference/#configuration-steps)
+- Add the `withSideEffect` configuration step
+- Fix passing keyword arguments to regular steps
+- *Drop support for ruby 2.6*
+
 ## [0.13.0] - 2021-12-03
 
 - Add `Shortcuts` and `Repository`

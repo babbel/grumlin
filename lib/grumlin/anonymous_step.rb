@@ -2,7 +2,7 @@
 
 module Grumlin
   class AnonymousStep
-    attr_reader :name, :args, :previous_step
+    attr_reader :name, :previous_step, :configuration_steps
 
     # TODO: add other steps
     SUPPORTED_STEPS = %i[E V addE addV and as both bothE by coalesce count dedup drop elementMap emit fold from group
@@ -10,20 +10,22 @@ module Grumlin
                          project property range repeat select sideEffect skip tail to unfold union until valueMap
                          values where with].freeze
 
-    def initialize(name, *args, previous_step: nil)
+    def initialize(name, *args, configuration_steps: [], previous_step: nil, **params)
       @name = name
       @previous_step = previous_step
       @args = args
+      @params = params
+      @configuration_steps = configuration_steps
     end
 
     SUPPORTED_STEPS.each do |step|
-      define_method(step) do |*args|
-        step(step, args)
+      define_method(step) do |*args, **params|
+        step(step, *args, **params)
       end
     end
 
-    def step(name, args)
-      self.class.new(name, *args, previous_step: self)
+    def step(name, *args, **params)
+      self.class.new(name, *args, previous_step: self, configuration_steps: configuration_steps, **params)
     end
 
     def inspect
@@ -34,6 +36,10 @@ module Grumlin
 
     def bytecode(no_return: false)
       @bytecode ||= Bytecode.new(self, no_return: no_return)
+    end
+
+    def args
+      [*@args, @params.any? ? arg.params : nil].compact
     end
   end
 end
