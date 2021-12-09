@@ -110,6 +110,22 @@ RSpec.describe Grumlin::ShortcutProxy do
         include_examples "raises an exception", NameError
       end
     end
+
+    # When configuration steps are used
+    context "when result is a traversal" do
+      let(:object) { double(withSideEffect: Grumlin::Traversal.new) } # rubocop:disable RSpec/VerifiedDoubles
+
+      let(:method_name) { :withSideEffect }
+
+      it "delegates to object" do
+        subject
+        expect(object).to have_received(:withSideEffect)
+      end
+
+      it "returns a ShortcutProxy" do
+        expect(subject).to be_a(described_class)
+      end
+    end
   end
 
   describe "#inspect" do

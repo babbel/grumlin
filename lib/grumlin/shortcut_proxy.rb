@@ -43,7 +43,9 @@ module Grumlin
     private
 
     def wrap_result(result)
-      return self.class.new(result, @shortcuts, parent: @parent) if result.is_a?(AnonymousStep)
+      if result.is_a?(AnonymousStep) || result.is_a?(Traversal)
+        return self.class.new(result, @shortcuts, parent: @parent)
+      end
 
       result
     end
