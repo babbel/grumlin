@@ -22,14 +22,18 @@ module Grumlin
       498 => ClientSideError
     }.freeze
 
-    include Console
+    class DispatcherError < Grumlin::Error; end
+
+    class RequestAlreadyAddedError < DispatcherError; end
+
+    class UnknownRequestError < DispatcherError; end
 
     def initialize
       @requests = {}
     end
 
     def add_request(request)
-      raise "ERROR" if @requests.key?(request[:requestId])
+      raise RequestAlreadyAddedError if @requests.key?(request[:requestId])
 
       Async::Channel.new.tap do |channel|
         @requests[request[:requestId]] = { request: request, result: [], channel: channel }
@@ -40,7 +44,7 @@ module Grumlin
     # TODO: sometimes response does not include requestID, no idea how to handle it so far.
     def add_response(response) # rubocop:disable Metrics/AbcSize
       request_id = response[:requestId]
-      raise "ERROR" unless ongoing_request?(request_id)
+      raise UnknownRequestError unless ongoing_request?(request_id)
 
       request = @requests[request_id]
 
@@ -61,7 +65,7 @@ module Grumlin
     end
 
     def close_request(request_id)
-      raise "ERROR" unless ongoing_request?(request_id)
+      raise UnknownRequestError unless ongoing_request?(request_id)
 
       request = @requests.delete(request_id)
       request[:channel].close

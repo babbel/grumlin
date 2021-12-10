@@ -23,7 +23,7 @@ module Grumlin
     end
 
     def connect
-      raise "ClientClosed" if @closed
+      raise ClientClosedError if @closed
       raise AlreadyConnectedError if connected?
 
       @connection = Async::WebSocket::Client.connect(Async::HTTP::Endpoint.parse(@url), **@client_options)
