@@ -4,8 +4,8 @@ module Grumlin
   module Expressions
     module U
       # TODO: add other start steps
-      SUPPORTED_STEPS = %i[V addV count drop fold has hasLabel id in inE inV label out outE outV project repeat
-                           timeLimit unfold valueMap values].freeze
+      SUPPORTED_STEPS = %i[V addV count drop fold has hasLabel hasNot id in is inE inV label out outE outV project
+                           repeat select timeLimit unfold valueMap values].freeze
 
       class << self
         SUPPORTED_STEPS.each do |step|
