@@ -43,6 +43,8 @@ module Grumlin
 
   class AlreadyConnectedError < ConnectionStatusError; end
 
+  class ClientClosedError < ConnectionStatusError; end
+
   class ProtocolError < Error; end
 
   class UnknownResponseStatus < ProtocolError

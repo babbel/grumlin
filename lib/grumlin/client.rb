@@ -51,7 +51,7 @@ module Grumlin
     end
 
     def connect
-      raise "ClientClosed" if @closed
+      raise ClientClosedError if @closed
 
       @transport = build_transport
       response_channel = @transport.connect
@@ -117,6 +117,7 @@ module Grumlin
 
     private
 
+    # This might be overridden in successors
     def build_transport
       Transport.new(@url, parent: @parent, **@client_options)
     end
