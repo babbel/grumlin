@@ -16,6 +16,9 @@ module Grumlin
     def inspect
       "v[#{@id}]"
     end
-    alias to_s inspect
+
+    def to_s
+      inspect
+    end
   end
 end

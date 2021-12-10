@@ -113,7 +113,9 @@ module Grumlin
       "<#{self.class} url=#{@url} connected=#{connected?}>"
     end
 
-    alias to_s inspect
+    def to_s
+      inspect
+    end
 
     private
 

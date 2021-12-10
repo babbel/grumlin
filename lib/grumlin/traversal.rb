@@ -14,7 +14,13 @@ module Grumlin
       @configuration_steps = configuration_steps
     end
 
-    alias inspect to_s
+    def inspect
+      "#<#{self.class}>"
+    end
+
+    def to_s
+      inspect
+    end
 
     CONFIGURATION_STEPS.each do |step|
       define_method step do |*args, **params|

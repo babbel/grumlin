@@ -25,7 +25,10 @@ module Grumlin
       end
       "#{configuration_steps.any? ? configuration_steps : nil}#{to_readable_bytecode}"
     end
-    alias to_s inspect
+
+    def to_s
+      inspect
+    end
 
     def to_readable_bytecode
       @to_readable_bytecode ||= steps.map { |s| serialize_arg(s, serialization_method: :to_readable_bytecode) }

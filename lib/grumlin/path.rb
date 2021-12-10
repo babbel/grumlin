@@ -12,6 +12,9 @@ module Grumlin
     def inspect
       "p[#{@objects}]"
     end
-    alias to_s inspect
+
+    def to_s
+      inspect
+    end
   end
 end

@@ -23,7 +23,13 @@ module Grumlin
     def inspect
       "<#{type}.#{value}>"
     end
-    alias to_s inspect
-    alias to_readable_bytecode inspect
+
+    def to_s
+      inspect
+    end
+
+    def to_readable_bytecode
+      inspect
+    end
   end
 end

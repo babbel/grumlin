@@ -32,7 +32,9 @@ module Grumlin
       bytecode.inspect
     end
 
-    alias to_s inspect
+    def to_s
+      inspect
+    end
 
     def bytecode(no_return: false)
       @bytecode ||= Bytecode.new(self, no_return: no_return)
