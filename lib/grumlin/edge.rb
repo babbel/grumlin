@@ -20,6 +20,9 @@ module Grumlin
     def inspect
       "e[#{@id}][#{@outV}-#{@label}->#{@inV}]"
     end
-    alias to_s inspect
+
+    def to_s
+      inspect
+    end
   end
 end
