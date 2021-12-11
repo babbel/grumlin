@@ -241,7 +241,8 @@ config.include_context(Grumlin::Test::RSpec::DBCleanerContext) # Cleans the data
 ...
 ```
 
-It is highly recommended to use `Grumlin::Sugar` and not trying to use lower level APIs as they are subject to change. 
+It is highly recommended to use `Grumlin::Sugar` or `Grumlin::Repository` and not trying to use lower level APIs
+as they are subject to change.
 
 ## Development
 

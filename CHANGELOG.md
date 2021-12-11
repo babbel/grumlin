@@ -1,3 +1,9 @@
+## [0.14.2] - 2021-12-12
+
+- Better exceptions
+- Add `choose` step
+- Add `__.hasNot`, `__.is`, `__.select`
+
 ## [0.14.0] - 2021-12-07
 
 - Add initial support for [configuration steps](https://tinkerpop.apache.org/docs/current/reference/#configuration-steps)
