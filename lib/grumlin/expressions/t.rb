@@ -3,11 +3,13 @@
 module Grumlin
   module Expressions
     module T
-      extend Expression
-
       SUPPORTED_STEPS = %i[id label].freeze
 
-      define_steps(SUPPORTED_STEPS, "T")
+      class << self
+        extend Expression
+
+        define_steps(SUPPORTED_STEPS, "T")
+      end
     end
   end
 end
