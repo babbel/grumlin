@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module Order
-      extend Tool
+      extend Expression
 
       SUPPORTED_STEPS = %i[asc desc].freeze
 

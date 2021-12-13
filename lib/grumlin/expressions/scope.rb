@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module Scope
-      extend Tool
+      extend Expression
 
       SUPPORTED_STEPS = %i[local].freeze
 

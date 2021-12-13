@@ -2,7 +2,7 @@
 
 module Grumlin
   module Expressions
-    module Tool
+    module Expression
       def define_steps(steps, tool_name)
         steps.each do |step|
           self.class.define_method step do

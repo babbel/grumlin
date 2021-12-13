@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module Pop
-      extend Tool
+      extend Expression
 
       SUPPORTED_STEPS = %i[all first last mixed].freeze
 

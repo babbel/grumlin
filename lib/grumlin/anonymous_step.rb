@@ -7,8 +7,8 @@ module Grumlin
     # TODO: add other steps
     SUPPORTED_STEPS = %i[E V addE addV and as both bothE by choose coalesce count dedup drop elementMap emit fold from
                          group groupCount has hasId hasLabel hasNot id in inE inV is label limit not or order out outE
-                         path project property range repeat select sideEffect skip tail to unfold union until valueMap
-                         values where with].freeze
+                         path project property range repeat sack select sideEffect skip tail to unfold union until
+                         valueMap values where with].freeze
 
     def initialize(name, *args, configuration_steps: [], previous_step: nil, **params)
       @name = name

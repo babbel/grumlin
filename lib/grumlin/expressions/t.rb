@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module T
-      extend Tool
+      extend Expression
 
       SUPPORTED_STEPS = %i[id label].freeze
 
