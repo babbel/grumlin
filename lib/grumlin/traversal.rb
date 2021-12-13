@@ -5,7 +5,7 @@ module Grumlin
     # TODO: add other start steps
     SUPPORTED_STEPS = %i[E V addE addV].freeze
 
-    CONFIGURATION_STEPS = %i[withSideEffect].freeze
+    CONFIGURATION_STEPS = %i[withSack withSideEffect].freeze
 
     attr_reader :configuration_steps
 

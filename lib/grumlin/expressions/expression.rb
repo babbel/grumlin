@@ -2,10 +2,10 @@
 
 module Grumlin
   module Expressions
-    module Tool
+    module Expression
       def define_steps(steps, tool_name)
         steps.each do |step|
-          self.class.define_method step do
+          define_method step do
             name = "@#{step}"
             return instance_variable_get(name) if instance_variable_defined?(name)
 

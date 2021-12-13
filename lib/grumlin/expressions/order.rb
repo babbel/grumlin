@@ -3,11 +3,13 @@
 module Grumlin
   module Expressions
     module Order
-      extend Tool
-
       SUPPORTED_STEPS = %i[asc desc].freeze
 
-      define_steps(SUPPORTED_STEPS, "Order")
+      class << self
+        extend Expression
+
+        define_steps(SUPPORTED_STEPS, "Order")
+      end
     end
   end
 end

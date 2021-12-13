@@ -1,3 +1,13 @@
+## [0.14.2] - 2021-12-13
+
+- Fix `Module` bloating
+- Add `Operator` expressions
+- Add `__.coalesce` and `__.constant`
+- Add steps: `sum`, `sack`
+- Add configuration steps: `withSack`
+- Rename `Grumlin::Expressions::Tool` to `Grumlin::Expressions::Expression`
+
+
 ## [0.14.2] - 2021-12-12
 
 - Better exceptions
