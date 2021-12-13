@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grumlin (0.14.2)
+    grumlin (0.14.3)
       async-pool (~> 0.3)
       async-websocket (~> 0.19)
       oj (~> 3.12)
@@ -68,7 +68,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.11.7-x86_64-linux)
       racc (~> 1.4)
-    oj (3.13.9)
+    oj (3.13.10)
     overcommit (0.57.0)
       childprocess (>= 0.6.3, < 5)
       iniparse (~> 1.4)
