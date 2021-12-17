@@ -1,3 +1,8 @@
+## [0.14.3] - 2021-12-17
+
+- `Grumlin::Repository.shorcuts_from` do not raise `ArgumentError` when importing an already existing shortcut
+  pointing to the same block. This fixes importing shortcuts from another repository.
+
 ## [0.14.2] - 2021-12-13
 
 - Fix `Module` bloating

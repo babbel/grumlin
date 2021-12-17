@@ -23,7 +23,7 @@ module Grumlin
       # TODO: blocklist of names to avoid conflicts with standard methods?
       raise ArgumentError, "cannot use names of standard gremlin steps" if Grumlin.supported_steps.include?(name)
 
-      raise ArgumentError, "shortcut '#{name}' already exists" if shortcuts.key?(name)
+      raise ArgumentError, "shortcut '#{name}' already exists" if shortcuts.key?(name) && shortcuts[name] != block
 
       shortcuts[name] = block
     end
