@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module Order
-      SUPPORTED_STEPS = %i[asc desc].freeze
+      SUPPORTED_STEPS = %i[asc desc shuffle].freeze
 
       class << self
         extend Expression
