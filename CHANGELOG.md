@@ -1,3 +1,9 @@
+## [0.14.5] - 2021-12-27
+
+- Fix params handling
+- Add `aggregate` step
+- Add `Order.shuffle`
+
 ## [0.14.4] - 2021-12-17
 
 - `Grumlin::Repository.shorcuts_from` do not raise `ArgumentError` when importing an already existing shortcut
