@@ -14,6 +14,7 @@ module Grumlin
       "g:Double" => ->(value) { cast_double(value) },
       "g:Traverser" => ->(value) { cast(value[:value]) }, # TODO: wtf is bulk?
       "g:Direction" => ->(value) { value },
+      # "g:VertexProperty"=> ->(value) { value }, # TODO: implement me
       "g:T" => ->(value) { value.to_sym }
     }.freeze
 
