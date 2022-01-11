@@ -9,12 +9,12 @@ module Grumlin
       "g:Vertex" => ->(value) { cast_entity(Grumlin::Vertex, value) },
       "g:Edge" => ->(value) { cast_entity(Grumlin::Edge, value) },
       "g:Path" => ->(value) { cast_entity(Grumlin::Path, value) },
+      "g:Traverser" => ->(value) { cast_entity(Traverser, value) },
+      "g:Property" => ->(value) { cast_entity(Property, value) },
       "g:Int64" => ->(value) { cast_int(value) },
       "g:Int32" => ->(value) { cast_int(value) },
       "g:Double" => ->(value) { cast_double(value) },
-      "g:Traverser" => ->(value) { cast_traverser(value) },
       "g:Direction" => ->(value) { value },
-      "g:Property" => ->(value) { Property.new(value[:key], value[:value]) },
       # "g:VertexProperty"=> ->(value) { value }, # TODO: implement me
       "g:T" => ->(value) { value.to_sym }
     }.freeze
@@ -22,18 +22,18 @@ module Grumlin
     class Traverser
       attr_reader :bulk, :value
 
-      def initialize(bulk, value)
-        @bulk = bulk || 1
-        @value = value
+      def initialize(value)
+        @bulk = value.dig(:bulk, :@value) || 1
+        @value = Typing.cast(value[:value])
       end
     end
 
     class Property
       attr_reader :key, :value
 
-      def initialize(key, value)
-        @key = key
-        @value = value
+      def initialize(value)
+        @key = value[:key]
+        @value = value[:value]
       end
 
       def inspect
@@ -108,10 +108,6 @@ module Grumlin
 
           casted_value.bulk.times { result << casted_value.value }
         end
-      end
-
-      def cast_traverser(value)
-        Traverser.new(value.dig(:bulk, :@value), cast(value[:value]))
       end
     end
   end
