@@ -3,8 +3,8 @@
 module Grumlin
   module Typing
     TYPES = {
-      "g:List" => ->(value) { value.map { |item| cast(item) } },
-      "g:Set" => ->(value) { Set.new(value.map { |item| cast(item) }) },
+      "g:List" => ->(value) { cast_list(value) },
+      "g:Set" => ->(value) { cast_list(value).to_set },
       "g:Map" => ->(value) { cast_map(value) },
       "g:Vertex" => ->(value) { cast_entity(Grumlin::Vertex, value) },
       "g:Edge" => ->(value) { cast_entity(Grumlin::Edge, value) },
@@ -12,11 +12,21 @@ module Grumlin
       "g:Int64" => ->(value) { cast_int(value) },
       "g:Int32" => ->(value) { cast_int(value) },
       "g:Double" => ->(value) { cast_double(value) },
-      "g:Traverser" => ->(value) { cast(value[:value]) }, # TODO: wtf is bulk?
+      "g:Traverser" => ->(value) { cast_traverser(value) },
       "g:Direction" => ->(value) { value },
+      "g:Property" => ->(value) { { value[:key] => value[:value] } },
       # "g:VertexProperty"=> ->(value) { value }, # TODO: implement me
       "g:T" => ->(value) { value.to_sym }
     }.freeze
+
+    class Traverser
+      attr_reader :bulk, :value
+
+      def initialize(bulk, value)
+        @bulk = bulk || 1
+        @value = value
+      end
+    end
 
     CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass].freeze
 
@@ -72,6 +82,19 @@ module Grumlin
         end.transform_values { |v| cast(v) }
       rescue ArgumentError
         raise TypeError, "#{value} cannot be casted to Hash"
+      end
+
+      def cast_list(value)
+        value.each_with_object([]) do |item, result|
+          casted_value = cast(item)
+          next (result << casted_value) unless casted_value.instance_of?(Traverser)
+
+          casted_value.bulk.times { result << casted_value.value }
+        end
+      end
+
+      def cast_traverser(value)
+        Traverser.new(value.dig(:bulk, :@value), cast(value[:value]))
       end
     end
   end
