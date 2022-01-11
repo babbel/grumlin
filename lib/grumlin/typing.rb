@@ -33,7 +33,7 @@ module Grumlin
 
       def initialize(value)
         @key = value[:key]
-        @value = value[:value]
+        @value = Typing.cast(value[:value])
       end
 
       def inspect
