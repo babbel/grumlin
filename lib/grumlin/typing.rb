@@ -14,7 +14,7 @@ module Grumlin
       "g:Double" => ->(value) { cast_double(value) },
       "g:Traverser" => ->(value) { cast_traverser(value) },
       "g:Direction" => ->(value) { value },
-      "g:Property" => ->(value) { { value[:key] => value[:value] } },
+      "g:Property" => ->(value) { Property.new(value[:key], value[:value]) },
       # "g:VertexProperty"=> ->(value) { value }, # TODO: implement me
       "g:T" => ->(value) { value.to_sym }
     }.freeze
@@ -25,6 +25,23 @@ module Grumlin
       def initialize(bulk, value)
         @bulk = bulk || 1
         @value = value
+      end
+    end
+
+    class Property
+      attr_reader :key, :value
+
+      def initialize(key, value)
+        @key = key
+        @value = value
+      end
+
+      def inspect
+        "p[#{key}->#{value}]"
+      end
+
+      def to_s
+        inspect
       end
     end
 
