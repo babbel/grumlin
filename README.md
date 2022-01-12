@@ -51,7 +51,7 @@ end
 
 ### Traversing graphs
 
-**Warning**: Not all steps and tools described in the standard are supported
+**Warning**: Not all steps and expressions defined in the reference documentation are supported.
 
 #### Sugar
 
