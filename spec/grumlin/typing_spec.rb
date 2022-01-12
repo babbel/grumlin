@@ -10,7 +10,7 @@ RSpec.describe Grumlin::Typing do
       context "when @type is g:List" do
         let(:type) {  "g:List" }
 
-        context "when @value is a list array" do
+        context "when @value is a list" do
           let(:value) do
             [{ "@type": "g:Vertex",
                "@value": { id: { "@type": "g:Int32", "@value": 0 }, label: "test_vertex" } }]
@@ -18,6 +18,24 @@ RSpec.describe Grumlin::Typing do
 
           it "returns an array" do
             expect(subject).to(eq([Grumlin::Vertex.new(label: "test_vertex", id: 0)]))
+          end
+        end
+
+        context "when value is a bulked traverser" do
+          let(:value) do
+            [{
+              "@type": "g:Traverser",
+              :@value => {
+                bulk: { :@type => "g:Int64", :@value => 3 },
+                value: { :@type => "g:Property", :@value => property_value }
+              }
+            }]
+          end
+
+          let(:property_value) { { key: "property", value: "property_value" } }
+
+          it "expands bulked value to an array of properties" do
+            expect(subject).to eq([Grumlin::Property.new(property_value)] * 3)
           end
         end
 

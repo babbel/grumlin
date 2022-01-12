@@ -16,5 +16,9 @@ module Grumlin
     def to_s
       inspect
     end
+
+    def ==(other)
+      self.class == other.class && @key == other.key && @value == other.value
+    end
   end
 end
