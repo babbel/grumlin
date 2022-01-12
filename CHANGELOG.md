@@ -1,3 +1,9 @@
+## [0.15.0] - 2022-01-11
+
+- Add `properties` step
+- Add proper support for bulked results
+- Add support for `Property` objects
+
 ## [0.14.5] - 2021-12-27
 
 - Fix params handling
