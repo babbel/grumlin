@@ -14,7 +14,6 @@ module Grumlin
 
     def initialize(step, no_return: false)
       super(type: "Bytecode")
-
       @step = step
       @no_return = no_return
     end
@@ -49,7 +48,7 @@ module Grumlin
       return arg.public_send(serialization_method) if arg.respond_to?(serialization_method)
       return arg unless arg.is_a?(AnonymousStep)
 
-      arg.args.flatten.each.with_object([arg.name.to_s]) do |a, res|
+      arg.args.each.with_object([arg.name.to_s]) do |a, res|
         res << if a.respond_to?(:bytecode)
                  a.bytecode.public_send(serialization_method)
                else
