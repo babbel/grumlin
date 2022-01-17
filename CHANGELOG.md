@@ -1,3 +1,7 @@
+## [0.15.1] - 2022-01-17
+
+- Fix passing arrays as step arguments
+
 ## [0.15.0] - 2022-01-11
 
 - Add `properties` step
