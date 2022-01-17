@@ -54,14 +54,29 @@ RSpec.describe Grumlin::Bytecode do
   describe "#value" do
     subject { bytecode.value }
 
-    let(:step) do
-      g.withSideEffect("a", "value").V.hasLabel(:node)
-       .has(T.id, "node_id")
-    end
-
     context "when there are configuration steps" do
-      it "returns serialized bytecode" do
-        expect(subject).to eq({ source: [["withSideEffect", "a", "value"]], step: [["V"], ["hasLabel", :node], ["has", { :@type => "g:T", :@value => :id }, "node_id"]] })
+      context "when the value is a scalar" do
+        let(:step) { g.withSideEffect("a", "value").V.hasLabel(:node).has(T.id, "node_id") }
+
+        it "returns serialized bytecode" do
+          expect(subject).to eq({ source: [["withSideEffect", "a", "value"]], step: [["V"], ["hasLabel", :node], ["has", { :@type => "g:T", :@value => :id }, "node_id"]] })
+        end
+      end
+
+      context "when the value is a map" do
+        let(:step) { g.withSideEffect("a", a: 1).V.hasLabel(:node).has(T.id, "node_id") }
+
+        it "returns serialized bytecode" do
+          expect(subject).to eq({ source: [["withSideEffect", "a", { a: 1 }]], step: [["V"], ["hasLabel", :node], ["has", { :@type => "g:T", :@value => :id }, "node_id"]] })
+        end
+      end
+
+      context "when the value is a list" do
+        let(:step) { g.withSideEffect("a", %i[a b]).V() }
+
+        it "returns serialized bytecode" do
+          expect(subject).to eq({ source: [["withSideEffect", "a", %i[a b]]], step: [["V"]] })
+        end
       end
     end
 
