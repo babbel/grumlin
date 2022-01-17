@@ -1,3 +1,7 @@
+## [0.15.2] - 2022-01-17
+
+- New steps: `map` and `identity`
+
 ## [0.15.1] - 2022-01-17
 
 - Fix passing arrays as step arguments
