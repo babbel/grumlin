@@ -41,7 +41,9 @@ module Grumlin
     end
 
     def args
-      [*@args, @params.any? ? @params : nil].compact
+      [*@args].tap do |args|
+        args << @params if @params.any?
+      end
     end
   end
 end
