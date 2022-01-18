@@ -1,3 +1,7 @@
+## [0.15.3] - 2022-01-18
+
+- Fix passing nils as step arguments. Even if they are not supported by the server, they should not be omitted.
+
 ## [0.15.2] - 2022-01-17
 
 - New steps: `map` and `identity`
