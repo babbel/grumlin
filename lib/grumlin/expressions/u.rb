@@ -2,13 +2,10 @@
 
 module Grumlin
   module Expressions
+    # The module is called U because Underscore and implements __
     module U
-      # TODO: add other start steps
-      SUPPORTED_STEPS = %i[V addV coalesce constant count drop fold has hasLabel hasNot id identity in inE inV is label
-                           out outE outV project repeat select timeLimit unfold valueMap values].freeze
-
       class << self
-        SUPPORTED_STEPS.each do |step|
+        Grumlin::AnonymousStep::SUPPORTED_STEPS.each do |step|
           define_method step do |*args, **params|
             AnonymousStep.new(step, *args, **params)
           end

@@ -2,7 +2,9 @@
 
 require "securerandom"
 require "oj"
+require "yaml"
 
+# TODO: use Oj directly
 Oj.mimic_JSON
 Oj.add_to_json
 
@@ -108,10 +110,6 @@ module Grumlin
     end
   end
 
-  def self.supported_steps
-    @supported_steps ||= (Grumlin::AnonymousStep::SUPPORTED_STEPS + Grumlin::Expressions::U::SUPPORTED_STEPS).sort.uniq
-  end
-
   @pool_mutex = Mutex.new
 
   class << self
@@ -144,6 +142,10 @@ module Grumlin
         pool.close
         Thread.current.thread_variable_set(:grumlin_default_pool, nil)
       end
+    end
+
+    def definitions
+      @definitions ||= YAML.safe_load(File.read(File.join(__dir__, "definitions.yml")), symbolize_names: true)
     end
   end
 end

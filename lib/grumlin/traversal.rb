@@ -2,10 +2,9 @@
 
 module Grumlin
   class Traversal
-    # TODO: add other start steps
-    SUPPORTED_STEPS = %i[E V addE addV].freeze
+    SUPPORTED_STEPS = Grumlin.definitions.dig(:steps, :start).map(&:to_sym).freeze
 
-    CONFIGURATION_STEPS = %i[withSack withSideEffect].freeze
+    CONFIGURATION_STEPS = Grumlin.definitions.dig(:steps, :configuration).map(&:to_sym).freeze
 
     attr_reader :configuration_steps
 

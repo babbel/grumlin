@@ -4,11 +4,8 @@ module Grumlin
   class AnonymousStep
     attr_reader :name, :previous_step, :configuration_steps
 
-    # TODO: add other steps
-    SUPPORTED_STEPS = %i[E V addE addV aggregate and as both bothE by choose coalesce count dedup drop elementMap emit
-                         fold from group groupCount has hasId hasLabel hasNot id identity in inE inV is label limit
-                         map not or order out outE path project properties property range repeat sack select sideEffect
-                         skip sum tail to unfold union until valueMap values where with].freeze
+    # TODO: remove tests
+    SUPPORTED_STEPS = Grumlin.definitions.dig(:steps, :regular).map(&:to_sym).freeze
 
     def initialize(name, *args, configuration_steps: [], previous_step: nil, **params)
       @name = name

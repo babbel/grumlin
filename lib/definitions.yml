@@ -1,0 +1,75 @@
+# TODO: add other steps
+# TODO: add tests for order
+steps:
+  regular:
+    - E
+    - V
+    - addE
+    - addV
+    - aggregate
+    - and
+    - as
+    - both
+    - bothE
+    - by
+    - choose
+    - coalesce
+    - count
+    - dedup
+    - drop
+    - elementMap
+    - emit
+    - fold
+    - from
+    - group
+    - groupCount
+    - has
+    - hasId
+    - hasLabel
+    - hasNot
+    - id
+    - identity
+    - in
+    - inE
+    - inV
+    - is
+    - label
+    - limit
+    - map
+    - not
+    - or
+    - order
+    - out
+    - outE
+    - outV
+    - path
+    - project
+    - properties
+    - property
+    - range
+    - repeat
+    - sack
+    - select
+    - sideEffect
+    - skip
+    - sum
+    - tail
+    - timeLimit
+    - to
+    - unfold
+    - union
+    - until
+    - valueMap
+    - values
+    - where
+    - with
+
+  start:
+    - E
+    - V
+    - addE
+    - addV
+
+  configuration:
+    - withSack
+    - withSideEffect
