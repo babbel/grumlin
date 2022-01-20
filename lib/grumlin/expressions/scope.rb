@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module Scope
-      SUPPORTED_STEPS = %i[local].freeze
+      SUPPORTED_STEPS = Grumlin.definitions.dig(:expressions, :scope).map(&:to_sym).freeze
 
       class << self
         extend Expression

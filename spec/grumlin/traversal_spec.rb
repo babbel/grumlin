@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Traversal, gremlin_server: true do
-  include_examples "has sorted constant", "SUPPORTED_STEPS"
-  include_examples "has sorted constant", "CONFIGURATION_STEPS"
-
   describe "start steps" do
     describe "#V" do
       subject { g.V(*ids).toList }
