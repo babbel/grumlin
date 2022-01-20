@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module Operator
-      SUPPORTED_STEPS = %i[addAll and assign div max min minus mult or sum].freeze
+      SUPPORTED_STEPS = Grumlin.definitions.dig(:expressions, :operator).map(&:to_sym).freeze
 
       class << self
         extend Expression

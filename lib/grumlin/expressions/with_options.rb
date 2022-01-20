@@ -3,18 +3,7 @@
 module Grumlin
   module Expressions
     module WithOptions
-      WITH_OPTIONS = {
-        tokens: "~tinkerpop.valueMap.tokens",
-        none: 0,
-        ids: 1,
-        labels: 2,
-        keys: 4,
-        values: 8,
-        all: 15,
-        indexer: "~tinkerpop.index.indexer",
-        list: 0,
-        map: 1
-      }.freeze
+      WITH_OPTIONS = Grumlin.definitions.dig(:expressions, :with_options).freeze
 
       class << self
         WITH_OPTIONS.each do |k, v|

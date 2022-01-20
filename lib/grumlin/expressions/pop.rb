@@ -3,7 +3,7 @@
 module Grumlin
   module Expressions
     module Pop
-      SUPPORTED_STEPS = %i[all first last mixed].freeze
+      SUPPORTED_STEPS = Grumlin.definitions.dig(:expressions, :pop).map(&:to_sym).freeze
 
       class << self
         extend Expression

@@ -73,3 +73,46 @@ steps:
   configuration:
     - withSack
     - withSideEffect
+
+expressions:
+  operator:
+    - addAll
+    - and
+    - assign
+    - div
+    - max
+    - min
+    - minus
+    - mult
+    - or
+    - sum
+
+  order:
+    - asc
+    - desc
+    - shuffle
+
+  pop:
+    - all
+    - first
+    - last
+    - mixed
+
+  scope:
+    - local
+
+  t:
+    - id
+    - label
+
+  with_options:
+    tokens: "~tinkerpop.valueMap.tokens"
+    none: 0
+    ids: 1
+    labels: 2
+    keys: 4
+    values: 8
+    all: 15
+    indexer: "~tinkerpop.index.indexer"
+    list: 0
+    map: 1

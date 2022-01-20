@@ -4,7 +4,6 @@ module Grumlin
   class AnonymousStep
     attr_reader :name, :previous_step, :configuration_steps
 
-    # TODO: remove tests
     SUPPORTED_STEPS = Grumlin.definitions.dig(:steps, :regular).map(&:to_sym).freeze
 
     def initialize(name, *args, configuration_steps: [], previous_step: nil, **params)
