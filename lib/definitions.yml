@@ -1,5 +1,3 @@
-# TODO: add other steps
-# TODO: add tests for order
 steps:
   regular:
     - E

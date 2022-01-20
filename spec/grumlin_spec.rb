@@ -20,4 +20,28 @@ RSpec.describe Grumlin do
       expect(exception.status).to eq({ code: 999, message: "error message" })
     end
   end
+
+  describe "#definitions" do
+    describe "[:steps]" do
+      subject { described_class.definitions[:steps] }
+
+      it "consists of sorted lists which do not have duplicates" do
+        subject.each_value do |list|
+          expect(list).to eq(list.sort)
+          expect(list).to eq(list.uniq)
+        end
+      end
+    end
+
+    describe "[:expressions]" do
+      subject { described_class.definitions[:expressions] }
+
+      it "consists of sorted lists which do not have duplicates" do
+        subject.except(:with_options).each_value do |list|
+          expect(list).to eq(list.sort)
+          expect(list).to eq(list.uniq)
+        end
+      end
+    end
+  end
 end
