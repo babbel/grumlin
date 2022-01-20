@@ -22,7 +22,7 @@ RSpec.describe Grumlin do
   end
 
   describe "#definitions" do
-    # if one of these tests fail try running `rake definitions:format`
+    # if these tests fail try running `rake definitions:format`
     describe "[:steps]" do
       subject { described_class.definitions[:steps] }
 
