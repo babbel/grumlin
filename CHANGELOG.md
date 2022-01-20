@@ -1,3 +1,8 @@
+## [0.15.4] - 2022-01-20
+
+- Move step and expression definitions to a yaml file for better diffs
+- Add `definitions:format` rake task
+
 ## [0.15.3] - 2022-01-18
 
 - Fix passing nils as step arguments. Even if they are not supported by the server, they should not be omitted.

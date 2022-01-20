@@ -258,6 +258,10 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, 
 push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
 
+### Adding new steps and expressions
+To add a new step or an expression simple put it to the corresponding list in [definitions.yml](lib/definitions.yml)
+and run `rake definitions:format`. You don't need to properly sort the lists manually, the rake task will do it for you.
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/zhulik/grumlin. This project is intended to 

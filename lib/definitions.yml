@@ -1,108 +1,102 @@
+---
 steps:
   regular:
-    - E
-    - V
-    - addE
-    - addV
-    - aggregate
-    - and
-    - as
-    - both
-    - bothE
-    - by
-    - choose
-    - coalesce
-    - count
-    - dedup
-    - drop
-    - elementMap
-    - emit
-    - fold
-    - from
-    - group
-    - groupCount
-    - has
-    - hasId
-    - hasLabel
-    - hasNot
-    - id
-    - identity
-    - in
-    - inE
-    - inV
-    - is
-    - label
-    - limit
-    - map
-    - not
-    - or
-    - order
-    - out
-    - outE
-    - outV
-    - path
-    - project
-    - properties
-    - property
-    - range
-    - repeat
-    - sack
-    - select
-    - sideEffect
-    - skip
-    - sum
-    - tail
-    - timeLimit
-    - to
-    - unfold
-    - union
-    - until
-    - valueMap
-    - values
-    - where
-    - with
-
+  - E
+  - V
+  - addE
+  - addV
+  - aggregate
+  - and
+  - as
+  - both
+  - bothE
+  - by
+  - choose
+  - coalesce
+  - constant
+  - count
+  - dedup
+  - drop
+  - elementMap
+  - emit
+  - fold
+  - from
+  - group
+  - groupCount
+  - has
+  - hasId
+  - hasLabel
+  - hasNot
+  - id
+  - identity
+  - in
+  - inE
+  - inV
+  - is
+  - label
+  - limit
+  - map
+  - not
+  - or
+  - order
+  - out
+  - outE
+  - outV
+  - path
+  - project
+  - properties
+  - property
+  - range
+  - repeat
+  - sack
+  - select
+  - sideEffect
+  - skip
+  - sum
+  - tail
+  - timeLimit
+  - to
+  - unfold
+  - union
+  - until
+  - valueMap
+  - values
+  - where
+  - with
   start:
-    - E
-    - V
-    - addE
-    - addV
-
+  - E
+  - V
+  - addE
+  - addV
   configuration:
-    - withSack
-    - withSideEffect
-
+  - withSack
+  - withSideEffect
 expressions:
   operator:
-    - addAll
-    - and
-    - assign
-    - div
-    - max
-    - min
-    - minus
-    - mult
-    - or
-    - sum
-
+  - addAll
+  - and
+  - assign
+  - div
+  - max
+  - min
+  - minus
+  - mult
+  - or
+  - sum
   order:
-    - asc
-    - desc
-    - shuffle
-
+  - asc
+  - desc
+  - shuffle
   pop:
-    - all
-    - first
-    - last
-    - mixed
-
+  - all
+  - first
+  - last
+  - mixed
   scope:
-    - local
-
+  - local
   t:
-    - id
-    - label
-
+  - id
+  - label
   with_options:
     tokens: "~tinkerpop.valueMap.tokens"
     none: 0
