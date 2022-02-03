@@ -60,6 +60,9 @@ RSpec/MultipleExpectations:
 RSpec/DescribeClass:
   Enabled: false
 
+RSpec/MultipleMemoizedHelpers:
+  Max: 7
+
 Style/WordArray:
   Exclude:
     - spec/**/*_spec.rb

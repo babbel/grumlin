@@ -18,7 +18,7 @@ module Grumlin
 
       return wrap_result(@object.public_send(name, *args, **params)) if @object.respond_to?(name)
 
-      return wrap_result(instance_exec(*args, **params, &@shortcuts[name])) if @shortcuts.key?(name)
+      return wrap_result(@shortcuts[name].apply(self, *args, **params)) if @shortcuts.key?(name)
 
       super
     end

@@ -6,7 +6,7 @@ RSpec.describe Grumlin::ShortcutProxy do
   let(:object) { double(fold: true, property: true) } # rubocop:disable RSpec/VerifiedDoubles
   let(:shortcuts) do
     {
-      custom_step: proc { |arg| property(:a, arg) }
+      custom_step: Grumlin::Shortcut.new(:custom_step, &proc { |arg| property(:a, arg) })
     }
   end
 
