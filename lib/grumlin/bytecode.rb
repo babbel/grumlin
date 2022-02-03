@@ -59,10 +59,10 @@ module Grumlin
 
     def steps
       @steps ||= [].tap do |result|
-        step = @step
+        step = @step.first_step
         until step.nil?
-          result.unshift(step)
-          step = step.previous_step
+          result << step
+          step = step.next_step
         end
       end
     end
