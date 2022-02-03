@@ -40,7 +40,7 @@ RSpec.describe Grumlin::Shortcuts do
       it "add a new shortcut" do
         klass.shortcut(:custom_step) { nil }
         expect(klass.shortcuts.count).to eq(2)
-        expect(klass.shortcuts[:custom_step]).to be_a(Proc)
+        expect(klass.shortcuts[:custom_step]).to be_a(Grumlin::Shortcut)
       end
     end
   end

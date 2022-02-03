@@ -18,7 +18,7 @@ module Grumlin
       subclass.shortcuts_from(self)
     end
 
-    def shortcut(name, &block)
+    def shortcut(name, shortcut = nil, &block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       name = name.to_sym
       # TODO: blocklist of names to avoid conflicts with standard methods?
       if Grumlin::AnonymousStep::SUPPORTED_STEPS.include?(name)
@@ -26,14 +26,20 @@ module Grumlin
               "cannot use names of standard gremlin steps"
       end
 
-      raise ArgumentError, "shortcut '#{name}' already exists" if shortcuts.key?(name) && shortcuts[name] != block
+      if (shortcut.nil? && block.nil?) || (shortcut && block)
+        raise ArgumentError, "either shortcut or block must be passed"
+      end
 
-      shortcuts[name] = block
+      shortcut ||= Shortcut.new(name, &block)
+
+      raise ArgumentError, "shortcut '#{name}' already exists" if shortcuts.key?(name) && shortcuts[name] != shortcut
+
+      shortcuts[name] = shortcut
     end
 
     def shortcuts_from(other_shortcuts)
-      other_shortcuts.shortcuts.each do |name, block|
-        shortcut(name, &block)
+      other_shortcuts.shortcuts.each do |name, shortcut|
+        shortcut(name, shortcut)
       end
     end
 
