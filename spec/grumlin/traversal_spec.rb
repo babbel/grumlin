@@ -54,8 +54,9 @@ RSpec.describe Grumlin::Traversal, gremlin_server: true do
         g.addV("test_vertex").iterate
       end
 
-      it "returns a Traversal with configuration step" do
-        expect(subject).to be_an_instance_of(described_class)
+      it "returns a Traversal with configuration step wrapped into an Action" do
+        expect(subject).to be_an_instance_of(Grumlin::Action)
+        expect(subject.step).to be_an_instance_of(described_class)
         expect(subject.configuration_steps).not_to be_empty
         expect(subject.configuration_steps.first.name).to eq(:withSideEffect)
       end

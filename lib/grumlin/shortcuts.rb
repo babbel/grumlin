@@ -4,7 +4,7 @@ module Grumlin
   module Shortcuts
     module InstanceMethods
       def with_shortcuts(obj)
-        ShortcutProxy.new(obj, self.class.shortcuts, parent: self)
+        Action.new(ShortcutProxy.new(obj, self.class.shortcuts, parent: self))
       end
     end
 

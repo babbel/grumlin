@@ -14,7 +14,7 @@ module Grumlin
 
     def initialize(step, no_return: false)
       super(type: "Bytecode")
-      @step = step
+      @step = step.is_a?(Action) ? step.step : step
       @no_return = no_return
     end
 

@@ -23,7 +23,9 @@ module Grumlin
 
     CONFIGURATION_STEPS.each do |step|
       define_method step do |*args, **params|
-        self.class.new(@pool, configuration_steps: @configuration_steps + [AnonymousStep.new(step, *args, **params)])
+        Action.new(self.class.new(@pool,
+                                  configuration_steps: @configuration_steps + [AnonymousStep.new(step, *args,
+                                                                                                 **params)]))
       end
     end
 
@@ -34,7 +36,7 @@ module Grumlin
     end
 
     def step(step_name, *args, **params, &block)
-      Step.new(@pool, step_name, *args, configuration_steps: @configuration_steps, **params, &block)
+      Action.new(Step.new(@pool, step_name, *args, configuration_steps: @configuration_steps, **params, &block))
     end
   end
 end

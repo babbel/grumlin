@@ -10,6 +10,10 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
           .withSideEffect(:b, 2)
       end
 
+      shortcut :shortcut_with_other_shortcuts do
+        shortcut_with_configuration_steps
+      end
+
       shortcut :shortcut do
         property(:shortcut, true)
       end
@@ -35,7 +39,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
   describe "included shortcuts" do
     it "includes shortcuts" do
-      expect(repository_class.shortcuts.keys).to eq(%i[props hasAll shortcut_with_configuration_steps shortcut])
+      expect(repository_class.shortcuts.keys).to eq(%i[props hasAll shortcut_with_configuration_steps shortcut_with_other_shortcuts shortcut])
     end
   end
 
@@ -176,6 +180,8 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   it "works" do
-    p repository.g.shortcut_with_configuration_steps
+    repository.g.shortcut_with_configuration_steps.class
+    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
+    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
   end
 end

@@ -34,16 +34,16 @@ module Grumlin
       @next_step = self.class.new(name, *args, first_step: @first_step, **params, &block)
     end
 
-    def inspect
-      bytecode.inspect
-    end
-
     def shortcut?
       !@block.nil?
     end
 
     def to_s
       inspect
+    end
+
+    def inspect
+      bytecode.inspect
     end
 
     def bytecode(no_return: false)
