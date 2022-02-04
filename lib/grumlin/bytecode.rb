@@ -39,6 +39,23 @@ module Grumlin
       end
     end
 
+    def steps(from_first: true)
+      @steps ||= [].tap do |result|
+        step = from_first ? @step.first_step : @step
+        until step.nil?
+          if step.shortcut?
+            next_step = step.next_step
+            step.block.call(step)
+            result.concat(step.next_step.bytecode.steps(from_first: false)) if step.next_step
+            step = next_step
+          else
+            result << step
+            step = step.next_step
+          end
+        end
+      end
+    end
+
     private
 
     # Serializes step or a step argument to either an executable query or a human readable string representation
@@ -54,16 +71,6 @@ module Grumlin
                else
                  serialize_arg(a, serialization_method: serialization_method)
                end
-      end
-    end
-
-    def steps
-      @steps ||= [].tap do |result|
-        step = @step.first_step
-        until step.nil?
-          result << step
-          step = step.next_step
-        end
       end
     end
   end

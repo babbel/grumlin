@@ -29,8 +29,12 @@ module Grumlin
 
     SUPPORTED_STEPS.each do |step|
       define_method step do |*args, **params|
-        Step.new(@pool, step, *args, configuration_steps: @configuration_steps, **params)
+        step(step, *args, **params)
       end
+    end
+
+    def step(step_name, *args, **params, &block)
+      Step.new(@pool, step_name, *args, configuration_steps: @configuration_steps, **params, &block)
     end
   end
 end

@@ -2,17 +2,20 @@
 
 module Grumlin
   class AnonymousStep
-    attr_reader :name, :first_step, :next_step
+    attr_reader :name, :first_step, :next_step, :block
 
     SUPPORTED_STEPS = Grumlin.definitions.dig(:steps, :regular).map(&:to_sym).freeze
 
-    def initialize(name, *args, configuration_steps: [], first_step: nil, **params)
+    # if block is passed, it will be lazily evaluated in #next_step
+    def initialize(name, *args, configuration_steps: [], first_step: nil, **params, &block)
       @name = name
       @args = args
       @params = params
 
       @first_step = first_step || self
       @configuration_steps = configuration_steps if first_step.nil?
+
+      @block = block
 
       @next_step = nil
     end
@@ -27,12 +30,16 @@ module Grumlin
       @configuration_steps || @first_step.configuration_steps
     end
 
-    def step(name, *args, **params)
-      @next_step = self.class.new(name, *args, first_step: @first_step, **params)
+    def step(name, *args, **params, &block)
+      @next_step = self.class.new(name, *args, first_step: @first_step, **params, &block)
     end
 
     def inspect
       bytecode.inspect
+    end
+
+    def shortcut?
+      !@block.nil?
     end
 
     def to_s

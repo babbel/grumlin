@@ -36,8 +36,8 @@ module Grumlin
       end
     end
 
-    def step(step_name, *args, **params)
-      @next_step = self.class.new(@pool, step_name, *args, first_step: @first_step, **params)
+    def step(step_name, *args, **params, &block)
+      @next_step = self.class.new(@pool, step_name, *args, first_step: @first_step, **params, &block)
     end
   end
 end

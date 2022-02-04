@@ -5,6 +5,11 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     Class.new do
       extend Grumlin::Repository
 
+      shortcut :shortcut_with_configuration_steps do
+        withSideEffect(:a, 1)
+          .withSideEffect(:b, 2)
+      end
+
       shortcut :shortcut do
         property(:shortcut, true)
       end
@@ -30,7 +35,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
   describe "included shortcuts" do
     it "includes shortcuts" do
-      expect(repository_class.shortcuts.keys).to eq(%i[props hasAll shortcut])
+      expect(repository_class.shortcuts.keys).to eq(%i[props hasAll shortcut_with_configuration_steps shortcut])
     end
   end
 
@@ -168,5 +173,9 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         include_examples "raises an exception", ArgumentError, "shortcut 'another_shortcut' already exists"
       end
     end
+  end
+
+  it "works" do
+    p repository.g.shortcut_with_configuration_steps
   end
 end
