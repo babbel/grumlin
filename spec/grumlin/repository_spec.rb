@@ -17,6 +17,10 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       shortcut :shortcut do
         property(:shortcut, true)
       end
+
+      def foo(id1, id2)
+        g.addE("test").from(__.V(id1)).to(__.V(id2)).props(a: 1).iterate
+      end
     end
   end
   let(:repository) { repository_class.new }
@@ -179,11 +183,12 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     end
   end
 
-  it "works" do
-    repository.g.addV("test").props(T.id, 1)
-              .addV("test").props(T.id, 2).iterate
-    repository.g.shortcut_with_configuration_steps.class
-    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
-    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
+  it "works", timeout: 2 do
+    repository.g.addV("test").props(T.id => 1)
+              .addV("test").props(T.id => 2).iterate
+    # repository.g.shortcut_with_configuration_steps.class
+    # repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
+    # repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
+    repository.foo(1, 2)
   end
 end
