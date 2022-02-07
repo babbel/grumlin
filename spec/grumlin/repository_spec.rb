@@ -184,11 +184,15 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   it "works", timeout: 2 do
-    repository.g.addV("test").props(T.id => 1)
-              .addV("test").props(T.id => 2).iterate
-    # repository.g.shortcut_with_configuration_steps.class
-    # repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
-    # repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
+    repository.g
+    repository.g.V.shortcuts.keys
+    repository.g.addV("test").props(T.id => 1).addV("test").props(T.id => 2).iterate
+    repository.g.shortcut_with_configuration_steps.class
+    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
+    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
     repository.foo(1, 2)
+
+    # pp repository.g.withSideEffect(:a, 1).V
+    # pp Grumlin::Bytecode.new(repository.g.withSideEffect(:a, 1).V)
   end
 end

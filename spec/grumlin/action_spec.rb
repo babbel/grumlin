@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::ShortcutProxy do
-  let(:proxy) { described_class.new(object, shortcuts) }
+RSpec.describe Grumlin::Action do
+  let(:proxy) { described_class.new(object, shortcuts: shortcuts) }
 
   let(:object) { double(fold: true, property: true) } # rubocop:disable RSpec/VerifiedDoubles
   let(:shortcuts) do
@@ -11,7 +11,7 @@ RSpec.describe Grumlin::ShortcutProxy do
   end
 
   describe "#respond_to_missing?" do
-    subject { proxy.respond_to_missing?(method_name) }
+    subject { proxy.respond_to?(method_name) }
 
     context "when method exists in the wrapped object" do
       let(:method_name) { "fold" }
@@ -22,7 +22,7 @@ RSpec.describe Grumlin::ShortcutProxy do
     end
 
     context "when method is a shortcut" do
-      let(:method_name) { "custom_step" }
+      let(:method_name) { :custom_step }
 
       it "returns true" do
         expect(subject).to be_truthy

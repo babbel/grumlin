@@ -63,7 +63,8 @@ module Grumlin
     # representation or `:to_bytecode` for query.
     def serialize_arg(arg, serialization_method: :to_bytecode)
       return arg.public_send(serialization_method) if arg.respond_to?(serialization_method)
-      return arg unless arg.is_a?(Step)
+
+      return arg unless arg.is_a?(Step) || arg.is_a?(Action)
 
       arg.args.each.with_object([arg.name.to_s]) do |a, res|
         res << if a.respond_to?(:bytecode)
