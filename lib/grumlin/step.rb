@@ -34,11 +34,6 @@ module Grumlin
       !@block.nil?
     end
 
-    # TODO: remove
-    def bytecode(no_return: false)
-      @bytecode ||= Bytecode.new(self, no_return: no_return)
-    end
-
     def args
       [*@args].tap do |args|
         args << @params if @params.any?

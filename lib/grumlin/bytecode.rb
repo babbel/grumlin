@@ -46,7 +46,7 @@ module Grumlin
           if step.shortcut?
             next_step = step.next_step
             step.block.call(step)
-            result.concat(step.next_step.bytecode.steps(from_first: false)) if step.next_step
+            result.concat(Bytecode.new(step.next_step).steps(from_first: false)) if step.next_step
             step = next_step
           else
             result << step
@@ -67,8 +67,8 @@ module Grumlin
       return arg unless arg.is_a?(Step) || arg.is_a?(Action)
 
       arg.args.each.with_object([arg.name.to_s]) do |a, res|
-        res << if a.respond_to?(:bytecode)
-                 a.bytecode.public_send(serialization_method)
+        res << if a.is_a?(Step) || a.is_a?(Action)
+                 Bytecode.new(a).public_send(serialization_method)
                else
                  serialize_arg(a, serialization_method: serialization_method)
                end
