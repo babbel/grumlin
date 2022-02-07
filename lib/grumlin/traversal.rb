@@ -24,8 +24,9 @@ module Grumlin
     CONFIGURATION_STEPS.each do |step|
       define_method step do |*args, **params|
         Action.new(self.class.new(@pool,
-                                  configuration_steps: @configuration_steps + [Step.new(step, *args,
-                                                                                        **params)]), pool: @pool)
+                                  configuration_steps: @configuration_steps + [Action.new(Step.new(step, *args,
+                                                                                                   **params))]),
+                   pool: @pool)
       end
     end
 

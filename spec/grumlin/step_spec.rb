@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Step, gremlin_server: true do
-  describe "#inspect" do
+  xdescribe "#inspect" do
     it "returns bytecode representation of the traversal" do
       t = g.addV.as("first")
            .addV.as("second")

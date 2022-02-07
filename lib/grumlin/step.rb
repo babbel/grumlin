@@ -35,16 +35,6 @@ module Grumlin
     end
 
     # TODO: remove
-    def to_s
-      inspect
-    end
-
-    # TODO: remove
-    def inspect
-      bytecode.inspect
-    end
-
-    # TODO: remove
     def bytecode(no_return: false)
       @bytecode ||= Bytecode.new(self, no_return: no_return)
     end
