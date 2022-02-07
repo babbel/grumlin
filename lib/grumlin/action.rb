@@ -12,12 +12,6 @@ module Grumlin
       @parent = parent
     end
 
-    def_delegator :@action_step, :to_s
-
-    def inspect
-      @action_step.inspect
-    end
-
     def method_missing(name, *args, **params)
       # TODO: why g is here?
       return wrap_result(@parent.public_send(name, *args, **params)) if %i[__ g].include?(name) && !@parent.nil?
@@ -29,6 +23,20 @@ module Grumlin
       super
     end
 
+    def to_s
+      inspect
+    end
+
+    def inspect
+      bytecode.inspect
+    end
+
+    def bytecode(no_return: false)
+      @bytecode ||= Bytecode.new(self, no_return: no_return)
+    end
+
+    private
+
     def respond_to_missing?(name, include_private = false)
       name = name.to_sym
 
@@ -38,8 +46,6 @@ module Grumlin
         @shortcuts.key?(name) ||
         super
     end
-
-    private
 
     def wrap_result(result)
       return self.class.new(result.action_step, shortcuts: @shortcuts, parent: @parent) if result.is_a?(Action)
