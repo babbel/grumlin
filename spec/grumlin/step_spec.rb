@@ -1,6 +1,25 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Step, gremlin_server: true do
+  describe "#inspect" do
+    it "returns bytecode representation of the traversal" do
+      t = g.addV.as("first")
+           .addV.as("second")
+           .addV.as("third")
+           .addE("follows").from("first").to("second")
+           .addE("follows").from("second").to("third")
+           .addE("follows").from("third").to("first")
+      expect(t.inspect).to eq('[["addV"], ["as", "first"], ["addV"], ["as", "second"], ["addV"], ["as", "third"], ["addE", "follows"], ["from", "first"], ["to", "second"], ["addE", "follows"], ["from", "second"], ["to", "third"], ["addE", "follows"], ["from", "third"], ["to", "first"]]')
+    end
+  end
+
+  describe "#bytecode" do
+    it "returns a Bytecode instance" do
+      t = g.addV
+      expect(t.bytecode).to be_an(Grumlin::Bytecode)
+    end
+  end
+
   describe "chaining" do
     context "when using aliases" do
       it "builds a chain" do

@@ -75,7 +75,7 @@ RSpec.describe Grumlin::ShortcutProxy do
     end
 
     context "when result is a step" do
-      let(:object) { double(fold: Grumlin::AnonymousStep.new("step"), property: Grumlin::AnonymousStep.new("step")) } # rubocop:disable RSpec/VerifiedDoubles
+      let(:object) { double(fold: Grumlin::Step.new("step"), property: Grumlin::Step.new("step")) } # rubocop:disable RSpec/VerifiedDoubles
 
       context "when method exists in the wrapped object" do
         let(:method_name) { :fold }

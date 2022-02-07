@@ -15,9 +15,7 @@ module Grumlin
 
     def method_missing(name, *args, **params)
       @step.public_send(name, *args, **params).tap do |result|
-        if result.is_a?(AnonymousStep) || result.is_a?(Traversal) || result.is_a?(ShortcutProxy)
-          return self.class.new(result)
-        end
+        return self.class.new(result) if result.is_a?(Step) || result.is_a?(Traversal) || result.is_a?(ShortcutProxy)
       end
     end
 

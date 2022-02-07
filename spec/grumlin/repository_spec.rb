@@ -180,6 +180,8 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   it "works" do
+    repository.g.addV("test").props(T.id, 1)
+              .addV("test").props(T.id, 2).iterate
     repository.g.shortcut_with_configuration_steps.class
     repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
     repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
