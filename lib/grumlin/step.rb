@@ -7,12 +7,10 @@ module Grumlin
     SUPPORTED_STEPS = Grumlin.definitions.dig(:steps, :regular).map(&:to_sym).freeze
 
     # if block is passed, it will be lazily evaluated in #next_step
-    def initialize(name, *args, configuration_steps: [], first_step: nil, pool: nil, **params, &block)
+    def initialize(name, *args, configuration_steps: [], first_step: nil, **params, &block)
       @name = name
       @args = args
       @params = params
-
-      @pool = pool
 
       @first_step = first_step || self
       @configuration_steps = configuration_steps if first_step.nil?
@@ -57,40 +55,8 @@ module Grumlin
       end
     end
 
-    # TODO: remove
-    def next
-      to_enum.next
-    end
-
-    # TODO: remove
-    def hasNext # rubocop:disable Naming/MethodName
-      to_enum.peek
-      true
-    rescue StopIteration
-      false
-    end
-
-    # TODO: remove
-    def to_enum
-      @to_enum ||= toList.to_enum
-    end
-
-    # TODO: remove
-    def toList
-      @pool.acquire do |client|
-        client.write(bytecode)
-      end
-    end
-
-    # TODO: remove
-    def iterate
-      @pool.acquire do |client|
-        client.write(bytecode(no_return: true))
-      end
-    end
-
     def step(step_name, *args, **params, &block)
-      @next_step = self.class.new(step_name, *args, first_step: @first_step, pool: @pool, **params, &block)
+      @next_step = self.class.new(step_name, *args, first_step: @first_step, **params, &block)
     end
   end
 end

@@ -39,7 +39,6 @@ module Grumlin
       Action.new(Step.new(step_name,
                           *args,
                           configuration_steps: @configuration_steps,
-                          pool: @pool,
                           **params,
                           &block), pool: @pool)
     end
