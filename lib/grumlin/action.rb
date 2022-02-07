@@ -6,15 +6,15 @@ module Grumlin
 
     attr_reader :action_step, :shortcuts
 
-    def initialize(step, shortcuts: {}, parent: nil)
+    def initialize(step, shortcuts: {}, context: nil)
       @action_step = step
       @shortcuts = shortcuts
-      @parent = parent
+      @context = context
     end
 
     def method_missing(name, *args, **params)
       # TODO: why g is here?
-      return wrap_result(@parent.public_send(name, *args, **params)) if %i[__ g].include?(name) && !@parent.nil?
+      return wrap_result(@context.public_send(name, *args, **params)) if %i[__ g].include?(name) && !@context.nil?
 
       return wrap_result(@action_step.public_send(name, *args, **params)) if @action_step.respond_to?(name)
 
@@ -41,17 +41,17 @@ module Grumlin
       name = name.to_sym
 
       (%i[__ g].include?(name) &&
-        @parent.respond_to?(name, include_private)) ||
+        @context.respond_to?(name, include_private)) ||
         @action_step.respond_to?(name, include_private) ||
         @shortcuts.key?(name) ||
         super
     end
 
     def wrap_result(result)
-      return self.class.new(result.action_step, shortcuts: @shortcuts, parent: @parent) if result.is_a?(Action)
+      return self.class.new(result.action_step, shortcuts: @shortcuts, context: @context) if result.is_a?(Action)
 
       if result.is_a?(Step) || result.is_a?(Traversal)
-        return self.class.new(result, shortcuts: @shortcuts, parent: @parent)
+        return self.class.new(result, shortcuts: @shortcuts, context: @context)
       end
 
       result
