@@ -7,11 +7,11 @@ module Grumlin
     end
 
     def __
-      Grumlin::Expressions::U
+      Action.new(Grumlin::Expressions::U)
     end
 
     def g
-      Grumlin::Traversal.new
+      Action.new(Grumlin::Traversal.new)
     end
   end
 end

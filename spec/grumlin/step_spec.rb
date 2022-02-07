@@ -41,9 +41,9 @@ RSpec.describe Grumlin::Step, gremlin_server: true do
          .addV.property(T.id, 2)
          .addV.property(T.id, 3).iterate
 
-        t = g.addE("follows").from(U.V(1)).to(U.V(2))
-             .addE("follows").from(U.V(2)).to(U.V(3))
-             .addE("follows").from(U.V(3)).to(U.V(1))
+        t = g.addE("follows").from(__.V(1)).to(__.V(2))
+             .addE("follows").from(__.V(2)).to(__.V(3))
+             .addE("follows").from(__.V(3)).to(__.V(1))
         t.iterate
 
         expect(g.V().count.toList).to eq([3])

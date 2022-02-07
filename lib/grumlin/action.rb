@@ -7,6 +7,8 @@ module Grumlin
     attr_reader :action_step, :shortcuts
 
     def initialize(step, shortcuts: {}, context: nil, pool: Grumlin.default_pool)
+      # raise ArgumentError, "wrapping #{step.class} is not supported" if step.is_a?(self.class)
+
       @action_step = step
       @shortcuts = shortcuts
       @context = context
@@ -28,6 +30,7 @@ module Grumlin
       inspect
     end
 
+    # TODO: add support for inspecting __ and g from Sugar
     def inspect
       bytecode.inspect
     end

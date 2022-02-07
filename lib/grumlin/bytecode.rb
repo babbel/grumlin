@@ -14,7 +14,10 @@ module Grumlin
 
     def initialize(step, no_return: false)
       super(type: "Bytecode")
-      @step = step.is_a?(Action) ? step.action_step : step
+
+      raise ArgumentError, "expected: #{Action}, got: #{step.class}" unless step.is_a?(Action)
+
+      @step = step.action_step
       @no_return = no_return
     end
 
@@ -66,8 +69,12 @@ module Grumlin
 
       return arg unless arg.is_a?(Step) || arg.is_a?(Action)
 
+      # unless arg.is_a?(Action)
+      #   raise "!"
+      # end
+
       arg.args.each.with_object([arg.name.to_s]) do |a, res|
-        res << if a.is_a?(Step) || a.is_a?(Action)
+        res << if a.is_a?(Action)
                  Bytecode.new(a).public_send(serialization_method)
                else
                  serialize_arg(a, serialization_method: serialization_method)
