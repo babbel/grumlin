@@ -6,7 +6,7 @@ module Grumlin
 
     attr_reader :action_step, :shortcuts
 
-    def initialize(step, shortcuts: {}, context: nil, pool: nil)
+    def initialize(step, shortcuts: {}, context: nil, pool: Grumlin.default_pool)
       @action_step = step
       @shortcuts = shortcuts
       @context = context
@@ -15,7 +15,7 @@ module Grumlin
 
     def method_missing(name, *args, **params)
       # TODO: why g is here?
-      return wrap_result(@context.public_send(name, *args, **params)) if %i[__ g].include?(name) && !@context.nil?
+      return wrap_result(@context.public_send(name, *args, **params)) if name == :__ && !@context.nil?
 
       return wrap_result(@action_step.public_send(name, *args, **params)) if @action_step.respond_to?(name)
 

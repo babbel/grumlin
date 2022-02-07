@@ -8,8 +8,8 @@ module Grumlin
 
     attr_reader :configuration_steps
 
-    def initialize(pool = Grumlin.default_pool, configuration_steps: [])
-      @pool = pool
+    # TODO: move configuration steps handling to Action
+    def initialize(configuration_steps: [])
       @configuration_steps = configuration_steps
     end
 
@@ -23,10 +23,8 @@ module Grumlin
 
     CONFIGURATION_STEPS.each do |step|
       define_method step do |*args, **params|
-        Action.new(self.class.new(@pool,
-                                  configuration_steps: @configuration_steps + [Action.new(Step.new(step, *args,
-                                                                                                   **params))]),
-                   pool: @pool)
+        Action.new(self.class.new(configuration_steps: @configuration_steps + [Action.new(Step.new(step, *args,
+                                                                                                   **params))]))
       end
     end
 
@@ -41,7 +39,7 @@ module Grumlin
                           *args,
                           configuration_steps: @configuration_steps,
                           **params,
-                          &block), pool: @pool)
+                          &block))
     end
   end
 end
