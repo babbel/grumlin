@@ -3,8 +3,8 @@
 module Grumlin
   module Shortcuts
     module InstanceMethods
-      def with_shortcuts(obj)
-        Action.new(obj, shortcuts: self.class.shortcuts, context: self)
+      def with_shortcuts(obj, **params)
+        Action.new(obj, shortcuts: self.class.shortcuts, context: self, **params)
       end
     end
 

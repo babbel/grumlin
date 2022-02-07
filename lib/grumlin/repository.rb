@@ -8,7 +8,7 @@ module Grumlin
       end
 
       def g
-        with_shortcuts(Grumlin::Traversal.new)
+        with_shortcuts(Grumlin::Traversal.new, pool: Grumlin.default_pool)
       end
     end
 

@@ -57,10 +57,12 @@ module Grumlin
       end
     end
 
+    # TODO: remove
     def next
       to_enum.next
     end
 
+    # TODO: remove
     def hasNext # rubocop:disable Naming/MethodName
       to_enum.peek
       true
@@ -68,16 +70,19 @@ module Grumlin
       false
     end
 
+    # TODO: remove
     def to_enum
       @to_enum ||= toList.to_enum
     end
 
+    # TODO: remove
     def toList
       @pool.acquire do |client|
         client.write(bytecode)
       end
     end
 
+    # TODO: remove
     def iterate
       @pool.acquire do |client|
         client.write(bytecode(no_return: true))

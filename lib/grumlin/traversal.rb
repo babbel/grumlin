@@ -25,7 +25,7 @@ module Grumlin
       define_method step do |*args, **params|
         Action.new(self.class.new(@pool,
                                   configuration_steps: @configuration_steps + [Step.new(step, *args,
-                                                                                        **params)]))
+                                                                                        **params)]), pool: @pool)
       end
     end
 
@@ -41,7 +41,7 @@ module Grumlin
                           configuration_steps: @configuration_steps,
                           pool: @pool,
                           **params,
-                          &block))
+                          &block), pool: @pool)
     end
   end
 end
