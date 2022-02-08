@@ -21,7 +21,7 @@ module Grumlin
     def shortcut(name, shortcut = nil, &block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       name = name.to_sym
       # TODO: blocklist of names to avoid conflicts with standard methods?
-      if Grumlin::Step::SUPPORTED_STEPS.include?(name)
+      if Grumlin::Action::SUPPORTED_STEPS.include?(name)
         raise ArgumentError,
               "cannot use names of standard gremlin steps"
       end

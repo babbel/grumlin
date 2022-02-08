@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Action do
-  let(:proxy) { described_class.new(object, shortcuts: shortcuts) }
+  let(:action) { described_class.new(object, shortcuts: shortcuts) }
 
   let(:object) { double(fold: true, property: true) } # rubocop:disable RSpec/VerifiedDoubles
   let(:shortcuts) do
@@ -11,7 +11,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#respond_to_missing?" do
-    subject { proxy.respond_to?(method_name) }
+    subject { action.respond_to?(method_name) }
 
     context "when method exists in the wrapped object" do
       let(:method_name) { "fold" }
@@ -39,7 +39,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#method_missing" do
-    subject { proxy.method_missing(method_name, *args) }
+    subject { action.method_missing(method_name, *args) }
 
     let(:args) { [] }
 
@@ -54,7 +54,7 @@ RSpec.describe Grumlin::Action do
           expect(object).to have_received(:fold)
         end
 
-        it "returns a ShortcutProxy" do
+        it "returns a Shortcutaction" do
           expect(subject).to eq(1)
         end
       end
@@ -63,12 +63,12 @@ RSpec.describe Grumlin::Action do
         let(:method_name) { :custom_step }
         let(:args) { [1] }
 
-        it "executes the shortcut in the context of the proxy" do
+        xit "executes the shortcut in the context of the action" do
           subject
           expect(object).to have_received(:property).with(:a, 1)
         end
 
-        it "returns a ShortcutProxy" do
+        xit "returns a Shortcutaction" do
           expect(subject).to eq(2)
         end
       end
@@ -85,7 +85,7 @@ RSpec.describe Grumlin::Action do
           expect(object).to have_received(:fold)
         end
 
-        it "returns a ShortcutProxy" do
+        it "returns a Shortcutaction" do
           expect(subject).to be_a(described_class)
         end
       end
@@ -94,12 +94,12 @@ RSpec.describe Grumlin::Action do
         let(:method_name) { :custom_step }
         let(:args) { [1] }
 
-        it "executes the shortcut in the context of the wrapper_object" do
+        xit "executes the shortcut in the context of the wrapper_object" do
           subject
           expect(object).to have_received(:property).with(:a, 1)
         end
 
-        it "returns a ShortcutProxy" do
+        it "returns a Shortcutaction" do
           expect(subject).to be_a(described_class)
         end
       end
@@ -122,14 +122,14 @@ RSpec.describe Grumlin::Action do
         expect(object).to have_received(:withSideEffect)
       end
 
-      it "returns a ShortcutProxy" do
+      it "returns a Shortcutaction" do
         expect(subject).to be_a(described_class)
       end
     end
   end
 
   describe "#inspect" do
-    subject { proxy.inspect }
+    subject { action.inspect }
 
     xit "delegates to object" do
       allow(object).to receive(:inspect).and_return("object")
@@ -138,7 +138,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#to_s" do
-    subject { proxy.to_s }
+    subject { action.to_s }
 
     xit "delegates to object" do
       allow(object).to receive(:to_s).and_return("object")

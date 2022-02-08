@@ -42,9 +42,9 @@ module Grumlin
       end
     end
 
-    def steps(from_first: true)
+    def steps
       @steps ||= [].tap do |result|
-        step = from_first ? @action.first_step : @action
+        step = @action.start_step
         until step.nil?
           result << step
           step = step.next_step
@@ -57,15 +57,14 @@ module Grumlin
     # Serializes step or a step argument to either an executable query or a human readable string representation
     # depending on the `serialization_method` parameter. It should be either `:to_readable_bytecode` for human readable
     # representation or `:to_bytecode` for query.
-    def serialize_arg(arg, serialization_method: :to_bytecode)
+    def serialize_arg(arg, serialization_method: :to_bytecode) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
       return arg.public_send(serialization_method) if arg.respond_to?(serialization_method)
 
       return arg unless arg.is_a?(Step) || arg.is_a?(Action)
 
-      # unless arg.is_a?(Action)
-      #   p arg.name
-      #   raise "!"
-      # end
+      raise ArgumentError unless arg.is_a?(Action) # TODO: remove me later
+
+      return arg unless arg.respond_to?(:args)  # TODO: remove me later
 
       arg.args.each.with_object([arg.name.to_s]) do |a, res|
         res << if a.is_a?(Action)

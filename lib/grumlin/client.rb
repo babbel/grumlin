@@ -99,6 +99,7 @@ module Grumlin
 
       request = to_query(bytecode.to_bytecode)
       channel = @request_dispatcher.add_request(request)
+
       @transport.write(request)
 
       begin
