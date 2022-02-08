@@ -21,6 +21,17 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       def foo(id1, id2)
         g.addE("test").from(__.V(id1)).to(__.V(id2)).props(a: 1).iterate
       end
+
+      def bar
+        __.addV("tag").props(T.id => "tag_id", created_at: 12_345)
+        # g.V("tag_id")
+        #  .fold
+        #  .coalesce(
+        #    __.unfold,
+        #    __.addV("tag").props(T.id => "tag_id", created_at: @created_at)
+        #  )
+        #  .props(a: 1, b: 2)
+      end
     end
   end
   let(:repository) { repository_class.new }
@@ -183,7 +194,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     end
   end
 
-  it "works", timeout: 2 do
+  it "works", timeout: 200 do
     repository.g
     repository.g.V.shortcuts.keys
     repository.g.addV("test").props(T.id => 1).addV("test").props(T.id => 2).iterate
@@ -191,6 +202,8 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
     repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
     repository.foo(1, 2)
+
+    repository.bar
 
     # pp repository.g.withSideEffect(:a, 1).V
     # pp Grumlin::Bytecode.new(repository.g.withSideEffect(:a, 1).V)

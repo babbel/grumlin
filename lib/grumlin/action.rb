@@ -33,8 +33,8 @@ module Grumlin
     CONFIGURATION_STEPS.each do |step|
       define_method step do |*args, **params|
         configuration_steps = @configuration_steps + [Action.new(Step.new(step, *args, **params))]
-        # TODO: fix me
-        Action.new(Traversal.new(configuration_steps: configuration_steps), configuration_steps: configuration_steps)
+        @next_step = Action.new(Traversal.new, shortcuts: @shortcuts, context: @context, pool: @pool,
+                                               configuration_steps: configuration_steps, start_step: @start_step)
       end
     end
 
@@ -49,14 +49,14 @@ module Grumlin
     end
 
     def method_missing(name, *args, **params)
-      # TODO: remove unused cased
+      # TODO: remove unused cases
       return wrap_result(@context.public_send(name, *args, **params)) if name == :__ && !@context.nil?
 
       return wrap_result(@action_step.public_send(name, *args, **params)) if @action_step.respond_to?(name)
 
       if @shortcuts.key?(name)
-        @next_step = wrap_result(@shortcuts[name].apply(self, *args, **params))
-        return @next_step
+        result = @shortcuts[name].apply(self, *args, **params)
+        return @next_step || wrap_result(result)
       end
 
       super
@@ -107,7 +107,7 @@ module Grumlin
     def respond_to_missing?(name, include_private = false)
       name = name.to_sym
 
-      (%i[__ g].include?(name) &&
+      (%i[__].include?(name) &&
         @context.respond_to?(name, include_private)) ||
         @action_step.respond_to?(name, include_private) ||
         @shortcuts.key?(name) ||
