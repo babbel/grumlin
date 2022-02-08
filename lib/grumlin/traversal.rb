@@ -23,8 +23,8 @@ module Grumlin
 
     CONFIGURATION_STEPS.each do |step|
       define_method step do |*args, **params|
-        Action.new(self.class.new(configuration_steps: @configuration_steps + [Action.new(Step.new(step, *args,
-                                                                                                   **params))]))
+        Action.new(Traversal.new(configuration_steps: @configuration_steps + [Action.new(Step.new(step, *args,
+                                                                                                  **params))]))
       end
     end
 

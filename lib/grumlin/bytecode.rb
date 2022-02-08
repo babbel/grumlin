@@ -12,17 +12,17 @@ module Grumlin
 
     NONE_STEP = NoneStep.new
 
-    def initialize(step, no_return: false)
+    def initialize(action, no_return: false)
       super(type: "Bytecode")
 
-      raise ArgumentError, "expected: #{Action}, got: #{step.class}" unless step.is_a?(Action)
+      raise ArgumentError, "expected: #{Action}, got: #{action.class}" unless action.is_a?(Action)
 
-      @step = step.action_step
+      @action = action
       @no_return = no_return
     end
 
     def inspect
-      configuration_steps = @step.configuration_steps.map do |s|
+      configuration_steps = @action.configuration_steps.map do |s|
         serialize_arg(s, serialization_method: :to_readable_bytecode)
       end
       "#{configuration_steps.any? ? configuration_steps : nil}#{to_readable_bytecode}"
@@ -38,23 +38,16 @@ module Grumlin
 
     def value
       @value ||= { step: (steps + (@no_return ? [NONE_STEP] : [])).map { |s| serialize_arg(s) } }.tap do |v|
-        v.merge!(source: @step.configuration_steps.map { |s| serialize_arg(s) }) if @step.configuration_steps.any?
+        v.merge!(source: @action.configuration_steps.map { |s| serialize_arg(s) }) if @action.configuration_steps.any?
       end
     end
 
     def steps(from_first: true)
       @steps ||= [].tap do |result|
-        step = from_first ? @step.first_step : @step
+        step = from_first ? @action.first_step : @action
         until step.nil?
-          if step.shortcut?
-            next_step = step.next_step
-            step.block.call(step)
-            result.concat(Bytecode.new(step.next_step).steps(from_first: false)) if step.next_step
-            step = next_step
-          else
-            result << step
-            step = step.next_step
-          end
+          result << step
+          step = step.next_step
         end
       end
     end
@@ -70,6 +63,7 @@ module Grumlin
       return arg unless arg.is_a?(Step) || arg.is_a?(Action)
 
       # unless arg.is_a?(Action)
+      #   p arg.name
       #   raise "!"
       # end
 
