@@ -36,7 +36,9 @@ steps:
   - label
   - limit
   - map
+  - none
   - not
+  - option
   - or
   - order
   - out
