@@ -56,7 +56,7 @@ module Grumlin
 
       if @shortcuts.key?(name)
         result = @shortcuts[name].apply(self, *args, **params)
-        return @next_step || wrap_result(result)
+        return @next_step ||= wrap_result(result)
       end
 
       super
@@ -72,7 +72,7 @@ module Grumlin
     end
 
     def bytecode(no_return: false)
-      @bytecode ||= Bytecode.new(self, no_return: no_return)
+      Bytecode.new(self, no_return: no_return)
     end
 
     def next

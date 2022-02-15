@@ -18,19 +18,38 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         property(:shortcut, true)
       end
 
+      shortcut :red do
+        has(:color, :red)
+      end
+
+      shortcut :square do
+        has(:shape, :square)
+      end
+
+      shortcut :red_square do
+        red.square
+      end
+
+      def red_square
+        g.V.red_square.has(:foo, :bar)
+      end
+
       def foo(id1, id2)
         g.addE("test").from(__.V(id1)).to(__.V(id2)).props(a: 1).iterate
       end
 
       def bar
-        __.addV("tag").props(T.id => "tag_id", created_at: 12_345)
-        # g.V("tag_id")
-        #  .fold
-        #  .coalesce(
-        #    __.unfold,
-        #    __.addV("tag").props(T.id => "tag_id", created_at: @created_at)
-        #  )
-        #  .props(a: 1, b: 2)
+        g.V("tag_id")
+         .fold
+         .coalesce(
+           __.unfold,
+           __.addV("tag").props(T.id => "tag_id", created_at: @created_at)
+         )
+         .props(a: 1, b: 2)
+      end
+
+      def baz
+        g.V.hasAll(a: 1, b: 2).property(:c, 3)
       end
     end
   end
@@ -195,17 +214,20 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   it "works", timeout: 200 do
-    repository.g
-    repository.g.V.shortcuts.keys
-    repository.g.addV("test").props(T.id => 1).addV("test").props(T.id => 2).iterate
-    repository.g.shortcut_with_configuration_steps.class
-    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
-    repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
-    repository.foo(1, 2)
+    # repository.g
+    # repository.g.V.shortcuts.keys
+    # repository.g.addV("test").props(T.id => 1).addV("test").props(T.id => 2).iterate
+    # repository.g.shortcut_with_configuration_steps.class
+    # repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.class
+    # repository.g.shortcut_with_configuration_steps.shortcut_with_other_shortcuts.V.select(:test)
+    # repository.foo(1, 2)
+    #
+    # # repository.bar
+    # # pp repository.baz
+    #
+    # repository.g.withSideEffect(:a, 1).V
+    # Grumlin::Bytecode.new(repository.g.withSideEffect(:a, 1).V)
 
-    repository.bar
-
-    # pp repository.g.withSideEffect(:a, 1).V
-    # pp Grumlin::Bytecode.new(repository.g.withSideEffect(:a, 1).V)
+    expect(repository.red_square.bytecode.value).to eq({ step: [["V"], ["has", :color, :red], ["has", :shape, :square], ["has", :foo, :bar]] })
   end
 end
