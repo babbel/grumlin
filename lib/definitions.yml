@@ -71,6 +71,7 @@ steps:
   - V
   - addE
   - addV
+  - inject
   configuration:
   - withSack
   - withSideEffect
