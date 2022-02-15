@@ -12,8 +12,8 @@ module Grumlin
 
     def initialize(name, args: [], params: {}, previous_step: nil, shortcuts: {}, pool: Grumlin.default_pool)
       @name = name.to_sym
-      @args = args
-      @params = params
+      @args = args # TODO: add recursive validation: only json types or Action
+      @params = params # TODO: add recursive validation: only json types
       @previous_step = previous_step
       @shortcuts = shortcuts
       @pool = pool
