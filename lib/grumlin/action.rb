@@ -66,8 +66,12 @@ module Grumlin
         @name == other.name &&
         @args == other.args &&
         @params == other.params &&
-        @previous_step == other.previous_step
+        @previous_step == other.previous_step &&
+        @shortcuts == other.shortcuts
     end
+
+    # TODO: add #steps
+    # TODO: add #bytecode
 
     private
 

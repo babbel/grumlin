@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Steps do
-  let(:chain) { described_class.new }
+  let(:steps) { described_class.new(shortcuts) }
 
   describe ".from" do
     subject { described_class.from(action) }
@@ -17,19 +17,12 @@ RSpec.describe Grumlin::Steps do
   end
 
   describe "#add" do
-    subject { chain.add(action) }
+    subject { steps.add(name, args) }
 
-    let(:action) { Grumlin::Action.new(name, args: args, shortcuts: shortcuts) }
     let(:args) { [] }
     let(:shortcuts) { {} }
 
     context "when there are no regular and configuration steps" do
-      context "when adding non Action" do
-        let(:action) { "string" }
-
-        include_examples "raises an exception", ArgumentError
-      end
-
       context "when adding a configuration step" do
         let(:name) { :withSideEffect }
 
@@ -38,11 +31,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a configuration step" do
-          expect { subject }.to change { chain.configuration_steps.count }.by(1)
+          expect { subject }.to change { steps.configuration_steps.count }.by(1)
         end
 
         it "does not add steps" do
-          expect { subject }.not_to change(chain, :steps)
+          expect { subject }.not_to change(steps, :steps)
         end
       end
 
@@ -54,11 +47,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
 
         it "does not add configuration steps" do
-          expect { subject }.not_to change(chain, :configuration_steps)
+          expect { subject }.not_to change(steps, :configuration_steps)
         end
       end
 
@@ -71,11 +64,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
 
         it "does not add configuration steps" do
-          expect { subject }.not_to change(chain, :configuration_steps)
+          expect { subject }.not_to change(steps, :configuration_steps)
         end
       end
 
@@ -87,14 +80,14 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
       end
     end
 
     context "when there is a configuration step" do
       before do
-        chain.add(Grumlin::Action.new(:withSideEffect))
+        steps.add(:withSideEffect, [])
       end
 
       context "when adding a configuration step" do
@@ -105,11 +98,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a configuration step" do
-          expect { subject }.to change { chain.configuration_steps.count }.by(1)
+          expect { subject }.to change { steps.configuration_steps.count }.by(1)
         end
 
         it "does not add steps" do
-          expect { subject }.not_to change(chain, :steps)
+          expect { subject }.not_to change(steps, :steps)
         end
       end
 
@@ -121,11 +114,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
 
         it "does not add configuration steps" do
-          expect { subject }.not_to change(chain, :configuration_steps)
+          expect { subject }.not_to change(steps, :configuration_steps)
         end
       end
 
@@ -138,11 +131,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
 
         it "does not add configuration steps" do
-          expect { subject }.not_to change(chain, :configuration_steps)
+          expect { subject }.not_to change(steps, :configuration_steps)
         end
       end
 
@@ -154,15 +147,15 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
       end
     end
 
     context "when there is a configuration step and a start step" do
       before do
-        chain.add(Grumlin::Action.new(:withSideEffect))
-        chain.add(Grumlin::Action.new(:V))
+        steps.add(:withSideEffect, [])
+        steps.add(:V, [])
       end
 
       context "when adding a configuration step" do
@@ -175,7 +168,7 @@ RSpec.describe Grumlin::Steps do
             subject
           rescue StandardError
             nil
-          end.not_to change(chain, :steps)
+          end.not_to change(steps, :steps)
         end
 
         it "does not add configuration steps" do
@@ -183,7 +176,7 @@ RSpec.describe Grumlin::Steps do
             subject
           rescue StandardError
             nil
-          end.not_to change(chain, :configuration_steps)
+          end.not_to change(steps, :configuration_steps)
         end
       end
 
@@ -195,11 +188,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
 
         it "does not add configuration steps" do
-          expect { subject }.not_to change(chain, :configuration_steps)
+          expect { subject }.not_to change(steps, :configuration_steps)
         end
       end
 
@@ -212,11 +205,11 @@ RSpec.describe Grumlin::Steps do
         end
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
 
         it "does not add configuration steps" do
-          expect { subject }.not_to change(chain, :configuration_steps)
+          expect { subject }.not_to change(steps, :configuration_steps)
         end
       end
 
@@ -224,11 +217,11 @@ RSpec.describe Grumlin::Steps do
         let(:name) { :has }
 
         it "adds a step" do
-          expect { subject }.to change { chain.steps.count }.by(1)
+          expect { subject }.to change { steps.steps.count }.by(1)
         end
 
         it "does not add configuration steps" do
-          expect { subject }.not_to change(chain, :configuration_steps)
+          expect { subject }.not_to change(steps, :configuration_steps)
         end
 
         context "with actions in arguments" do
@@ -244,13 +237,60 @@ RSpec.describe Grumlin::Steps do
           end
 
           it "adds a step" do
-            expect { subject }.to change { chain.steps.count }.by(1)
+            expect { subject }.to change { steps.steps.count }.by(1)
           end
 
           it "does not add configuration steps" do
-            expect { subject }.not_to change(chain, :configuration_steps)
+            expect { subject }.not_to change(steps, :configuration_steps)
           end
         end
+      end
+    end
+  end
+
+  describe "#uses_shortcuts?" do
+    subject { steps.uses_shortcuts? }
+
+    let(:shortcuts) do
+      {
+        hasColor: ->(color) { has(:color, color) },
+        hasShape: ->(shape) { has(:shape, shape) },
+        hasShapeAndColor: ->(shape, color) { hasShape(shape).hasColor(color) },
+        addWeights: -> { withSideEffect(:weights, a: 1, b: 2) },
+        preconfigure: -> { addWeights }
+      }
+    end
+
+    context "when shortcuts are not used" do
+      before do
+        steps.add(:V, [])
+        steps.add(:has, %i[property value])
+      end
+
+      it "returns false" do
+        expect(subject).to be_falsey
+      end
+    end
+
+    context "when a shortcut is used in the main traversal" do
+      before do
+        steps.add(:V, [])
+        steps.add(:hasColor, [:red])
+      end
+
+      it "returns true" do
+        expect(subject).to be_truthy
+      end
+    end
+
+    context "when when a shortcut is used in an anonymous traversal" do
+      before do
+        steps.add(:V, [])
+        steps.add(:where, [Grumlin::Action.new(:hasColor, args: [:red], shortcuts: shortcuts)])
+      end
+
+      it "returns true" do
+        expect(subject).to be_truthy
       end
     end
   end

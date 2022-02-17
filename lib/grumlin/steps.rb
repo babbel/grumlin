@@ -2,9 +2,11 @@
 
 module Grumlin
   class Steps
+    CONFIGURATION_STEPS = Action::CONFIGURATION_STEPS
     ALL_STEPS = Action::ALL_STEPS
 
     def self.from(action)
+      shortcuts = action.shortcuts
       actions = []
 
       until action.nil?
@@ -12,36 +14,54 @@ module Grumlin
         action = action.previous_step
       end
 
-      new.tap do |chain|
+      new(shortcuts).tap do |chain|
         actions.each do |act|
-          chain.add(act)
+          chain.add(act.name, act.arguments)
         end
       end
     end
 
-    attr_reader :configuration_steps, :steps
+    attr_reader :configuration_steps, :steps, :shortcuts
 
-    def initialize
-      @configuration_steps = []
-      @steps = []
+    def initialize(shortcuts, configuration_steps: [], steps: [])
+      @shortcuts = shortcuts
+      @configuration_steps = configuration_steps
+      @steps = steps
     end
 
-    def add(action)
-      raise ArgumentError unless action.is_a?(Action)
+    def add(name, arguments)
+      return add_configuration_step(name, arguments) if CONFIGURATION_STEPS.include?(name)
 
-      return add_configuration_step(action) if action.configuration_step?
-
-      StepData.new(action.name, cast_arguments(action.arguments)).tap do |step|
+      StepData.new(name, cast_arguments(arguments)).tap do |step|
         @steps << step
       end
     end
 
+    def uses_shortcuts?
+      shortcuts?(@configuration_steps) || shortcuts?(@steps)
+    end
+
+    def ==(other)
+      self.class == other.class &&
+        @shortcuts == other.shortcuts &&
+        @configuration_steps == other.configuration_steps &&
+        @steps == other.steps
+    end
+
     private
 
-    def add_configuration_step(action)
+    def shortcuts?(steps_ary)
+      steps_ary.any? do |step|
+        @shortcuts.include?(step.name) || step.arguments.any? do |arg|
+          arg.is_a?(Steps) ? arg.uses_shortcuts? : false
+        end
+      end
+    end
+
+    def add_configuration_step(name, arguments)
       raise ArgumentError, "cannot use configuration steps after start step was used" unless @steps.empty?
 
-      StepData.new(action.name, cast_arguments(action.arguments)).tap do |step|
+      StepData.new(name, cast_arguments(arguments)).tap do |step|
         @configuration_steps << step
       end
     end
