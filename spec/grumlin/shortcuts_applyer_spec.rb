@@ -4,7 +4,7 @@ RSpec.describe Grumlin::ShortcutsApplyer do
   describe ".call" do
     subject { described_class.call(steps) }
 
-    let(:steps) { Grumlin::Steps.from(action) }
+    let(:steps) { action.steps }
 
     context "when steps does not use shortcuts" do
       let(:action) { Grumlin::Action.new(:V).hasLabel(:test).where(Grumlin::Action.new(:out).has(:property, :value)) }
@@ -32,9 +32,7 @@ RSpec.describe Grumlin::ShortcutsApplyer do
 
         it "replaces shortcuts with actual steps" do
           expect(subject).to eq(
-            Grumlin::Steps.from( # TODO: implement Action#steps
-              Grumlin::Action.new(:V, shortcuts: shortcuts).has(:color, :red).has(:shape, :triangle)
-            )
+            Grumlin::Action.new(:V, shortcuts: shortcuts).has(:color, :red).has(:shape, :triangle).steps
           )
         end
 
@@ -54,13 +52,11 @@ RSpec.describe Grumlin::ShortcutsApplyer do
 
         it "replaces shortcuts with actual steps" do
           expect(subject).to eq(
-            Grumlin::Steps.from(
-              Grumlin::Action.new(:V, shortcuts: shortcuts)
-                .where(
-                  Grumlin::Action.new(:has, args: %i[color red], shortcuts: shortcuts)
-                )
-                .where(Grumlin::Action.new(:has, args: %i[shape triangle], shortcuts: shortcuts))
-            )
+            Grumlin::Action.new(:V, shortcuts: shortcuts)
+              .where(
+                Grumlin::Action.new(:has, args: %i[color red], shortcuts: shortcuts)
+              )
+              .where(Grumlin::Action.new(:has, args: %i[shape triangle], shortcuts: shortcuts)).steps
           )
         end
 
@@ -76,9 +72,7 @@ RSpec.describe Grumlin::ShortcutsApplyer do
 
         it "replaces shortcuts with actual steps" do
           expect(subject).to eq(
-            Grumlin::Steps.from( # TODO: implement Action#steps
-              Grumlin::Action.new(:V, shortcuts: shortcuts).has(:shape, :triangle).has(:color, :red)
-            )
+            Grumlin::Action.new(:V, shortcuts: shortcuts).has(:shape, :triangle).has(:color, :red).steps
           )
         end
 

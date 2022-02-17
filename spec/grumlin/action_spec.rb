@@ -209,4 +209,12 @@ RSpec.describe Grumlin::Action do
       end
     end
   end
+
+  describe "#steps" do
+    subject { action.steps }
+
+    it "returns steps" do
+      expect(subject).to be_an(Grumlin::Steps)
+    end
+  end
 end

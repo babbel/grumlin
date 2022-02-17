@@ -70,7 +70,9 @@ module Grumlin
         @shortcuts == other.shortcuts
     end
 
-    # TODO: add #steps
+    def steps
+      @steps ||= Steps.from(self)
+    end
     # TODO: add #bytecode
 
     private
