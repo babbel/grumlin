@@ -51,11 +51,19 @@ RSpec.describe Grumlin::StepsSerializers::String do
         end
       end
 
-      context "when Expressions are used" do
+      context "when Expressions::T is used" do
         let(:steps) { Grumlin::Action.new(:V).has(Grumlin::Expressions::T.id, "id").steps }
 
         it "returns a string representation of steps" do
           expect(subject).to eq('g.V().has(T.id, "id")')
+        end
+      end
+
+      context "when Expressions::WithOptions is used" do
+        let(:steps) { Grumlin::Action.new(:V).with(Grumlin::Expressions::WithOptions.tokens).steps }
+
+        it "returns a string representation of steps" do
+          expect(subject).to eq("g.V().with(WithOptions.tokens)")
         end
       end
     end

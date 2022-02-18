@@ -25,6 +25,7 @@ module Grumlin
       def serialize_arg(arg)
         return "\"#{arg}\"" if arg.is_a?(::String) || arg.is_a?(Symbol)
         return "#{arg.type}.#{arg.value}" if arg.is_a?(Grumlin::TypedValue)
+        return arg.to_s if arg.is_a?(Grumlin::Expressions::WithOptions)
 
         return arg unless arg.is_a?(Steps)
 
