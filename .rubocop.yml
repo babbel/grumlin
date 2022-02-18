@@ -80,3 +80,10 @@ Style/Documentation:
 
 Style/MultilineBlockChain:
   Enabled: false
+
+
+# TODO:
+# Style/SymbolArray:
+#   EnforcedStyle: brackets
+# Style/WordArray:
+#   EnforcedStyle: brackets

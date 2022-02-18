@@ -3,8 +3,8 @@
 module Grumlin
   module StepsSerializers
     class String < Serializer
-      # constructor params: apply_shortcuts: true|false
-      # constructor params: anonymous: true|false
+      # constructor params: apply_shortcuts: true|false, default: false
+      # constructor params: anonymous: true|false, default: false
       # TODO: add pretty
 
       def serialize

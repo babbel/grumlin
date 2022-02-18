@@ -48,6 +48,8 @@ module Grumlin
         @steps == other.steps
     end
 
+    # TODO: add #bytecode, to_s, inspect
+
     private
 
     def shortcuts?(steps_ary)

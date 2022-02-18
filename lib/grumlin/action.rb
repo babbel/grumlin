@@ -73,7 +73,7 @@ module Grumlin
     def steps
       @steps ||= Steps.from(self)
     end
-    # TODO: add #bytecode
+    # TODO: add #bytecode, to_s, inspect
 
     private
 
