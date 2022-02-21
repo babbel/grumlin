@@ -2,14 +2,7 @@
 
 module Grumlin
   module Shortcuts
-    module InstanceMethods
-      def with_shortcuts(obj)
-        ShortcutProxy.new(obj, self.class.shortcuts, parent: self)
-      end
-    end
-
     def self.extended(base)
-      base.include(InstanceMethods)
       base.include(Grumlin::Expressions)
     end
 

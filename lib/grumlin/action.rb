@@ -73,7 +73,44 @@ module Grumlin
     def steps
       @steps ||= Steps.from(self)
     end
-    # TODO: add #bytecode, to_s, inspect
+
+    # TODO: #to_s, #inspect
+    #
+    def inspect
+      StepsSerializers::Bytecode.new(steps).serialize.to_s
+    end
+
+    # TODO: add human readable mode
+    def bytecode(no_return: false)
+      StepsSerializers::Bytecode.new(steps, no_return: no_return)
+    end
+
+    def next
+      to_enum.next
+    end
+
+    def hasNext # rubocop:disable Naming/MethodName
+      to_enum.peek
+      true
+    rescue StopIteration
+      false
+    end
+
+    def to_enum
+      @to_enum ||= toList.to_enum
+    end
+
+    def toList
+      @pool.acquire do |client|
+        client.write(bytecode)
+      end
+    end
+
+    def iterate
+      @pool.acquire do |client|
+        client.write(bytecode(no_return: true))
+      end
+    end
 
     private
 

@@ -14,6 +14,8 @@ module Grumlin
       end
     end
 
+    attr_reader :shortcuts
+
     def initialize(shortcuts)
       @shortcuts = shortcuts
     end
@@ -26,6 +28,10 @@ module Grumlin
       return step(name, *args, **params) if @shortcuts.key?(name)
 
       super
+    end
+
+    def __
+      TraversalStart.new(@shortcuts)
     end
 
     private

@@ -15,7 +15,7 @@ RSpec.describe Grumlin::Sugar do
 
   describe "#g" do
     it "returns a traversal" do
-      expect(object.g).to be_a(Grumlin::Traversal)
+      expect(object.g).to be_a(Grumlin::TraversalStart)
     end
   end
 end

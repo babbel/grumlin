@@ -10,13 +10,18 @@ module Grumlin
 
       def serialize
         steps = ShortcutsApplyer.call(@steps)
-        no_return = @params[:no_return]
+        no_return = @params[:no_return] || false
 
         {
           step: (steps.steps + (no_return ? [NONE_STEP] : [])).map { |s| serialize_step(s) }
         }.tap do |v|
           v.merge!(source: steps.configuration_steps.map { |s| serialize_step(s) }) if steps.configuration_steps.any?
         end
+      end
+
+      # FIXME
+      def to_bytecode
+        { :@type => "g:Bytecode", :@value => serialize }
       end
 
       private
@@ -30,7 +35,7 @@ module Grumlin
 
         return arg unless arg.is_a?(Steps)
 
-        Bytecode.new(arg, **@params).serialize[:step]
+        Bytecode.new(arg, **@params.merge(no_return: false)).to_bytecode
       end
     end
   end

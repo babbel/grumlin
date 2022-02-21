@@ -11,7 +11,7 @@ module Grumlin
     end
 
     def g
-      Grumlin::Traversal.new
+      Grumlin::TraversalStart.new({})
     end
   end
 end

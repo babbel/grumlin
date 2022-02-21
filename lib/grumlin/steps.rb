@@ -6,6 +6,8 @@ module Grumlin
     ALL_STEPS = Action::ALL_STEPS
 
     def self.from(action)
+      raise ArgumentError, "expected: #{Action}, given: #{action.class}" unless action.is_a?(Action)
+
       shortcuts = action.shortcuts
       actions = []
 

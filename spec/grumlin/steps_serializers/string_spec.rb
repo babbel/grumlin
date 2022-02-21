@@ -5,11 +5,11 @@ RSpec.describe Grumlin::StepsSerializers::String do
 
   let(:shortcuts) do
     {
-      hasColor: ->(color) { has(:color, color) },
-      hasShape: ->(shape) { has(:shape, shape) },
-      hasShapeAndColor: ->(shape, color) { hasShape(shape).hasColor(color) },
-      addWeights: -> { withSideEffect(:weights, a: 1, b: 2) },
-      preconfigure: -> { addWeights }
+      hasColor: Grumlin::Shortcut.new(:hasColor) { |color| has(:color, color) },
+      hasShape: Grumlin::Shortcut.new(:hasShape) { |shape| has(:shape, shape) },
+      hasShapeAndColor: Grumlin::Shortcut.new(:hasShapeAndColor) { |shape, color| hasShape(shape).hasColor(color) },
+      addWeights: Grumlin::Shortcut.new(:addWeights) { withSideEffect(:weights, a: 1, b: 2) },
+      preconfigure: Grumlin::Shortcut.new(:preconfigure) { addWeights }
     }
   end
 

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Bytecode do
+RSpec.xdescribe Grumlin::Bytecode do
   include_context Grumlin::Test::RSpec::GremlinContext
 
   let(:bytecode) { described_class.new(step) }

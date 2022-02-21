@@ -7,7 +7,7 @@ module Grumlin
       class << self
         Grumlin::AnonymousStep::SUPPORTED_STEPS.each do |step|
           define_method step do |*args, **params|
-            AnonymousStep.new(step, *args, **params)
+            Action.new(step, args: args, params: params)
           end
         end
       end

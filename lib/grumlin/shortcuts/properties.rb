@@ -5,13 +5,17 @@ module Grumlin
     module Properties
       extend Grumlin::Shortcuts
 
-      shortcut :props do |*_args, **props|
+      shortcut :props do |props|
+        next if props.nil? # TODO: fixme, add proper support for **params
+
         props.reduce(self) do |tt, (prop, value)|
           tt.property(prop, value)
         end
       end
 
-      shortcut :hasAll do |*, **props|
+      shortcut :hasAll do |props|
+        next if props.nil? # TODO: fixme, add proper support for **params
+
         props.reduce(self) do |tt, (prop, value)|
           tt.has(prop, value)
         end

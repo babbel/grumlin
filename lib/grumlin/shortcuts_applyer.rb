@@ -33,7 +33,10 @@ module Grumlin
 
         if shortcuts.include?(step.name)
           t = TraversalStart.new(shortcuts)
-          new_steps = ShortcutsApplyer.call(Steps.from(t.instance_exec(*arguments, &shortcuts[step.name])))
+          action = shortcuts[step.name].apply(t, *arguments)
+          next if action.nil? || action == t # Shortcut did not add any steps
+
+          new_steps = ShortcutsApplyer.call(Steps.from(action))
           result.concat(new_steps.configuration_steps)
           result.concat(new_steps.steps)
         else

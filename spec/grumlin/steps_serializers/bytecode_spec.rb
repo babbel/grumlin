@@ -5,11 +5,11 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode do
 
   let(:shortcuts) do
     {
-      hasColor: ->(color) { has(:color, color) },
-      hasShape: ->(shape) { has(:shape, shape) },
-      hasShapeAndColor: ->(shape, color) { hasShape(shape).hasColor(color) },
-      addWeights: -> { withSideEffect(:weights, a: 1, b: 2) },
-      preconfigure: -> { addWeights }
+      hasColor: Grumlin::Shortcut.new(:hasColor) { |color| has(:color, color) },
+      hasShape: Grumlin::Shortcut.new(:hasShape) { |shape| has(:shape, shape) },
+      hasShapeAndColor: Grumlin::Shortcut.new(:hasShapeAndColor) { |shape, color| hasShape(shape).hasColor(color) },
+      addWeights: Grumlin::Shortcut.new(:addWeights) { withSideEffect(:weights, a: 1, b: 2) },
+      preconfigure: Grumlin::Shortcut.new(:preconfigure) { addWeights }
     }
   end
 
@@ -28,7 +28,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode do
       let(:steps) { Grumlin::Action.new(:V).where(Grumlin::Action.new(:has, args: %i[color white])).has(:shape, :rectangle).steps }
 
       it "returns a string representation of steps" do
-        expect(subject).to eq({ step: [[:V], [:where, [%i[has color white]]], %i[has shape rectangle]] })
+        expect(subject).to eq({ step: [[:V], [:where, { :@type => "g:Bytecode", :@value => { step: [%i[has color white]] } }], %i[has shape rectangle]] })
       end
     end
 
