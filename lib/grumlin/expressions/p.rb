@@ -3,27 +3,21 @@
 module Grumlin
   module Expressions
     module P
-      class << self
-        class Predicate < TypedValue
-          def initialize(name, args:, arg_type: nil)
-            super(type: "P")
-            @name = name
-            @args = args
-            @arg_type = arg_type
-          end
+      class Predicate
+        attr_reader :name, :value, :type
 
-          def value
-            @value ||= {
-              predicate: @name,
-              value: TypedValue.new(type: @arg_type, value: @args).to_bytecode
-            }
-          end
+        def initialize(name, value:, type: nil)
+          @name = name
+          @value = value
+          @type = type
         end
+      end
 
+      class << self
         # TODO: support more predicates
         %i[eq neq].each do |predicate|
           define_method predicate do |*args|
-            Predicate.new(predicate, args: args[0])
+            Predicate.new(predicate, value: args[0])
           end
         end
 
@@ -36,7 +30,7 @@ module Grumlin
                    else
                      args.to_a
                    end
-            Predicate.new(predicate, args: args, arg_type: "List")
+            Predicate.new(predicate, value: args, type: "List")
           end
         end
       end

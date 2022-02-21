@@ -9,26 +9,11 @@ module Grumlin
       @value = value
     end
 
-    def to_bytecode
-      @to_bytecode ||= if type.nil?
-                         value
-                       else
-                         {
-                           "@type": "g:#{type}",
-                           "@value": value
-                         }
-                       end
-    end
-
     def inspect
       "<#{type}.#{value}>"
     end
 
     def to_s
-      inspect
-    end
-
-    def to_readable_bytecode
       inspect
     end
   end

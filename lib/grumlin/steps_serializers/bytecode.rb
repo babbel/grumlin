@@ -19,11 +19,6 @@ module Grumlin
         end
       end
 
-      # FIXME
-      def to_bytecode
-        { :@type => "g:Bytecode", :@value => serialize }
-      end
-
       private
 
       def serialize_step(step)
@@ -31,11 +26,39 @@ module Grumlin
       end
 
       def serialize_arg(arg)
-        return arg.to_bytecode if arg.respond_to?(:to_bytecode) # TODO: serialize everything here
+        return serialize_typed_value(arg) if arg.is_a?(TypedValue)
+        return serialize_predicate(arg) if arg.is_a?(Expressions::P::Predicate)
+        return arg.value if arg.is_a?(Expressions::WithOptions)
 
         return arg unless arg.is_a?(Steps)
 
-        Bytecode.new(arg, **@params.merge(no_return: false)).to_bytecode
+        { :@type => "g:Bytecode", :@value => Bytecode.new(arg, **@params.merge(no_return: false)).serialize }
+      end
+
+      def serialize_typed_value(value)
+        return value.value if value.type.nil?
+
+        {
+          "@type": "g:#{value.type}",
+          "@value": value.value
+        }
+      end
+
+      def serialize_predicate(value)
+        {
+          "@type": "g:P",
+          "@value": {
+            predicate: value.name,
+            value: if value.type.nil?
+                     value.value
+                   else
+                     {
+                       "@type": "g:#{value.type}",
+                       "@value": value.value
+                     }
+                   end
+          }
+        }
       end
     end
   end

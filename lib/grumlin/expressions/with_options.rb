@@ -23,14 +23,6 @@ module Grumlin
         @value = value
       end
 
-      def to_bytecode
-        @value
-      end
-
-      def to_readable_bytecode
-        to_s
-      end
-
       def to_s
         "WithOptions.#{@name}"
       end
