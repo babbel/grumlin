@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::ShortcutsApplyer do
+RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
   describe ".call" do
     subject { described_class.call(steps) }
 
     let(:steps) { action.steps }
 
     context "when steps does not use shortcuts" do
-      let(:action) { Grumlin::Action.new(:V).hasLabel(:test).where(Grumlin::Action.new(:out).has(:property, :value)) }
+      let(:action) { g.V.hasLabel(:test).where(__.out.has(:property, :value)) }
 
       it "returns steps as is" do
         expect(subject).to eq(steps)
@@ -28,12 +28,12 @@ RSpec.describe Grumlin::ShortcutsApplyer do
 
       context "when shortcuts are used in the main traversal" do
         let(:action) do
-          Grumlin::Action.new(:V, shortcuts: shortcuts).hasColor(:red).hasShape(:triangle)
+          g(shortcuts).V.hasColor(:red).hasShape(:triangle)
         end
 
         it "replaces shortcuts with actual steps" do
           expect(subject).to eq(
-            Grumlin::Action.new(:V, shortcuts: shortcuts).has(:color, :red).has(:shape, :triangle).steps
+            g(shortcuts).V.has(:color, :red).has(:shape, :triangle).steps
           )
         end
 
@@ -44,20 +44,20 @@ RSpec.describe Grumlin::ShortcutsApplyer do
 
       context "when shortcuts are used in anonymous traversals" do
         let(:action) do
-          Grumlin::Action.new(:V, shortcuts: shortcuts)
-                         .where(
-                           Grumlin::Action.new(:hasColor, args: [:red], shortcuts: shortcuts)
-                         )
-                         .where(Grumlin::Action.new(:hasShape, args: [:triangle], shortcuts: shortcuts))
+          g(shortcuts).V
+                      .where(
+                        __(shortcuts).hasColor(:red)
+                      )
+                      .where(__(shortcuts).hasShape(:triangle))
         end
 
         it "replaces shortcuts with actual steps" do
           expect(subject).to eq(
-            Grumlin::Action.new(:V, shortcuts: shortcuts)
+            g(shortcuts).V
               .where(
-                Grumlin::Action.new(:has, args: %i[color red], shortcuts: shortcuts)
+                __(shortcuts).has(:color, :red)
               )
-              .where(Grumlin::Action.new(:has, args: %i[shape triangle], shortcuts: shortcuts)).steps
+              .where(__(shortcuts).has(:shape, :triangle)).steps
           )
         end
 
@@ -68,12 +68,12 @@ RSpec.describe Grumlin::ShortcutsApplyer do
 
       context "when shortcuts are used in another shortcuts" do
         let(:action) do
-          Grumlin::Action.new(:V, shortcuts: shortcuts).hasShapeAndColor(:triangle, :red)
+          g(shortcuts).V.hasShapeAndColor(:triangle, :red)
         end
 
         it "replaces shortcuts with actual steps" do
           expect(subject).to eq(
-            Grumlin::Action.new(:V, shortcuts: shortcuts).has(:shape, :triangle).has(:color, :red).steps
+            g(shortcuts).V.has(:shape, :triangle).has(:color, :red).steps
           )
         end
 
@@ -84,12 +84,12 @@ RSpec.describe Grumlin::ShortcutsApplyer do
 
       context "when shortcut is empty" do
         let(:action) do
-          Grumlin::Action.new(:V, shortcuts: shortcuts).emptyShortcut
+          g(shortcuts).V.emptyShortcut
         end
 
         it "replaces shortcuts with nothing" do
           expect(subject).to eq(
-            Grumlin::Action.new(:V, shortcuts: shortcuts).steps
+            g(shortcuts).V.steps
           )
         end
 

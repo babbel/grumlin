@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::StepsSerializers::String do
+RSpec.describe Grumlin::StepsSerializers::String, gremlin: true do
   let(:serializer) { described_class.new(steps, apply_shortcuts: apply_shortcuts) }
 
   let(:shortcuts) do
@@ -20,14 +20,14 @@ RSpec.describe Grumlin::StepsSerializers::String do
 
     context "when apply_shortcuts is false" do
       context "when there are no anonymous traversals" do
-        let(:steps) { Grumlin::Action.new(:V).has(:color, :white).has(:shape, :rectangle).steps }
+        let(:steps) { g.V.has(:color, :white).has(:shape, :rectangle).steps }
 
         it "returns a string representation of steps" do
           expect(subject).to eq('g.V().has("color", "white").has("shape", "rectangle")')
         end
 
         context "when a shortcut is used" do
-          let(:steps) { Grumlin::Action.new(:V,  shortcuts: shortcuts).hasColor(:red).steps }
+          let(:steps) { g(shortcuts).V.hasColor(:red).steps }
 
           it "returns a string representation of steps" do
             expect(subject).to eq('g.V().hasColor("red")')
@@ -36,14 +36,14 @@ RSpec.describe Grumlin::StepsSerializers::String do
       end
 
       context "when there are anonymous traversals" do
-        let(:steps) { Grumlin::Action.new(:V).where(Grumlin::Action.new(:has, args: %i[color white])).has(:shape, :rectangle).steps }
+        let(:steps) { g.V.where(__.has(:color, :white)).has(:shape, :rectangle).steps }
 
         it "returns a string representation of steps" do
           expect(subject).to eq('g.V().where(__.has("color", "white")).has("shape", "rectangle")')
         end
 
         context "when a shortcut is used" do
-          let(:steps) { Grumlin::Action.new(:V,  shortcuts: shortcuts).hasColor(:red).steps }
+          let(:steps) { g(shortcuts).V.hasColor(:red).steps }
 
           it "returns a string representation of steps" do
             expect(subject).to eq('g.V().hasColor("red")')
@@ -52,7 +52,7 @@ RSpec.describe Grumlin::StepsSerializers::String do
       end
 
       context "when Expressions::T is used" do
-        let(:steps) { Grumlin::Action.new(:V).has(Grumlin::Expressions::T.id, "id").steps }
+        let(:steps) { g.V.has(Grumlin::Expressions::T.id, "id").steps }
 
         it "returns a string representation of steps" do
           expect(subject).to eq('g.V().has(T.id, "id")')
@@ -60,7 +60,7 @@ RSpec.describe Grumlin::StepsSerializers::String do
       end
 
       context "when Expressions::WithOptions is used" do
-        let(:steps) { Grumlin::Action.new(:V).with(Grumlin::Expressions::WithOptions.tokens).steps }
+        let(:steps) { g.V.with(Grumlin::Expressions::WithOptions.tokens).steps }
 
         it "returns a string representation of steps" do
           expect(subject).to eq("g.V().with(WithOptions.tokens)")
@@ -72,14 +72,14 @@ RSpec.describe Grumlin::StepsSerializers::String do
       let(:apply_shortcuts) { true }
 
       context "when there are no anonymous traversals" do
-        let(:steps) { Grumlin::Action.new(:V).has(:color, :white).has(:shape, :rectangle).steps }
+        let(:steps) { g.V.has(:color, :white).has(:shape, :rectangle).steps }
 
         it "returns a string representation of steps" do
           expect(subject).to eq('g.V().has("color", "white").has("shape", "rectangle")')
         end
 
         context "when a shortcut is used" do
-          let(:steps) { Grumlin::Action.new(:V,  shortcuts: shortcuts).hasColor(:red).steps }
+          let(:steps) { g(shortcuts).V.hasColor(:red).steps }
 
           it "returns a string representation of steps" do
             expect(subject).to eq('g.V().has("color", "red")')
@@ -88,14 +88,14 @@ RSpec.describe Grumlin::StepsSerializers::String do
       end
 
       context "when there are anonymous traversals" do
-        let(:steps) { Grumlin::Action.new(:V).where(Grumlin::Action.new(:has, args: %i[color white])).has(:shape, :rectangle).steps }
+        let(:steps) { g.V.where(__(shortcuts).has(:color, :white)).has(:shape, :rectangle).steps }
 
         it "returns a string representation of steps" do
           expect(subject).to eq('g.V().where(__.has("color", "white")).has("shape", "rectangle")')
         end
 
         context "when a shortcut is used" do
-          let(:steps) { Grumlin::Action.new(:V,  shortcuts: shortcuts).hasColor(:red).steps }
+          let(:steps) { g(shortcuts).V.hasColor(:red).steps }
 
           it "returns a string representation of steps" do
             expect(subject).to eq('g.V().has("color", "red")')

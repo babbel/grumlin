@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::StepsSerializers::Bytecode do
+RSpec.describe Grumlin::StepsSerializers::Bytecode, gremlin: true do
   let(:serializer) { described_class.new(steps) }
 
   let(:shortcuts) do
@@ -17,7 +17,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode do
     subject { serializer.serialize }
 
     context "when there are no anonymous traversals" do
-      let(:steps) { Grumlin::Action.new(:V).has(:color, :white).has(:shape, :rectangle).steps }
+      let(:steps) { g.V.has(:color, :white).has(:shape, :rectangle).steps }
 
       it "returns a string representation of steps" do
         expect(subject).to eq({ step: [[:V], %i[has color white], %i[has shape rectangle]] })
@@ -25,7 +25,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode do
     end
 
     context "when there are anonymous traversals" do
-      let(:steps) { Grumlin::Action.new(:V).where(Grumlin::Action.new(:has, args: %i[color white])).has(:shape, :rectangle).steps }
+      let(:steps) { g.V.where(__.has(:color, :white)).has(:shape, :rectangle).steps }
 
       it "returns a string representation of steps" do
         expect(subject).to eq({ step: [[:V], [:where, { :@type => "g:Bytecode", :@value => { step: [%i[has color white]] } }], %i[has shape rectangle]] })
@@ -33,7 +33,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode do
     end
 
     context "when Expressions::T is used" do
-      let(:steps) { Grumlin::Action.new(:V).has(Grumlin::Expressions::T.id, "id").steps }
+      let(:steps) { g.V.has(Grumlin::Expressions::T.id, "id").steps }
 
       it "returns a string representation of steps" do
         expect(subject).to eq({ step: [[:V], [:has, { :@type => "g:T", :@value => :id }, "id"]] })
@@ -41,7 +41,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode do
     end
 
     context "when Expressions::WithOptions is used" do
-      let(:steps) { Grumlin::Action.new(:V).with(Grumlin::Expressions::WithOptions.tokens).steps }
+      let(:steps) { g.V.with(Grumlin::Expressions::WithOptions.tokens).steps }
 
       it "returns a string representation of steps" do
         expect(subject).to eq({ step: [[:V], [:with, "~tinkerpop.valueMap.tokens"]] })

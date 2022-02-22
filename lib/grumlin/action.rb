@@ -2,8 +2,8 @@
 
 module Grumlin
   class Action
-    START_STEPS = Grumlin.definitions.dig(:steps, :start).map(&:to_sym).freeze # TODO: add validation
-    CONFIGURATION_STEPS = Grumlin.definitions.dig(:steps, :configuration).map(&:to_sym).freeze # TODO: add validation
+    START_STEPS = Grumlin.definitions.dig(:steps, :start).map(&:to_sym).freeze
+    CONFIGURATION_STEPS = Grumlin.definitions.dig(:steps, :configuration).map(&:to_sym).freeze
     REGULAR_STEPS = Grumlin.definitions.dig(:steps, :regular).map(&:to_sym).freeze
 
     ALL_STEPS = START_STEPS + CONFIGURATION_STEPS + REGULAR_STEPS

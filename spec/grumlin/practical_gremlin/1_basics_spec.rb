@@ -33,7 +33,7 @@ RSpec.describe "Practical Gremlin: basics" do
     expect(g.E().has("dist").count.next).to eq(43_400)
     expect(g.V().has("region").count.next).to eq(3374)
     expect(g.V().hasNot("region").count.next).to eq(245)
-    expect(g.V().not(U.has("region")).count.next).to eq(245)
+    expect(g.V().not(__.has("region")).count.next).to eq(245)
   end
 
   it "8" do
@@ -51,7 +51,7 @@ RSpec.describe "Practical Gremlin: basics" do
                version: 1 }
     expect(g.V().groupCount.by(T.label).next).to eq(result)
     expect(g.V().label.groupCount.next).to eq(result)
-    expect(g.V().group.by(T.label).by(U.count).next).to eq(result)
+    expect(g.V().group.by(T.label).by(__.count).next).to eq(result)
   end
 
   it "11" do
@@ -296,16 +296,16 @@ RSpec.describe "Practical Gremlin: basics" do
       PM: 1
     }
     expect(g.V().hasLabel("airport").groupCount.by("country").next).to eq(result)
-    expect(g.V().hasLabel("country").group.by("code").by(U.out.count).next).to eq(result.merge(AD: 0, LI: 0,
-                                                                                               MC: 0, PN: 0,
-                                                                                               SM: 0))
+    expect(g.V().hasLabel("country").group.by("code").by(__.out.count).next).to eq(result.merge(AD: 0, LI: 0,
+                                                                                                MC: 0, PN: 0,
+                                                                                                SM: 0))
   end
 
   it "13" do
-    expect(g.V().hasLabel("continent").group.by("code").by(U.out.count).next).to eq({ EU: 583, AS: 932,
-                                                                                      NA: 978, OC: 284,
-                                                                                      AF: 294, AN: 0,
-                                                                                      SA: 303 })
+    expect(g.V().hasLabel("continent").group.by("code").by(__.out.count).next).to eq({ EU: 583, AS: 932,
+                                                                                       NA: 978, OC: 284,
+                                                                                       AF: 294, AN: 0,
+                                                                                       SA: 303 })
   end
 
   it "14" do

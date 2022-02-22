@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Steps do
+RSpec.describe Grumlin::Steps, gremlin: true do
   let(:steps) { described_class.new(shortcuts) }
 
   describe ".from" do
     subject { described_class.from(action) }
 
     let(:action) do
-      Grumlin::Action.new(:withSideEffect, args: [:a], params: { b: 1 })
-                     .V.has(:property, :value).where(Grumlin::Action.new(:out, args: :name))
+      g.withSideEffect(:a, b: 1).V.has(:property, :value).where(__.out(:name))
     end
 
     it "returns a Steps" do
@@ -226,7 +225,7 @@ RSpec.describe Grumlin::Steps do
 
         context "with actions in arguments" do
           let(:name) { :where }
-          let(:args) { [Grumlin::Action.new(:has, args: %i[property value])] }
+          let(:args) { [__.has(:proeprty, :value)] }
 
           it "returns a StepData" do
             expect(subject).to be_a(Grumlin::StepData)
@@ -286,7 +285,7 @@ RSpec.describe Grumlin::Steps do
     context "when when a shortcut is used in an anonymous traversal" do
       before do
         steps.add(:V, [])
-        steps.add(:where, [Grumlin::Action.new(:hasColor, args: [:red], shortcuts: shortcuts)])
+        steps.add(:where, [__(shortcuts).hasColor(:red)])
       end
 
       it "returns true" do
