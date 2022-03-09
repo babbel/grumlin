@@ -31,7 +31,15 @@ module Grumlin
     end
 
     def __
-      TraversalStart.new(@shortcuts)
+      TraversalStart.new(@shortcuts) # TODO: allow only regular and start steps
+    end
+
+    def to_s(*)
+      self.class.to_s
+    end
+
+    def inspect
+      self.class.inspect
     end
 
     private

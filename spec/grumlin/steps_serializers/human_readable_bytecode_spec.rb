@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::StepsSerializers::Bytecode, gremlin: true do
+RSpec.describe Grumlin::StepsSerializers::HumanReadableBytecode, gremlin: true do
   let(:serializer) { described_class.new(steps) }
 
   # TODO: add cases with predicates
@@ -21,32 +21,32 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode, gremlin: true do
     context "when there are no anonymous traversals" do
       let(:steps) { g.V.has(:color, :white).has(:shape, :rectangle).steps }
 
-      it "returns a bytecode representation of steps" do
-        expect(subject).to eq({ step: [[:V], %i[has color white], %i[has shape rectangle]] })
+      it "returns a human readable bytecode representation of steps" do
+        expect(subject).to eq([[], [[:V], %i[has color white], %i[has shape rectangle]]])
       end
     end
 
     context "when there are anonymous traversals" do
       let(:steps) { g.V.where(__.has(:color, :white)).has(:shape, :rectangle).steps }
 
-      it "returns a bytecode representation of steps" do
-        expect(subject).to eq({ step: [[:V], [:where, { :@type => "g:Bytecode", :@value => { step: [%i[has color white]] } }], %i[has shape rectangle]] })
+      it "returns a human readable bytecode representation of steps" do
+        expect(subject).to eq([[], [[:V], [:where, [%i[has color white]]], %i[has shape rectangle]]])
       end
     end
 
     context "when Expressions::T is used" do
       let(:steps) { g.V.has(Grumlin::Expressions::T.id, "id").steps }
 
-      it "returns a bytecode representation of steps" do
-        expect(subject).to eq({ step: [[:V], [:has, { :@type => "g:T", :@value => :id }, "id"]] })
+      it "returns a human readable bytecode representation of steps" do
+        expect(subject).to eq([[], [[:V], [:has, "<T.id>", "id"]]])
       end
     end
 
     context "when Expressions::WithOptions is used" do
       let(:steps) { g.V.with(Grumlin::Expressions::WithOptions.tokens).steps }
 
-      it "returns a bytecode representation of steps" do
-        expect(subject).to eq({ step: [[:V], [:with, "~tinkerpop.valueMap.tokens"]] })
+      it "returns a human readable bytecode representation of steps" do
+        expect(subject).to eq([[], [[:V], [:with, "~tinkerpop.valueMap.tokens"]]])
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode, gremlin: true do
       let(:steps) { g.withSideEffect(:a, 1).V.has(:property, :value).steps }
 
       it "returns a human readable bytecode representation of steps" do
-        expect(subject).to eq({ source: [[:withSideEffect, :a, 1]], step: [[:V], %i[has property value]] })
+        expect(subject).to eq([[[:withSideEffect, :a, 1]], [[:V], %i[has property value]]])
       end
     end
 
@@ -63,7 +63,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode, gremlin: true do
         let(:steps) { g.V.where(P.eq("test")).steps }
 
         it "returns a human readable bytecode representation of steps" do
-          expect(subject).to eq({ step: [[:V], [:where, { :@type => "g:P", :@value => { predicate: :eq, value: "test" } }]] })
+          expect(subject).to eq([[], [[:V], [:where, "eq(test)"]]])
         end
       end
 
@@ -71,7 +71,7 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode, gremlin: true do
         let(:steps) { g.V.where(P.within(["test", "another_test"])).steps }
 
         it "returns a human readable bytecode representation of steps" do
-          expect(subject).to eq({ step: [[:V], [:where, { :@type => "g:P", :@value => { predicate: :within, value: { :@type => "g:List", :@value => ["test", "another_test"] } } }]] })
+          expect(subject).to eq([[], [[:V], [:where, 'within(["test", "another_test"])']]])
         end
       end
     end

@@ -74,13 +74,16 @@ module Grumlin
       @steps ||= Steps.from(self)
     end
 
-    # TODO: #to_s, #inspect
-    #
-    def inspect
-      StepsSerializers::Bytecode.new(steps).serialize.to_s
+    def to_s(**params)
+      StepsSerializers::String.new(steps, **params).serialize
     end
 
     # TODO: add human readable mode
+    def inspect
+      conf_steps, regular_steps = StepsSerializers::HumanReadableBytecode.new(steps).serialize
+      "#{conf_steps.any? ? conf_steps : nil}#{regular_steps}"
+    end
+
     def bytecode(no_return: false)
       StepsSerializers::Bytecode.new(steps, no_return: no_return)
     end
