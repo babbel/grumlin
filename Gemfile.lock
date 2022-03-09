@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grumlin (0.15.4)
+    grumlin (0.15.5)
       async-pool (~> 0.3)
       async-websocket (~> 0.19)
       oj (~> 3.12)
@@ -28,7 +28,7 @@ GEM
       protocol-http (~> 0.22.0)
       protocol-http1 (~> 0.14.0)
       protocol-http2 (~> 0.14.0)
-    async-io (1.32.2)
+    async-io (1.33.0)
       async
     async-pool (0.3.9)
       async (>= 1.25)
