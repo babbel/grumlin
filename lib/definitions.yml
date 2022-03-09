@@ -31,12 +31,15 @@ steps:
   - identity
   - in
   - inE
+  - inject
   - inV
   - is
   - label
   - limit
   - map
+  - none
   - not
+  - option
   - or
   - order
   - out
@@ -68,6 +71,7 @@ steps:
   - V
   - addE
   - addV
+  - inject
   configuration:
   - withSack
   - withSideEffect
