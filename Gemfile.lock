@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grumlin (0.15.5)
+    grumlin (0.15.6)
       async-pool (~> 0.3)
       async-websocket (~> 0.19)
       oj (~> 3.12)
