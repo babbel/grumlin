@@ -4,9 +4,10 @@ module Grumlin
   module Expressions
     module P
       class Predicate
-        attr_reader :name, :value, :type
+        attr_reader :namespace, :name, :value, :type
 
-        def initialize(name, value:, type: nil)
+        def initialize(namespace, name, value:, type: nil)
+          @namespace = namespace
           @name = name
           @value = value
           @type = type
@@ -17,7 +18,7 @@ module Grumlin
         # TODO: support more predicates
         %i[eq neq].each do |predicate|
           define_method predicate do |*args|
-            Predicate.new(predicate, value: args[0])
+            Predicate.new("P", predicate, value: args[0])
           end
         end
 
@@ -30,7 +31,7 @@ module Grumlin
                    else
                      args.to_a
                    end
-            Predicate.new(predicate, value: args, type: "List")
+            Predicate.new("P", predicate, value: args, type: "List")
           end
         end
       end

@@ -46,7 +46,7 @@ module Grumlin
 
       def serialize_predicate(value)
         {
-          "@type": "g:P",
+          "@type": "g:#{value.namespace}",
           "@value": {
             predicate: value.name,
             value: if value.type.nil?
