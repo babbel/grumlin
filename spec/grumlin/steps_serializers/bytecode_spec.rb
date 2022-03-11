@@ -74,6 +74,14 @@ RSpec.describe Grumlin::StepsSerializers::Bytecode, gremlin: true do
           expect(subject).to eq({ step: [[:V], [:where, { :@type => "g:P", :@value => { predicate: :within, value: { :@type => "g:List", :@value => ["test", "another_test"] } } }]] })
         end
       end
+
+      context "when using TextP.containing" do
+        let(:steps) { g.V.values.where(TextP.containing("test")).steps }
+
+        it "returns a human readable bytecode representation of steps" do
+          expect(subject).to eq({ step: [[:V], [:values], [:where, { :@type => "g:TextP", :@value => { predicate: :containing, value: "test" } }]] })
+        end
+      end
     end
   end
 end
