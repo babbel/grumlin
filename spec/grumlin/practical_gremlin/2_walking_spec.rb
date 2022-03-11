@@ -148,13 +148,13 @@ RSpec.describe "Practical Gramlin: walking" do
 
   it "7" do
     expect(
-      g.V(3).out.limit(5).path.by(U.values("code", "city").fold).count.next
+      g.V(3).out.limit(5).path.by(__.values("code", "city").fold).count.next
     ).to eq(5)
   end
 
   it "8" do
     expect(
-      g.V(3).out.limit(5).path.by(U.out.count.fold).count.next
+      g.V(3).out.limit(5).path.by(__.out.count.fold).count.next
     ).to eq(5)
   end
 
@@ -217,13 +217,13 @@ RSpec.describe "Practical Gramlin: walking" do
     expect(
       g.V().has("type", "airport").limit(10).as("a", "b", "c")
             .select("a", "b", "c")
-              .by("code").by("region").by(U.out.count).count.next
+              .by("code").by("region").by(__.out.count).count.next
     ).to eq(10)
 
     expect(
       g.V().has("type", "airport").limit(10)
             .project("a", "b", "c")
-              .by("code").by("region").by(U.out.count).count.next
+              .by("code").by("region").by(__.out.count).count.next
     ).to eq(10)
   end
 

@@ -4,11 +4,11 @@ module Grumlin
   module Repository
     module InstanceMethods
       def __
-        with_shortcuts(Grumlin::Expressions::U)
+        TraversalStart.new(self.class.shortcuts)
       end
 
       def g
-        with_shortcuts(Grumlin::Traversal.new)
+        TraversalStart.new(self.class.shortcuts)
       end
     end
 

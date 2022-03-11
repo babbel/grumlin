@@ -2,14 +2,7 @@
 
 module Grumlin
   module Shortcuts
-    module InstanceMethods
-      def with_shortcuts(obj)
-        ShortcutProxy.new(obj, self.class.shortcuts, parent: self)
-      end
-    end
-
     def self.extended(base)
-      base.include(InstanceMethods)
       base.include(Grumlin::Expressions)
     end
 
@@ -21,7 +14,7 @@ module Grumlin
     def shortcut(name, shortcut = nil, &block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       name = name.to_sym
       # TODO: blocklist of names to avoid conflicts with standard methods?
-      if Grumlin::AnonymousStep::SUPPORTED_STEPS.include?(name)
+      if Grumlin::Action::REGULAR_STEPS.include?(name)
         raise ArgumentError,
               "cannot use names of standard gremlin steps"
       end

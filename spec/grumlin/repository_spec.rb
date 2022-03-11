@@ -21,7 +21,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   describe "instance methods" do
-    %i[__ g with_shortcuts].each do |method|
+    %i[__ g].each do |method|
       it "responds to ##{method}" do
         expect(repository).to respond_to(method)
       end
