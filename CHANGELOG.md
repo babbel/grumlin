@@ -1,3 +1,8 @@
+## [0.16.0] - 2022-03-11
+
+- Query building is rewritten from scratch. No public APIs were changed. [Details](https://github.com/babbel/grumlin/pull/64)
+- Add support for [TextP](https://tinkerpop.apache.org/javadocs/current/core/org/apache/tinkerpop/gremlin/process/traversal/TextP.html)
+
 ## [0.15.4] - 2022-01-20
 
 - Move step and expression definitions to a yaml file for better diffs
