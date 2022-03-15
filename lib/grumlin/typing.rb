@@ -16,6 +16,8 @@ module Grumlin
       "g:Double" => ->(value) { cast_double(value) },
       "g:Direction" => ->(value) { value },
       # "g:VertexProperty"=> ->(value) { value }, # TODO: implement me
+      "g:TraversalMetrics" => ->(value) { cast_map(value[:@value]) },
+      "g:Metrics" => ->(value) { cast_map(value[:@value]) },
       "g:T" => ->(value) { value.to_sym }
     }.freeze
 

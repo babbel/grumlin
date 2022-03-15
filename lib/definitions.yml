@@ -46,6 +46,7 @@ steps:
   - outE
   - outV
   - path
+  - profile
   - project
   - properties
   - property
