@@ -169,4 +169,138 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
     end
   end
+
+  describe "#query" do
+    subject { repository_class.query(:test_query, return_mode: return_mode) { g.V } }
+
+    context "when return mode is valid" do
+      let(:return_mode) { :single }
+
+      it "defines a method named after the query" do
+        subject
+        expect(repository).to respond_to(:test_query)
+      end
+    end
+
+    context "when return is not valid" do
+      let(:return_mode) { :unknown }
+
+      include_examples "raises an exception", ArgumentError, "unsupported return mode unknown. Supported modes: [:list, :none, :single, :traversal]"
+    end
+  end
+
+  describe "queries" do
+    before do
+      g.addV(:test_node).property(:color, :white).iterate
+    end
+
+    context "when query has default return mode" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query :test_query do |color|
+            g.V.hasAll(color: color)
+          end
+        end
+      end
+
+      it "returns a non empty list" do
+        result = repository.test_query(:white)
+
+        expect(result).to be_an(Array)
+        expect(result).not_to be_empty
+      end
+    end
+
+    context "when query has single return mode" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query(:test_query, return_mode: :single) do |color|
+            g.V.hasAll(color: color)
+          end
+        end
+      end
+
+      it "returns a Grumlin::Vertex" do
+        result = repository.test_query(:white)
+
+        expect(result).to be_an(Grumlin::Vertex)
+      end
+    end
+
+    context "when query has none return mode" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query(:test_query, return_mode: :none) do |color|
+            g.V.hasAll(color: color)
+          end
+        end
+      end
+
+      it "returns an empty list" do
+        result = repository.test_query(:white)
+
+        expect(result).to eq([])
+      end
+    end
+
+    context "when query has traversal return mode" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query(:test_query, return_mode: :traversal) do |color|
+            g.V.hasAll(color: color)
+          end
+        end
+      end
+
+      it "returns a Grumlin::action" do
+        result = repository.test_query(:white)
+
+        expect(result).to be_an(Grumlin::Action)
+      end
+    end
+
+    context "when preconfigured return mode is overwritten" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query(:test_query, return_mode: :list) do |color|
+            g.V.hasAll(color: color)
+          end
+        end
+      end
+
+      it "follows the overwritten mode" do
+        result = repository.test_query(:white, query_params: { return_mode: :single })
+
+        expect(result).to be_an(Grumlin::Vertex)
+      end
+    end
+
+    context "when in profiling mode" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query(:test_query) do |color|
+            g.V.hasAll(color: color)
+          end
+        end
+      end
+
+      it "returns profiling data" do
+        result = repository.test_query(:white, query_params: { profile: true })
+
+        expect(result.keys).to match_array(%i[dur metrics]) # Profiling data
+      end
+    end
+  end
 end

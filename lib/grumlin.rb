@@ -100,6 +100,10 @@ module Grumlin
     end
   end
 
+  class RepositoryError < Error; end
+
+  class WrongQueryResult < RepositoryError; end
+
   class Config
     attr_accessor :url, :pool_size, :client_concurrency, :client_factory
 
