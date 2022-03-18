@@ -45,7 +45,7 @@ module Grumlin
 
         return t if return_mode == :traversal
 
-        return t.send(RETURN_MODES[return_mode])
+        return t.public_send(RETURN_MODES[return_mode])
       end
     end
 
