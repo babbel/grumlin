@@ -302,5 +302,21 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         expect(result.keys).to match_array(%i[dur metrics]) # Profiling data
       end
     end
+
+    context "when a block is given" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query(:test_query) do |color|
+            g.V.hasAll(color: color)
+          end
+        end
+      end
+
+      it "yields the traversal" do
+        expect { |b| repository.test_query(:white, &b) }.to yield_with_args(Grumlin::Action)
+      end
+    end
   end
 end

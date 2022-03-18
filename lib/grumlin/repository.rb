@@ -27,11 +27,13 @@ module Grumlin
       base.shortcuts_from(Grumlin::Shortcuts::Properties)
     end
 
-    def query(name, return_mode: :list, &block) # rubocop:disable Metrics/AbcSize
+    def query(name, return_mode: :list, &query_block) # rubocop:disable Metrics/AbcSize
       validate_return_mode!(return_mode)
 
-      define_method name do |*args, query_params: {}, **params|
-        t = instance_exec(*args, **params, &block)
+      define_method name do |*args, query_params: {}, **params, &block|
+        t = instance_exec(*args, **params, &query_block)
+        return block.call(t) unless block.nil?
+
         raise WrongQueryResult, "queries must return traversals, given: #{t.class}" unless t.is_a?(Grumlin::Action)
 
         return t.profile.next if query_params[:profile] == true
