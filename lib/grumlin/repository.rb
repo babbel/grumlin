@@ -28,29 +28,30 @@ module Grumlin
     end
 
     def query(name, return_mode: :list, &query_block) # rubocop:disable Metrics/AbcSize
-      validate_return_mode!(return_mode)
+      return_mode = validate_return_mode!(return_mode)
 
       define_method name do |*args, query_params: {}, **params, &block|
         t = instance_exec(*args, **params, &query_block)
+        return if t.nil?
+
+        unless t.is_a?(Grumlin::Action)
+          raise WrongQueryResult, "queries must return #{Grumlin::Action} given: #{t.class}"
+        end
+
         return block.call(t) unless block.nil?
 
-        raise WrongQueryResult, "queries must return traversals, given: #{t.class}" unless t.is_a?(Grumlin::Action)
-
         return t.profile.next if query_params[:profile] == true
-        return t.profile(query_params[:profile]).next if query_params[:profile]
 
-        return_mode = query_params[:return_mode] || return_mode
-
-        self.class.validate_return_mode!(return_mode)
+        return_mode = self.class.validate_return_mode!(query_params[:return_mode] || return_mode)
 
         return t if return_mode == :traversal
 
-        return t.public_send(RETURN_MODES[return_mode])
+        t.public_send(RETURN_MODES[return_mode])
       end
     end
 
     def validate_return_mode!(return_mode)
-      return if RETURN_MODES.key?(return_mode)
+      return return_mode if RETURN_MODES.key?(return_mode)
 
       raise ArgumentError, "unsupported return mode #{return_mode}. Supported modes: #{RETURN_MODES.keys}"
     end
