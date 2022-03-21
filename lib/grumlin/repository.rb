@@ -32,7 +32,7 @@ module Grumlin
 
       define_method name do |*args, query_params: {}, **params, &block|
         t = instance_exec(*args, **params, &query_block)
-        return if t.nil?
+        return t if self.class.empty_result?(t)
 
         unless t.is_a?(Grumlin::Action)
           raise WrongQueryResult, "queries must return #{Grumlin::Action} given: #{t.class}"
@@ -54,6 +54,10 @@ module Grumlin
       return return_mode if RETURN_MODES.key?(return_mode)
 
       raise ArgumentError, "unsupported return mode #{return_mode}. Supported modes: #{RETURN_MODES.keys}"
+    end
+
+    def empty_result?(result)
+      result.nil? || (result.respond_to?(:empty?) && result.empty?)
     end
   end
 end
