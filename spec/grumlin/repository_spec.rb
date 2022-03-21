@@ -318,5 +318,21 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         expect { |b| repository.test_query(:white, &b) }.to yield_with_args(Grumlin::Action)
       end
     end
+
+    context "when a query block returns an unexpected value" do
+      let(:repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+
+          query(:test_query) do
+            "test"
+          end
+        end
+      end
+
+      it "yields the traversal" do
+        expect { repository.test_query }.to raise_error(Grumlin::WrongQueryResult, "queries must return Grumlin::Action, nil or an empty collection. Given: String")
+      end
+    end
   end
 end

@@ -35,7 +35,8 @@ module Grumlin
         return t if self.class.empty_result?(t)
 
         unless t.is_a?(Grumlin::Action)
-          raise WrongQueryResult, "queries must return #{Grumlin::Action} given: #{t.class}"
+          raise WrongQueryResult,
+                "queries must return #{Grumlin::Action}, nil or an empty collection. Given: #{t.class}"
         end
 
         return block.call(t) unless block.nil?
