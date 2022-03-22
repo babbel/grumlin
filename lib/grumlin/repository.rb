@@ -27,7 +27,7 @@ module Grumlin
       base.shortcuts_from(Grumlin::Shortcuts::Properties)
     end
 
-    def query(name, return_mode: :list, &query_block) # rubocop:disable Metrics/AbcSize
+    def query(name, return_mode: :list, postprocess_with: nil, &query_block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
       return_mode = validate_return_mode!(return_mode)
 
       define_method name do |*args, query_params: {}, **params, &block|
@@ -47,7 +47,9 @@ module Grumlin
 
         return t if return_mode == :traversal
 
-        t.public_send(RETURN_MODES[return_mode])
+        t.public_send(RETURN_MODES[return_mode]).tap do |result|
+          return send(postprocess_with, result) unless postprocess_with.nil?
+        end
       end
     end
 

@@ -330,8 +330,48 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
 
-      it "yields the traversal" do
+      it "raises an exception" do
         expect { repository.test_query }.to raise_error(Grumlin::WrongQueryResult, "queries must return Grumlin::Action, nil or an empty collection. Given: String")
+      end
+    end
+
+    context "when postprocess_with is passed" do
+      context "when method exists" do
+        let(:repository_class) do
+          Class.new do
+            extend Grumlin::Repository
+
+            query(:test_query, postprocess_with: :present) do
+              g.V
+            end
+
+            private
+
+            def present(_collection)
+              "test"
+            end
+          end
+        end
+
+        it "returns postprocessed data" do
+          expect(repository.test_query).to eq("test")
+        end
+      end
+
+      context "when method does not exist" do
+        let(:repository_class) do
+          Class.new do
+            extend Grumlin::Repository
+
+            query(:test_query, postprocess_with: :present) do
+              g.V
+            end
+          end
+        end
+
+        it "raises an error" do
+          expect { repository.test_query }.to raise_error(NoMethodError)
+        end
       end
     end
   end
