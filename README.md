@@ -150,7 +150,7 @@ shortcuts to make gremlin code more rubyish. Can be used as a drop in replacemen
 or `Grumlin::Shortcuts` can be inherited**, successors don't need to extend them again and have access to shortcuts 
 defined in the ancestor.
 
-**Using**:
+**Definition**
 
 ```ruby
 class MyRepository
@@ -167,14 +167,44 @@ class MyRepository
     hasAll(T.label => :triangle, color: color)
   end
 
-  # g and __ are already aware of shortcuts 
-  def red_triangles
+  # g and __ are already aware of shortcuts
+  query(:triangles_with_color, return_mode: :list) do |color| # :list is the default return mode, also possible: :none, :single, :traversal
     g.V.hasLabel(:triangle)
-       .hasColor("red")
-       .toList
+       .hasColor(color)
   end
+  # Note that when using the `query` one does not need to call a termination step like `next` or `toList`,
+  # repository does it automatically in according to the `return_mode` parameter. 
 end
 ```
+
+Each `return_mode` is mapped to a particular termination step:
+- `:list` - `toList`
+- `:single` - `next`
+- `:none` - `iterate`
+- `:traversal` - do not execute the query and return the traversal as is
+
+**Usage**
+
+To execute the query defined in a query block one simply needs to call a method with the same name:
+
+`MyRepository.new.triangles_with_color(:red)`
+
+One can also override the `return_mode`:
+
+`MyRepository.new.triangles_with_color(:red, query_params: { return_mode: :single })`
+
+or even pass a block to the method and a raw traversal will be yielded:
+```ruby
+MyRepository.new.triangles_with_color(:red) do |t|
+  t.has(:other_property, :some_value).toList
+end
+```
+it may be useful for debugging. Note that one needs to call a termination step manually in this case.
+
+`query` also provides a helper for profiling requests:
+`MyRepository.new.triangles_with_color(:red, query_params: { profile: true })`
+
+method will return profiling data of the results.
 
 #### IRB
 
