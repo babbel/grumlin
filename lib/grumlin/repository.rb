@@ -27,8 +27,9 @@ module Grumlin
       base.shortcuts_from(Grumlin::Shortcuts::Properties)
     end
 
-    def query(name, return_mode: :list, postprocess_with: nil, &query_block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity
+    def query(name, return_mode: :list, postprocess_with: nil, &query_block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       return_mode = validate_return_mode!(return_mode)
+      postprocess_with = validate_postprocess_with!(postprocess_with)
 
       define_method name do |*args, query_params: {}, **params, &block|
         t = instance_exec(*args, **params, &query_block)
@@ -48,6 +49,7 @@ module Grumlin
         return t if return_mode == :traversal
 
         t.public_send(RETURN_MODES[return_mode]).tap do |result|
+          return postprocess_with.call(result) if postprocess_with.respond_to?(:call)
           return send(postprocess_with, result) unless postprocess_with.nil?
         end
       end
@@ -57,6 +59,16 @@ module Grumlin
       return return_mode if RETURN_MODES.key?(return_mode)
 
       raise ArgumentError, "unsupported return mode #{return_mode}. Supported modes: #{RETURN_MODES.keys}"
+    end
+
+    def validate_postprocess_with!(postprocess_with)
+      if postprocess_with.nil? || postprocess_with.is_a?(Symbol) ||
+         postprocess_with.is_a?(String) || postprocess_with.respond_to?(:call)
+        return postprocess_with
+      end
+
+      raise ArgumentError,
+            "postprocess_with must be a String, Symbol or a callable object, given: #{postprocess_with.class}"
     end
 
     def empty_result?(result)
