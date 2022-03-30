@@ -18,6 +18,10 @@ module Grumlin
         TraversalStart.new(self.class.shortcuts)
       end
 
+      def drop_vertex(id)
+        g.V(id).drop.iterate
+      end
+
       def drop_edge(id = nil, from: nil, to: nil, label: nil) # rubocop:disable Metrics/AbcSize
         raise ArgumentError, "either id or from:, to: and label: must be passed" if [id, from, to, label].all?(&:nil?)
         return g.E(id).drop.iterate unless id.nil?
@@ -25,10 +29,6 @@ module Grumlin
         raise ArgumentError, "from:, to: and label: must be passed" if [from, to, label].any?(&:nil?)
 
         g.V(from).outE(label).where(__.inV.hasId(to)).limit(1).drop.iterate
-      end
-
-      def drop_vertex(id)
-        g.V(id).drop.iterate
       end
     end
 
