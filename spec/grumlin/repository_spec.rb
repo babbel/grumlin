@@ -21,9 +21,93 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   describe "instance methods" do
-    %i[__ g].each do |method|
-      it "responds to ##{method}" do
-        expect(repository).to respond_to(method)
+    describe "#__" do
+      it "returns TraversalStart" do
+        expect(repository.__).to be_an_instance_of(Grumlin::TraversalStart)
+      end
+    end
+
+    describe "#g" do
+      it "returns TraversalStart" do
+        expect(repository.g).to be_an_instance_of(Grumlin::TraversalStart)
+      end
+    end
+
+    describe "#drop_edge" do
+      context "when no arguments passed" do
+        subject { repository.drop_edge }
+
+        include_examples "raises an exception", ArgumentError, "either id or from:, to: and label: must be passed"
+      end
+
+      context "when deleting by id" do
+        subject { repository.drop_edge(id) }
+
+        before do
+          g.addV(:test).as(:start).addV(:test).as(:end).addE(:test).from(:start).to(:end).property(T.id, 123).iterate
+        end
+
+        context "when edge exists" do
+          let(:id) { 123 }
+
+          it "deletes the edge" do
+            expect { subject }.to change { g.E.count.next }.by(-1)
+          end
+        end
+
+        context "when edge does not exist" do
+          let(:id) { 124 }
+
+          it "does not delete any edges" do
+            expect { subject }.not_to(change { g.E.count.next })
+          end
+        end
+      end
+
+      context "when deleting by from, to and label" do
+        context "when all params are passed" do
+          subject { repository.drop_edge(from: 1, to: 2, label: :test) }
+
+          before do
+            g.addV(:test).property(T.id, 1).as(:start)
+             .addV(:test).property(T.id, 2).as(:end)
+             .addE(:test).from(:start).to(:end).iterate
+          end
+
+          context "when one edge exists" do
+            it "deletes the edge" do
+              expect { subject }.to change { g.E.count.next }.by(-1)
+            end
+          end
+
+          context "when multiple edges exist" do
+            before do
+              g.addE(:test).from(__.V(1)).to(__.V(2)).iterate
+            end
+
+            it "deletes only one edge" do
+              expect { subject }.to change { g.E.count.next }.by(-1)
+            end
+          end
+        end
+
+        context "when from is missed" do
+          subject { repository.drop_edge(to: 123, label: :test) }
+
+          include_examples "raises an exception", ArgumentError, "from:, to: and label: must be passed"
+        end
+
+        context "when to is missed" do
+          subject { repository.drop_edge(from: 123, label: :test) }
+
+          include_examples "raises an exception", ArgumentError, "from:, to: and label: must be passed"
+        end
+
+        context "when label is missed" do
+          subject { repository.drop_edge(from: 123, to: 234) }
+
+          include_examples "raises an exception", ArgumentError, "from:, to: and label: must be passed"
+        end
       end
     end
   end

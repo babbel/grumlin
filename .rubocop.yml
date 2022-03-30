@@ -44,6 +44,7 @@ Naming/MethodParameterName:
     - outV
     - inVLabel
     - outVLabel
+    - to
 
 RSpec/NamedSubject:
   Enabled: false
