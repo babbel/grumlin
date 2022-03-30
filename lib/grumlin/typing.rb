@@ -69,7 +69,7 @@ module Grumlin
       def cast_map(value)
         Hash[*value].transform_keys do |key|
           next key.to_sym if key.respond_to?(:to_sym)
-          next cast(key) if key[:@type]
+          next cast(key) if key[:@type] # TODO: g.V.group.by(:none_existing_property).next
 
           raise UnknownMapKey, key, value
         end.transform_values { |v| cast(v) }

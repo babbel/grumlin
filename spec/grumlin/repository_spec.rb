@@ -171,21 +171,51 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   describe "#query" do
-    subject { repository_class.query(:test_query, return_mode: return_mode) { g.V } }
+    context "when return_mode is passed" do
+      subject { repository_class.query(:test_query, return_mode: return_mode) { g.V } }
 
-    context "when return mode is valid" do
-      let(:return_mode) { :single }
+      context "when return mode is valid" do
+        let(:return_mode) { :single }
 
-      it "defines a method named after the query" do
-        subject
-        expect(repository).to respond_to(:test_query)
+        it "defines a method named after the query" do
+          subject
+          expect(repository).to respond_to(:test_query)
+        end
+      end
+
+      context "when return is not valid" do
+        let(:return_mode) { :unknown }
+
+        include_examples "raises an exception", ArgumentError, "unsupported return mode unknown. Supported modes: [:list, :none, :single, :traversal]"
       end
     end
 
-    context "when return is not valid" do
-      let(:return_mode) { :unknown }
+    context "when postprocess_with is passed" do
+      subject { repository_class.query(:test_query, postprocess_with: postprocess_with) { g.V } }
 
-      include_examples "raises an exception", ArgumentError, "unsupported return mode unknown. Supported modes: [:list, :none, :single, :traversal]"
+      context "when postprocess_with is a symbol" do
+        let(:postprocess_with) { :present }
+
+        it "defines a method named after the query" do
+          subject
+          expect(repository).to respond_to(:test_query)
+        end
+      end
+
+      context "when postprocess_with is callable" do
+        let(:postprocess_with) { ->(r) {} }
+
+        it "defines a method named after the query" do
+          subject
+          expect(repository).to respond_to(:test_query)
+        end
+      end
+
+      context "when postprocess_with is something else" do
+        let(:postprocess_with) { 100_500 }
+
+        include_examples "raises an exception", ArgumentError, "postprocess_with must be a String, Symbol or a callable object, given: Integer"
+      end
     end
   end
 
@@ -330,8 +360,66 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
 
-      it "yields the traversal" do
+      it "raises an exception" do
         expect { repository.test_query }.to raise_error(Grumlin::WrongQueryResult, "queries must return Grumlin::Action, nil or an empty collection. Given: String")
+      end
+    end
+
+    context "when postprocess_with is passed" do
+      context "when postprocess_with is a symbol or string" do
+        context "when method exists" do
+          let(:repository_class) do
+            Class.new do
+              extend Grumlin::Repository
+
+              query(:test_query, postprocess_with: :present) do
+                g.V
+              end
+
+              private
+
+              def present(_collection)
+                "test"
+              end
+            end
+          end
+
+          it "returns postprocessed data" do
+            expect(repository.test_query).to eq("test")
+          end
+        end
+
+        context "when method does not exist" do
+          let(:repository_class) do
+            Class.new do
+              extend Grumlin::Repository
+
+              query(:test_query, postprocess_with: :present) do
+                g.V
+              end
+            end
+          end
+
+          it "raises an error" do
+            expect { repository.test_query }.to raise_error(NoMethodError)
+          end
+        end
+      end
+
+      context "when postprocess_with is a lambda" do
+        let(:repository_class) do
+          Class.new do
+            extend Grumlin::Repository
+
+            query(:test_query, postprocess_with: ->(_r) { "test" }) do
+              g.V
+            end
+          end
+        end
+
+        it "returns postprocessed data" do
+          expect(repository.test_query).to eq("test")
+        end
       end
     end
   end

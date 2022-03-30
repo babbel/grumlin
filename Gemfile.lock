@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grumlin (0.16.1)
+    grumlin (0.17.0)
       async-pool (~> 0.3)
       async-websocket (~> 0.19)
       oj (~> 3.12)
@@ -44,7 +44,7 @@ GEM
     benchmark (0.1.1)
     childprocess (4.0.0)
     concurrent-ruby (1.1.8)
-    console (1.14.0)
+    console (1.15.0)
       fiber-local
     diff-lcs (1.4.4)
     docile (1.4.0)
