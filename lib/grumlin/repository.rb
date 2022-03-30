@@ -26,6 +26,10 @@ module Grumlin
 
         g.V(from).outE(label).where(__.inV.hasId(to)).limit(1).drop.iterate
       end
+
+      def drop_vertex(id)
+        g.V(id).drop.iterate
+      end
     end
 
     def self.extended(base)

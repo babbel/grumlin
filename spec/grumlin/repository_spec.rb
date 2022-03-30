@@ -110,6 +110,30 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
     end
+
+    describe "#drop_vertex" do
+      subject { repository.drop_vertex(id) }
+
+      before do
+        g.addV(:test).property(T.id, 123).iterate
+      end
+
+      context "when vertex exists" do
+        let(:id) { 123 }
+
+        it "deletes the vertex" do
+          expect { subject }.to change { g.V.count.next }.by(-1)
+        end
+      end
+
+      context "when vertex does not exist" do
+        let(:id) { 124 }
+
+        it "deletes the vertex" do
+          expect { subject }.not_to(change { g.V.count.next })
+        end
+      end
+    end
   end
 
   describe "included shortcuts" do
