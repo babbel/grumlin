@@ -30,6 +30,12 @@ module Grumlin
 
         g.V(from).outE(label).where(__.inV.hasId(to)).limit(1).drop.iterate
       end
+
+      def add_vertex(label, id = nil, **properties)
+        t = g.addV(label)
+        t = t.props(T.id => id) unless id.nil?
+        t.props(**properties).next
+      end
     end
 
     def self.extended(base)

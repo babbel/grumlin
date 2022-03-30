@@ -134,6 +134,68 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
     end
+
+    describe "#add_vertex" do
+      subject { repository.add_vertex(:test, id, **properties) }
+
+      let(:id) { nil }
+      let(:properties) { { key: :value } }
+
+      context "when id is passed as an argument" do
+        let(:id) { 123 }
+
+        it "creates a vertex with given id" do
+          subject
+          expect(g.V(id).next.id).to eq(id)
+          expect(g.V(id).elementMap.next).to eq({ id: 123, key: "value", label: "test" })
+        end
+      end
+
+      context "when id is passed as an :id property" do
+        let(:properties) { super().merge(id: 124) }
+
+        it "creates a vertex with random and an id property" do
+          subject
+          expect(g.V.has(:key, :value)).not_to eq(124)
+          expect(g.V.has(:key, :value).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+        end
+      end
+
+      context "when id is passed as T.id property" do
+        let(:properties) { super().merge({ T.id => 124 }) }
+
+        xit "creates a vertex with given id" do # TODO: fix passing props to the :props and :hasAll shortcuts
+          subject
+          expect(g.V(124).next.id).to eq(124)
+          expect(g.V(124).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+        end
+      end
+
+      context "when id is nil" do
+        xit ""
+      end
+
+      context "when id is passed as an argument and as :id" do
+        let(:id) { 123 }
+        let(:properties) { super().merge(id: 124) }
+
+        xit ""
+      end
+
+      context "when id is passed as an argument and as T.id" do
+        let(:id) { 123 }
+        let(:properties) { super().merge({ T.id => 124 }) }
+
+        xit ""
+      end
+
+      context "when id is passed as an argument, as :id and as T.id" do
+        let(:id) { 123 }
+        let(:properties) { super().merge({ id: 124, T.id => 125 }) }
+
+        xit ""
+      end
+    end
   end
 
   describe "included shortcuts" do
