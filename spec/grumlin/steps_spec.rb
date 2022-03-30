@@ -16,7 +16,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
   end
 
   describe "#add" do
-    subject { steps.add(name, args) }
+    subject { steps.add(name, args: args) }
 
     let(:args) { [] }
     let(:shortcuts) { {} }
@@ -86,7 +86,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
     context "when there is a configuration step" do
       before do
-        steps.add(:withSideEffect, [])
+        steps.add(:withSideEffect)
       end
 
       context "when adding a configuration step" do
@@ -153,8 +153,8 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
     context "when there is a configuration step and a start step" do
       before do
-        steps.add(:withSideEffect, [])
-        steps.add(:V, [])
+        steps.add(:withSideEffect)
+        steps.add(:V)
       end
 
       context "when adding a configuration step" do
@@ -232,7 +232,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
           end
 
           it "returns a step with casted arguments" do
-            expect(subject.arguments[0]).to be_a(described_class)
+            expect(subject.args[0]).to be_a(described_class)
           end
 
           it "adds a step" do
@@ -262,8 +262,8 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
     context "when shortcuts are not used" do
       before do
-        steps.add(:V, [])
-        steps.add(:has, %i[property value])
+        steps.add(:V, args: [])
+        steps.add(:has, args: %i[property value])
       end
 
       it "returns false" do
@@ -273,8 +273,8 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
     context "when a shortcut is used in the main traversal" do
       before do
-        steps.add(:V, [])
-        steps.add(:hasColor, [:red])
+        steps.add(:V)
+        steps.add(:hasColor, args: [:red])
       end
 
       it "returns true" do
@@ -284,8 +284,8 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
     context "when when a shortcut is used in an anonymous traversal" do
       before do
-        steps.add(:V, [])
-        steps.add(:where, [__(shortcuts).hasColor(:red)])
+        steps.add(:V, args: [])
+        steps.add(:where, args: [__(shortcuts).hasColor(:red)])
       end
 
       it "returns true" do

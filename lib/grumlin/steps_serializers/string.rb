@@ -34,7 +34,9 @@ module Grumlin
 
       def serialize_steps(steps)
         steps.map do |step|
-          "#{step.name}(#{step.arguments.map { |a| serialize_arg(a) }.join(", ")})"
+          "#{step.name}(#{(step.args + [step.params.any? ? step.params : nil].compact).map do |a|
+                            serialize_arg(a)
+                          end.join(", ")})"
         end
       end
     end

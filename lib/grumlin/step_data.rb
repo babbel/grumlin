@@ -2,17 +2,19 @@
 
 module Grumlin
   class StepData
-    attr_reader :name, :arguments
+    attr_reader :name, :args, :params
 
-    def initialize(name, arguments)
+    def initialize(name, args: [], params: {})
       @name = name
-      @arguments = arguments
+      @args = args
+      @params = params
     end
 
     def ==(other)
       self.class == other.class &&
         @name == other.name &&
-        @arguments == other.arguments
+        @args == other.args &&
+        @params == other.params
     end
   end
 end

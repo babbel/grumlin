@@ -18,7 +18,7 @@ module Grumlin
 
       new(shortcuts).tap do |chain|
         actions.each do |act|
-          chain.add(act.name, act.arguments)
+          chain.add(act.name, args: act.args, params: act.params)
         end
       end
     end
@@ -31,10 +31,10 @@ module Grumlin
       @steps = steps
     end
 
-    def add(name, arguments)
-      return add_configuration_step(name, arguments) if CONFIGURATION_STEPS.include?(name)
+    def add(name, args: [], params: {})
+      return add_configuration_step(name, args: args, params: params) if CONFIGURATION_STEPS.include?(name)
 
-      StepData.new(name, cast_arguments(arguments)).tap do |step|
+      StepData.new(name, args: cast_arguments(args), params: params).tap do |step|
         @steps << step
       end
     end
@@ -56,16 +56,16 @@ module Grumlin
 
     def shortcuts?(steps_ary)
       steps_ary.any? do |step|
-        @shortcuts.include?(step.name) || step.arguments.any? do |arg|
+        @shortcuts.include?(step.name) || step.args.any? do |arg|
           arg.is_a?(Steps) ? arg.uses_shortcuts? : false
         end
       end
     end
 
-    def add_configuration_step(name, arguments)
+    def add_configuration_step(name, args: [], params: {})
       raise ArgumentError, "cannot use configuration steps after start step was used" unless @steps.empty?
 
-      StepData.new(name, cast_arguments(arguments)).tap do |step|
+      StepData.new(name, args: cast_arguments(args), params: params).tap do |step|
         @configuration_steps << step
       end
     end
