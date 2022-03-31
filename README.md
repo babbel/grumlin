@@ -73,6 +73,7 @@ class MyRepository
 end
 ```
 
+<!--- TODO: readme needs to be updated, with_shortcuts does not exist anymore. --->
 #### Shortcuts
 
 **Shortcuts** is a way to share and organize gremlin code. They let developers define their own steps consisting of
