@@ -2,21 +2,15 @@
 
 module Grumlin
   module StepsSerializers
-    class HumanReadableBytecode < Serializer
+    class HumanReadableBytecode < Bytecode
       def serialize
         steps = ShortcutsApplyer.call(@steps)
-        [serialize_steps(steps.configuration_steps), serialize_steps(steps.steps)]
-      end
-
-      def serialize_steps(steps)
-        steps.map { |s| serialize_step(s) }
+        [steps.configuration_steps, steps.steps].map do |stps|
+          stps.map { |s| serialize_step(s) }
+        end
       end
 
       private
-
-      def serialize_step(step)
-        [step.name, *step.args.map { |arg| serialize_arg(arg) }, step.params.any? ? step.params : nil].compact
-      end
 
       def serialize_arg(arg)
         return arg.to_s if arg.is_a?(TypedValue)
