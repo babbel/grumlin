@@ -147,7 +147,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         it "creates a vertex with given id" do
           subject
           expect(g.V(id).next.id).to eq(id)
-          expect(g.V(id).elementMap.next).to eq({ id: 123, key: "value", label: "test" })
+          expect(g.V(id).elementMap.next).to eq({ T.id => 123, key: "value", T.label => "test" })
         end
       end
 
@@ -157,7 +157,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         it "creates a vertex with random and an id property" do
           subject
           expect(g.V.has(:key, :value)).not_to eq(124)
-          expect(g.V.has(:key, :value).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+          expect(g.V.has(:key, :value).elementMap.next.except(T.id)).to eq({ id: 124, key: "value", T.label => "test" }) # T.id is random
         end
       end
 
@@ -167,7 +167,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         it "creates a vertex with given id" do
           subject
           expect(g.V(124).next.id).to eq(124)
-          expect(g.V(124).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+          expect(g.V(124).elementMap.next).to eq({ T.id => 124, key: "value", T.label => "test" })
         end
       end
 
@@ -178,7 +178,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         it "creates a vertex with given id" do
           subject
           expect(g.V(id).next.id).to eq(id)
-          expect(g.V(id).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+          expect(g.V(id).elementMap.next).to eq({ T.id => 123, id: 124, key: "value", T.label => "test" })
         end
       end
 
@@ -189,7 +189,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         it "creates a vertex with given id" do
           subject
           expect(g.V(id).next.id).to eq(id)
-          expect(g.V(id).elementMap.next).to eq({ id: 123, key: "value", label: "test" })
+          expect(g.V(id).elementMap.next).to eq({ T.id => 123, key: "value", T.label => "test" })
         end
       end
 
@@ -200,7 +200,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         it "creates a vertex with given id" do
           subject
           expect(g.V(id).next.id).to eq(id)
-          expect(g.V(id).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+          expect(g.V(id).elementMap.next).to eq({ T.id => 123, id: 124, key: "value", T.label => "test" })
         end
       end
     end
