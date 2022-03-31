@@ -32,6 +32,9 @@ module Grumlin
       end
 
       def add_vertex(label, id = nil, **properties)
+        id ||= properties[T.id]
+        properties = properties.except(T.id)
+
         t = g.addV(label)
         t = t.props(T.id => id) unless id.nil?
         t.props(**properties).next

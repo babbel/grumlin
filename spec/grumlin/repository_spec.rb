@@ -164,36 +164,44 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       context "when id is passed as T.id property" do
         let(:properties) { super().merge({ T.id => 124 }) }
 
-        xit "creates a vertex with given id" do # TODO: fix passing props to the :props and :hasAll shortcuts
+        it "creates a vertex with given id" do
           subject
           expect(g.V(124).next.id).to eq(124)
           expect(g.V(124).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
         end
       end
 
-      context "when id is nil" do
-        xit ""
-      end
-
       context "when id is passed as an argument and as :id" do
         let(:id) { 123 }
         let(:properties) { super().merge(id: 124) }
 
-        xit ""
+        it "creates a vertex with given id" do
+          subject
+          expect(g.V(id).next.id).to eq(id)
+          expect(g.V(id).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+        end
       end
 
       context "when id is passed as an argument and as T.id" do
         let(:id) { 123 }
         let(:properties) { super().merge({ T.id => 124 }) }
 
-        xit ""
+        it "creates a vertex with given id" do
+          subject
+          expect(g.V(id).next.id).to eq(id)
+          expect(g.V(id).elementMap.next).to eq({ id: 123, key: "value", label: "test" })
+        end
       end
 
       context "when id is passed as an argument, as :id and as T.id" do
         let(:id) { 123 }
         let(:properties) { super().merge({ id: 124, T.id => 125 }) }
 
-        xit ""
+        it "creates a vertex with given id" do
+          subject
+          expect(g.V(id).next.id).to eq(id)
+          expect(g.V(id).elementMap.next).to eq({ id: 124, key: "value", label: "test" })
+        end
       end
     end
   end
