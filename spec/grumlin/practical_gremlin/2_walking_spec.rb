@@ -230,10 +230,10 @@ RSpec.describe "Practical Gramlin: walking" do
   it "13" do
     expect(g.V(1).as("a").V(2).as("a").select("a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
     expect(g.V(1).as("a").V(2).as("a").select(Pop.first, "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 1))
-    expect(g.V(1).as("a").V(2).as("a").select(Pop.last, "a").next).to eq(Grumlin::Vertex.new(label: "airport", id: 2))
+    expect(g.V(1).as("a").V(2).as("a").select(Pop.last, "a").next).to eq(Grumlin::Vertex.new(label:  "airport", id: 2))
 
-    expect(g.V(1).as("a").V(2).as("a").select(Pop.all, "a").next).to eq([Grumlin::Vertex.new(label: "airport", id: 1),
-                                                                         Grumlin::Vertex.new(label: "airport", id: 2)])
+    expect(g.V(1).as("a").V(2).as("a").select(Pop.all, "a").next).to eq([Grumlin::Vertex.new(label:  "airport", id: 1),
+                                                                         Grumlin::Vertex.new(label:  "airport", id: 2)])
   end
 
   it "14" do
@@ -338,8 +338,8 @@ RSpec.describe "Practical Gramlin: walking" do
                                                                    { runways: [2] },
                                                                    { lat: [30.1944999694824] },
                                                                    { desc: ["Austin Bergstrom International Airport"] }])
-    expect(g.V().has("code", "AUS").valueMap(true).unfold.toList).to eq([{ id: 3 },
-                                                                         { label: "airport" },
+    expect(g.V().has("code", "AUS").valueMap(true).unfold.toList).to eq([{ T.id => 3 },
+                                                                         { T.label => "airport" },
                                                                          { country: ["US"] },
                                                                          { code: ["AUS"] },
                                                                          { longest: [12_250] },
@@ -352,17 +352,17 @@ RSpec.describe "Practical Gramlin: walking" do
                                                                          { runways: [2] },
                                                                          { lat: [30.1944999694824] },
                                                                          { desc: ["Austin Bergstrom International Airport"] }])
-    expect(g.V().has("code", "AUS").valueMap(true, "region").next).to eq({ id: 3, label: "airport", region: ["US-TX"] })
+    expect(g.V().has("code", "AUS").valueMap(true, "region").next).to eq({ T.id => 3, T.label => "airport", region: ["US-TX"] })
     expect(g.V().has("code", "AUS").valueMap.select("code", "icao", "desc").next).to eq({ code: ["AUS"], desc: ["Austin Bergstrom International Airport"], icao: ["KAUS"] })
-    expect(g.V().has("code", "AUS").valueMap(true, "code", "icao", "desc", "city").unfold.toList).to eq([{ id: 3 },
-                                                                                                         { label: "airport" },
+    expect(g.V().has("code", "AUS").valueMap(true, "code", "icao", "desc", "city").unfold.toList).to eq([{ T.id => 3 },
+                                                                                                         { T.label => "airport" },
                                                                                                          { code: ["AUS"] },
                                                                                                          { city: ["Austin"] },
                                                                                                          { icao: ["KAUS"] },
                                                                                                          { desc: ["Austin Bergstrom International Airport"] }])
-    expect(g.E(5161).valueMap(true).next).to eq({ dist: 1357, id: 5161, label: "route" })
-    expect(g.V().has("code", "SFO").valueMap.with(WithOptions.tokens).unfold.toList).to eq([{ id: 23 },
-                                                                                            { label: "airport" },
+    expect(g.E(5161).valueMap(true).next).to eq({ dist: 1357, T.id => 5161, T.label => "route" })
+    expect(g.V().has("code", "SFO").valueMap.with(WithOptions.tokens).unfold.toList).to eq([{ T.id => 23 },
+                                                                                            { T.label => "airport" },
                                                                                             { country: ["US"] },
                                                                                             { code: ["SFO"] },
                                                                                             { longest: [11_870] },
@@ -375,13 +375,13 @@ RSpec.describe "Practical Gramlin: walking" do
                                                                                             { runways: [4] },
                                                                                             { lat: [37.6189994812012] },
                                                                                             { desc: ["San Francisco International Airport"] }])
-    expect(g.V().has("code", "SFO").valueMap("code").with(WithOptions.tokens).unfold.toList).to eq([{ id: 23 }, { label: "airport" }, { code: ["SFO"] }])
+    expect(g.V().has("code", "SFO").valueMap("code").with(WithOptions.tokens).unfold.toList).to eq([{ T.id => 23 }, { T.label => "airport" }, { code: ["SFO"] }])
     expect(g.V().has("code", "SFO")
       .valueMap("code").with(WithOptions.tokens, WithOptions.labels)
-      .unfold.toList).to eq([{ label: "airport" }, { code: ["SFO"] }])
+      .unfold.toList).to eq([{ T.label => "airport" }, { code: ["SFO"] }])
     expect(g.V().has("code", "SFO")
       .valueMap("code").with(WithOptions.tokens, WithOptions.ids)
-      .unfold.toList).to eq([{ id: 23 }, { code: ["SFO"] }])
+      .unfold.toList).to eq([{ T.id => 23 }, { code: ["SFO"] }])
     expect(g.V().has("code", "SFO").valueMap.by(__.unfold).unfold.toList).to eq([{ country: "US" },
                                                                                  { code: "SFO" },
                                                                                  { longest: 11_870 },
@@ -397,8 +397,8 @@ RSpec.describe "Practical Gramlin: walking" do
   end
 
   it "21" do
-    expect(g.V().has("code", "AUS").elementMap.unfold.toList).to eq([{ id: 3 },
-                                                                     { label: "airport" },
+    expect(g.V().has("code", "AUS").elementMap.unfold.toList).to eq([{ T.id => 3 },
+                                                                     { T.label => "airport" },
                                                                      { country: "US" },
                                                                      { code: "AUS" },
                                                                      { longest: 12_250 },
@@ -412,18 +412,18 @@ RSpec.describe "Practical Gramlin: walking" do
                                                                      { lat: 30.1944999694824 },
                                                                      { desc: "Austin Bergstrom International Airport" }])
 
-    expect(g.V().has("code", "AUS").elementMap("city").toList).to eq([{ city: "Austin", id: 3, label: "airport" }])
-    expect(g.V(3).outE.limit(1).elementMap.toList).to eq([{ "IN" => { id: 47, label: "airport" },
-                                                            "OUT" => { id: 3, label: "airport" },
+    expect(g.V().has("code", "AUS").elementMap("city").toList).to eq([{ city: "Austin", T.id => 3, T.label => "airport" }])
+    expect(g.V(3).outE.limit(1).elementMap.toList).to eq([{ "IN" => { T.id => 47, T.label =>  "airport" },
+                                                            "OUT" => { T.id => 3, T.label =>  "airport" },
                                                             :dist => 1357,
-                                                            :id => 5161,
-                                                            :label => "route" }])
+                                                            T.id => 5161,
+                                                            T.label => "route" }])
     expect(g.E(5161).project("v", "IN", "OUT")
       .by(__.valueMap(true))
       .by(__.inV.union(__.id, __.label).fold)
       .by(__.outV.union(__.id, __.label).fold).toList).to eq([{ IN: [47, "airport"],
                                                                 OUT: [3, "airport"],
-                                                                v: { dist: 1357, id: 5161, label: "route" } }])
+                                                                v: { dist: 1357, T.id => 5161, T.label => "route" } }])
 
     expect(
       g.E(5161).project("v", "IN", "OUT")
@@ -435,7 +435,7 @@ RSpec.describe "Practical Gramlin: walking" do
                     .by(__.outV.id)
                     .by(__.outV.label))
                   .unfold.toList
-    ).to eq([{ v: { dist: 1357, id: 5161, label: "route" } },
+    ).to eq([{ v: { dist: 1357, T.id => 5161, T.label => "route" } },
              { IN: { id: 47, label: "airport" } },
              { OUT: { id: 3, label: "airport" } }])
   end
