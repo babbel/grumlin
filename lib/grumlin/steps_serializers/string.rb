@@ -10,13 +10,20 @@ module Grumlin
       def serialize
         steps = @params[:apply_shortcuts] ? ShortcutsApplyer.call(@steps) : @steps
 
-        configuration_steps = serialize_steps(steps.configuration_steps)
-        regular_steps = serialize_steps(steps.steps)
+        steps = [steps.configuration_steps, steps.steps].map do |stps|
+          stps.map { |step| serialize_step(step) }
+        end
 
-        "#{prefix}.#{(configuration_steps + regular_steps).join(".")}"
+        "#{prefix}.#{(steps[0] + steps[1]).join(".")}"
       end
 
       private
+
+      def serialize_step(step)
+        "#{step.name}(#{(step.args + [step.params.any? ? step.params : nil].compact).map do |a|
+          serialize_arg(a)
+        end.join(", ")})"
+      end
 
       def prefix
         @prefix ||= @params[:anonymous] ? "__" : "g"
@@ -30,12 +37,6 @@ module Grumlin
         return arg unless arg.is_a?(Steps)
 
         StepsSerializers::String.new(arg, anonymous: true, **@params).serialize
-      end
-
-      def serialize_steps(steps)
-        steps.map do |step|
-          "#{step.name}(#{step.arguments.map { |a| serialize_arg(a) }.join(", ")})"
-        end
       end
     end
   end

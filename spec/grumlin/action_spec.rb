@@ -14,17 +14,20 @@ RSpec.describe Grumlin::Action do
         expect(configuration_step.previous_step).to be_nil
         expect(configuration_step).to be_an(described_class)
         expect(configuration_step.name).to eq(:withSideEffect)
-        expect(configuration_step.arguments).to eq([:a, { a: 1 }])
+        expect(configuration_step.args).to eq([:a])
+        expect(configuration_step.params).to eq({ a: 1 })
 
         start_step = configuration_step.V
         expect(start_step).to be_an(described_class)
         expect(start_step.name).to eq(:V)
-        expect(start_step.arguments).to be_empty
+        expect(start_step.args).to be_empty
+        expect(start_step.params).to be_empty
 
         regular_step = start_step.has(:property, :value)
         expect(regular_step).to be_an(described_class)
         expect(regular_step.name).to eq(:has)
-        expect(regular_step.arguments).to eq(%i[property value])
+        expect(regular_step.args).to eq(%i[property value])
+        expect(regular_step.params).to be_empty
 
         expect(regular_step.previous_step).to equal(start_step)
         expect(regular_step.previous_step.previous_step).to equal(configuration_step)
@@ -42,7 +45,8 @@ RSpec.describe Grumlin::Action do
         end
 
         it "assigns passes args and params to the new Action" do
-          expect(subject.arguments).to eq([:arg1, :arg2, { param1: 1, param2: 2 }])
+          expect(subject.args).to eq(%i[arg1 arg2])
+          expect(subject.params).to eq({ param1: 1, param2: 2 })
         end
 
         it "assigns previous_step" do
@@ -60,7 +64,8 @@ RSpec.describe Grumlin::Action do
     end
 
     it "assigns passes args and params to the new Action" do
-      expect(subject.arguments).to eq([:arg1, :arg2, { param1: 1, param2: 2 }])
+      expect(subject.args).to eq(%i[arg1 arg2])
+      expect(subject.params).to eq({ param1: 1, param2: 2 })
     end
 
     it "assigns previous_step" do
@@ -157,33 +162,6 @@ RSpec.describe Grumlin::Action do
     context "when step is no a shortcut" do
       it "returns false" do
         expect(subject).to be_falsey
-      end
-    end
-  end
-
-  describe "#arguments" do
-    subject { action.arguments }
-
-    context "when args and params are empty" do
-      it "returns an empty list" do
-        expect(subject).to be_empty
-      end
-    end
-
-    context "when params are empty" do
-      let(:args) { %i[arg1 arg2] }
-
-      it "returns args" do
-        expect(subject).to eq(args)
-      end
-    end
-
-    context "when args and params are not empty" do
-      let(:args) { %i[arg1 arg2] }
-      let(:params) { { param1: 1, param2: 2 } }
-
-      it "returns args" do
-        expect(subject).to eq([:arg1, :arg2, { param1: 1, param2: 2 }])
       end
     end
   end

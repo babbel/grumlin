@@ -49,12 +49,6 @@ module Grumlin
       @shortcuts.key?(@name)
     end
 
-    def arguments
-      @arguments ||= [*@args].tap do |args|
-        args << @params if @params.any?
-      end
-    end
-
     def method_missing(name, *args, **params)
       return step(name, *args, **params) if @shortcuts.key?(name)
 

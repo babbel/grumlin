@@ -18,7 +18,7 @@ module Grumlin
 
       Steps.new(shortcuts).tap do |processed_steps|
         (configuration_steps + regular_steps).each do |step|
-          processed_steps.add(step.name, step.arguments)
+          processed_steps.add(step.name, args: step.args, params: step.params)
         end
       end
     end
@@ -27,20 +27,20 @@ module Grumlin
 
     def process_steps(steps, shortcuts) # rubocop:disable Metrics/AbcSize
       steps.each_with_object([]) do |step, result|
-        arguments = step.arguments.map do |arg|
+        args = step.args.map do |arg|
           arg.is_a?(Steps) ? ShortcutsApplyer.call(arg) : arg
         end
 
         if shortcuts.include?(step.name)
           t = TraversalStart.new(shortcuts)
-          action = shortcuts[step.name].apply(t, *arguments)
+          action = shortcuts[step.name].apply(t, *args, **step.params)
           next if action.nil? || action == t # Shortcut did not add any steps
 
           new_steps = ShortcutsApplyer.call(Steps.from(action))
           result.concat(new_steps.configuration_steps)
           result.concat(new_steps.steps)
         else
-          result << StepData.new(step.name, arguments)
+          result << StepData.new(step.name, args: args, params: step.params)
         end
       end
     end

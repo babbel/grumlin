@@ -6,7 +6,7 @@ module Grumlin
       # constructor params: no_return: true|false, default false
       # TODO: add pretty
 
-      NONE_STEP = StepData.new("none", [])
+      NONE_STEP = StepData.new("none")
 
       def serialize
         steps = ShortcutsApplyer.call(@steps)
@@ -22,7 +22,7 @@ module Grumlin
       private
 
       def serialize_step(step)
-        [step.name, *step.arguments.map { |arg| serialize_arg(arg) }]
+        [step.name, *step.args.map { |arg| serialize_arg(arg) }, step.params.any? ? step.params : nil].compact
       end
 
       def serialize_arg(arg)
