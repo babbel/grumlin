@@ -39,6 +39,14 @@ module Grumlin
         t = t.props(T.id => id) unless id.nil?
         t.props(**properties).next
       end
+
+      def add_edge(label, id = nil, from:, to:, **properties)
+        id ||= properties[T.id]
+        properties = properties.except(T.label)
+        properties[T.id] = id
+
+        g.addE(label).from(__.V(from)).to(__.V(to)).props(**properties).next
+      end
     end
 
     def self.extended(base)

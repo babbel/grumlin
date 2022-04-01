@@ -204,6 +204,56 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
     end
+
+    describe "#add_edge" do
+      subject { repository.add_edge(:test_label, id, from: from, to: to, **properties) }
+
+      let(:from) { 1 }
+      let(:to) { 2 }
+      let(:properties) { { key: :value } }
+
+      before do
+        g.addV(:test).property(T.id, from)
+         .addV(:test).property(T.id, to).iterate
+      end
+
+      context "when id is passed as an argument" do
+        let(:id) { 123 }
+
+        it "creates an edge" do
+          expect { subject }.to change { g.E.count.next }.by(1)
+          expect(g.E(id).elementMap.next).to eq({ T.id => 123, T.label => "test_label",
+                                                  "IN" => { T.id => 2, T.label => "test" },
+                                                  "OUT" => { T.id => 1, T.label => "test" },
+                                                  key: "value" })
+        end
+
+        context "when id is also passed as a property" do
+          let(:properties) { super().merge({ T.id => 124 }) }
+
+          it "creates an edge" do
+            expect { subject }.to change { g.E.count.next }.by(1)
+            expect(g.E(id).elementMap.next).to eq({ T.id => 123, T.label => "test_label",
+                                                    "IN" => { T.id => 2, T.label => "test" },
+                                                    "OUT" => { T.id => 1, T.label => "test" },
+                                                    key: "value" })
+          end
+        end
+      end
+
+      context "when id is passed as a property" do
+        let(:id) { nil }
+        let(:properties) { super().merge({ T.id => 124 }) }
+
+        it "creates an edge" do
+          expect { subject }.to change { g.E.count.next }.by(1)
+          expect(g.E(id).elementMap.next).to eq({ T.id => 124, T.label => "test_label",
+                                                  "IN" => { T.id => 2, T.label => "test" },
+                                                  "OUT" => { T.id => 1, T.label => "test" },
+                                                  key: "value" })
+        end
+      end
+    end
   end
 
   describe "included shortcuts" do
