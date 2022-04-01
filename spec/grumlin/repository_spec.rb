@@ -256,7 +256,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     end
 
     describe "#upsert_vertex" do
-      subject { repository.upsert_vertex(id, :test, create_properties: create_properties, update_properties: update_properties) }
+      subject { repository.upsert_vertex(:test, id, create_properties: create_properties, update_properties: update_properties) }
 
       let(:id) { 123 }
       let(:create_properties) { { key: :value } }

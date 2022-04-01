@@ -48,7 +48,7 @@ module Grumlin
         g.addE(label).from(__.V(from)).to(__.V(to)).props(**properties).next
       end
 
-      def upsert_vertex(id, label, create_properties: {}, update_properties: {}) # rubocop:disable Metrics/AbcSize
+      def upsert_vertex(label, id, create_properties: {}, update_properties: {}) # rubocop:disable Metrics/AbcSize
         create_properties = create_properties.except(T.id, T.label)
         update_properties = update_properties.except(T.id, T.label)
         g.V(id)
