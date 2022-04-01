@@ -254,6 +254,32 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
     end
+
+    describe "#upsert_vertex" do
+      subject { repository.upsert_vertex(id, :test, create_properties: create_properties, update_properties: update_properties) }
+
+      let(:id) { 123 }
+      let(:create_properties) { { key: :value } }
+      let(:update_properties) { { another_key: :another_value } }
+
+      context "when vertex does not exist" do
+        it "creates a vertex" do
+          expect { subject }.to change { g.V.count.next }.by(1)
+          expect(g.V(id).elementMap.next).to eq({ T.id => 123, T.label => "test", key: "value", another_key: "another_value" })
+        end
+      end
+
+      context "when vertex exists" do
+        before do
+          g.addV(:test).property(T.id, id).property(:some_key, :some_value).iterate
+        end
+
+        it "updates a vertex" do
+          expect { subject }.not_to(change { g.V.count.next })
+          expect(g.V(id).elementMap.next).to eq({ T.id => 123, T.label => "test", some_key: "some_value", another_key: "another_value" })
+        end
+      end
+    end
   end
 
   describe "included shortcuts" do
