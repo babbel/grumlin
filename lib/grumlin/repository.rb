@@ -59,6 +59,21 @@ module Grumlin
          ).props(**update_properties)
          .next
       end
+
+      # Only from and to are used to find the existing edge, if one wants to assign an id to a created edge,
+      # it must be passed as T.id in via create_properties.
+      def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}) # rubocop:disable Metrics/AbcSize
+        create_properties = create_properties.except(T.label)
+        update_properties = update_properties.except(T.id, T.label)
+
+        g.V(from)
+         .outE(label).where(__.inV.hasId(to))
+         .fold
+         .coalesce(
+           __.unfold,
+           __.addE(label).from(__.V(from)).to(__.V(to)).props(**create_properties)
+         ).props(**update_properties).next
+      end
     end
 
     def self.extended(base)
