@@ -80,6 +80,7 @@ module Grumlin
       private
 
       # A polyfill for Hash#except for ruby 2.x environments without ActiveSupport
+      # TODO: delete and use native Hash#except when after ruby 2.7 is deprecated.
       def except(hash, *keys)
         return hash.except(*keys) if hash.respond_to?(:except)
 
