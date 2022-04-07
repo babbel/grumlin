@@ -73,13 +73,11 @@ class MyRepository
 end
 ```
 
-<!--- TODO: readme needs to be updated, with_shortcuts does not exist anymore. --->
 #### Shortcuts
 
 **Shortcuts** is a way to share and organize gremlin code. They let developers define their own steps consisting of
 sequences of standard gremlin steps, other shortcuts and even add new initially unsupported by Grumlin steps.
-Remember ActiveRecord scopes? Shortcuts are very similar. `Grumlin::Shortcuts#with_shortcuts` wraps a given object into
-a proxy object that simply proxies all methods existing in the wrapped object to it and handles shortcuts.
+Remember ActiveRecord scopes? Shortcuts are very similar.
 
 **Important**: if a shortcut's name matches a name of a method defined on the wrapped object, this shortcut will be
 be ignored because methods have higher priority. You cannot override supported by Grumlin steps with shortcuts, 
@@ -129,17 +127,18 @@ class MyRepository
 
   # Wrapping a traversal
   def red_triangles
-    with_shortcuts(g).V.hasLabel(:triangle)
-                       .hasColor("red")
-                       .toList
+    g(self.class.shortcuts).V.hasLabel(:triangle)
+       .hasColor("red")
+       .toList
   end
 
   # Wrapping _
   def something_else
-    with_shortcuts(g).V.hasColor("red")
-                       .repeat(with_shortcuts(__)
-                       .out(:has)
-                       .hasColor("blue")).toList
+    g(self.class.shortcuts).V.hasColor("red")
+       .repeat(__(self.class.shortcuts))
+       .out(:has)
+       .hasColor("blue")
+       .toList
   end
 end
 ```
