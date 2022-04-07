@@ -183,6 +183,14 @@ Each `return_mode` is mapped to a particular termination step:
 - `:none` - `iterate`
 - `:traversal` - do not execute the query and return the traversal as is
 
+`Grumlin::Repository` also provides a set of generic CRUD operations:
+- `add_vertex(label, id = nil, **properties)`
+- `add_edge(label, id = nil, from:, to:, **properties)`
+- `drop_vertex(id)`
+- `drop_edge(id = nil, from: nil, to: nil, label: nil)`
+- `upsert_vertex(label, id, create_properties: {}, update_properties: {})`
+- `upsert_edge(label, from:, to:, create_properties: {}, update_properties: {})`
+
 **Usage**
 
 To execute the query defined in a query block one simply needs to call a method with the same name:
