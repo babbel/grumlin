@@ -18,7 +18,7 @@ module Grumlin
       # "g:VertexProperty"=> ->(value) { value }, # TODO: implement me
       "g:TraversalMetrics" => ->(value) { cast_map(value[:@value]) },
       "g:Metrics" => ->(value) { cast_map(value[:@value]) },
-      "g:T" => ->(value) { T.public_send(value) }
+      "g:T" => ->(value) { Grumlin::Expressions::T.public_send(value) }
     }.freeze
 
     CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass].freeze
