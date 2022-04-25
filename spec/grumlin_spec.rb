@@ -54,12 +54,13 @@ RSpec.describe Grumlin do
       test.import!
 
       result = RubyProf.profile do
-        10.times do
+        100.times do
           test.import!
         end
       end
 
-      printer = RubyProf::MultiPrinter.new(result)
+      printer = RubyProf::CallTreePrinter.new(result)
+      # printer = RubyProf::MultiPrinter.new(result)
       printer.print(path: ".", profile: "profile")
     end
   end
@@ -83,6 +84,8 @@ RSpec.describe Grumlin do
       require "benchmark/ips"
 
       test = SerializationPerformanceTest.new(File.read("spec/fixtures/air_routes/air-routes.graphml"))
+      test.import!
+
       Benchmark.ips do |x|
         x.time = 10
         x.report { test.import! }

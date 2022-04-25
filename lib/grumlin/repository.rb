@@ -13,11 +13,11 @@ module Grumlin
       include Grumlin::Expressions
 
       def __
-        TraversalStart.new(self.class.shortcuts)
+        @__ ||= TraversalStart.new(self.class.shortcuts)
       end
 
       def g
-        TraversalStart.new(self.class.shortcuts)
+        @g ||= TraversalStart.new(self.class.shortcuts)
       end
 
       def drop_vertex(id)

@@ -31,7 +31,7 @@ module Grumlin
     end
 
     def __
-      TraversalStart.new(@shortcuts) # TODO: allow only regular and start steps
+      @__ ||= TraversalStart.new(@shortcuts) # TODO: allow only regular and start steps
     end
 
     def to_s(*)
