@@ -22,7 +22,12 @@ module Grumlin
       private
 
       def serialize_step(step)
-        [step.name, *step.args.map { |arg| serialize_arg(arg) }, step.params.any? ? step.params : nil].compact
+        [step.name].tap do |result|
+          step.args.each do |arg|
+            result << serialize_arg(arg)
+          end
+          result << step.params if step.params.any?
+        end
       end
 
       def serialize_arg(arg)
