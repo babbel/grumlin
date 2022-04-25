@@ -45,4 +45,48 @@ RSpec.describe Grumlin do
       end
     end
   end
+
+  describe "performance profile" do
+    it "profiles" do
+      require "ruby-prof"
+
+      test = SerializationPerformanceTest.new(File.read("spec/fixtures/air_routes/air-routes.graphml"))
+      test.import!
+
+      result = RubyProf.profile do
+        10.times do
+          test.import!
+        end
+      end
+
+      printer = RubyProf::MultiPrinter.new(result)
+      printer.print(path: ".", profile: "profile")
+    end
+  end
+
+  describe "memory profile" do
+    it "profiles" do
+      require "memory_profiler"
+      test = SerializationPerformanceTest.new(File.read("spec/fixtures/air_routes/air-routes.graphml"))
+      test.import!
+
+      report = MemoryProfiler.report do
+        test.import!
+      end
+
+      report.pretty_print
+    end
+  end
+
+  describe "benchmark" do
+    it "benchmarks" do
+      require "benchmark/ips"
+
+      test = SerializationPerformanceTest.new(File.read("spec/fixtures/air_routes/air-routes.graphml"))
+      Benchmark.ips do |x|
+        x.time = 10
+        x.report { test.import! }
+      end
+    end
+  end
 end

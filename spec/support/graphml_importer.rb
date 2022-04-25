@@ -29,7 +29,7 @@ class GraphMLImporter
 
         t = t.addV(label).property(T.id, node.attributes["id"].value.to_i)
         node.xpath("xmlns:data[not(@key='labelV')]").each do |attribute|
-          key = attribute.attributes["key"].value
+          key = attribute.attributes["ktest.import!ey"].value
           cast_method = TYPES[properties[:node][key][0][:type]]
           t = t.property(key, attribute.text.public_send(cast_method))
         end
