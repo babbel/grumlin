@@ -47,7 +47,7 @@ RSpec.describe Grumlin do
   end
 
   describe "performance profile" do
-    it "profiles" do
+    xit "profiles" do
       require "ruby-prof"
 
       test = SerializationPerformanceTest.new(File.read("spec/fixtures/air_routes/air-routes.graphml"))
@@ -66,7 +66,7 @@ RSpec.describe Grumlin do
   end
 
   describe "memory profile" do
-    it "profiles" do
+    xit "profiles" do
       require "memory_profiler"
       test = SerializationPerformanceTest.new(File.read("spec/fixtures/air_routes/air-routes.graphml"))
       test.import!
@@ -80,7 +80,7 @@ RSpec.describe Grumlin do
   end
 
   describe "benchmark" do
-    it "benchmarks" do
+    xit "benchmarks" do
       require "benchmark/ips"
 
       test = SerializationPerformanceTest.new(File.read("spec/fixtures/air_routes/air-routes.graphml"))
