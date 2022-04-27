@@ -6,8 +6,10 @@ module Grumlin
       extend Grumlin::Shortcuts
 
       shortcut :props do |**props|
-        props.compact.reduce(self) do |tt, (prop, value)|
-          tt.property(prop, value)
+        props.reduce(self) do |tt, (prop, value)| # rubocop:disable Style/EachWithObject
+          next tt.property(prop, value) unless value.nil? # nils are not supported
+
+          tt
         end
       end
 
