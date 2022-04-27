@@ -247,10 +247,10 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
         it "creates an edge" do
           expect { subject }.to change { g.E.count.next }.by(1)
-          expect(g.E(id).elementMap.next).to eq({ T.id => 124, T.label => "test_label",
-                                                  "IN" => { T.id => 2, T.label => "test" },
-                                                  "OUT" => { T.id => 1, T.label => "test" },
-                                                  key: "value" })
+          expect(g.E(124).elementMap.next).to eq({ T.id => 124, T.label => "test_label",
+                                                   "IN" => { T.id => 2, T.label => "test" },
+                                                   "OUT" => { T.id => 1, T.label => "test" },
+                                                   key: "value" })
         end
       end
     end

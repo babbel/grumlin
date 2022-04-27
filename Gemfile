@@ -17,3 +17,7 @@ gem "overcommit"
 gem "rake"
 gem "rspec"
 gem "simplecov"
+
+gem "benchmark-ips"
+gem "memory_profiler"
+gem "ruby-prof"
