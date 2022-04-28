@@ -18,6 +18,10 @@ module Async
       @closed
     end
 
+    def open?
+      !@closed
+    end
+
     # Methods for a publisher
     def <<(payload)
       raise(ChannelClosedError, "Cannot send to a closed channel") if @closed
@@ -36,6 +40,14 @@ module Async
 
       @queue << [:close]
       @closed = true
+    end
+
+    # TODO: cover me
+    def close!
+      return if closed?
+
+      exception(ChannelClosedError.new("Channel was forcefully closed"))
+      close
     end
 
     # Methods for a subscriber
