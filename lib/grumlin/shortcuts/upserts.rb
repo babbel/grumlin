@@ -13,6 +13,16 @@ module Grumlin
               __.addV(label).props(**create_properties.merge(T.id => id))
             ).props(**update_properties)
       end
+
+      shortcut :upsertE do |label, from, to, create_properties, update_properties|
+        self.V(from)
+            .outE(label).where(__.inV.hasId(to))
+            .fold
+            .coalesce(
+              __.unfold,
+              __.addE(label).from(__.V(from)).to(__.V(to)).props(**create_properties)
+            ).props(**update_properties)
+      end
     end
   end
 end

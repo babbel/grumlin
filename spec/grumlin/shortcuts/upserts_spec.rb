@@ -28,4 +28,29 @@ RSpec.describe Grumlin::Shortcuts::Upserts do
                                               })
     end
   end
+
+  it "uses coalesce to upsert an edge" do
+    t = Grumlin::TraversalStart.new(Grumlin::Shortcuts::Properties.shortcuts)
+    result = described_class.shortcuts[:upsertE].apply(t, "test", 1, 2, { a: 1 }, { b: 2 })
+    expect(result.bytecode.serialize).to eq({
+                                              step: [
+                                                [:V, 1],
+                                                [:outE, "test"],
+                                                [:where, { :@type => "g:Bytecode", :@value => { step: [[:inV], [:hasId, 2]] } }],
+                                                [:fold],
+                                                [:coalesce, { :@type => "g:Bytecode", :@value => { step: [[:unfold]] } },
+                                                 {
+                                                   :@type => "g:Bytecode", :@value => {
+                                                     step: [
+                                                       [:addE, "test"],
+                                                       [:from, { :@type => "g:Bytecode", :@value => { step: [[:V, 1]] } }],
+                                                       [:to, { :@type => "g:Bytecode", :@value => { step: [[:V, 2]] } }],
+                                                       [:property, :a, 1]
+                                                     ]
+                                                   }
+                                                 }],
+                                                [:property, :b, 2]
+                                              ]
+                                            })
+  end
 end

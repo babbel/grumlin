@@ -51,7 +51,7 @@ module Grumlin
       end
 
       def upsert_vertex(label, id, create_properties: {}, update_properties: {})
-        upsert_vertices([[label, id, create_properties, update_properties]])
+        upsert_vertices([[label, id, create_properties, update_properties]]) # TODO: user upsertV directly with next
       end
 
       # for vertices structure see #upsert_vertex
