@@ -9,7 +9,7 @@ module Grumlin
         on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentInsertFailedError],
         sleep_method: ->(n) { Async::Task.current.sleep(n) },
         tries: 3,
-        sleep: ->(n) { (n**2) + 1 }
+        sleep: ->(n) { (n**2) + 1 + rand }
       }.freeze
 
       def __
