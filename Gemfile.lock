@@ -5,6 +5,7 @@ PATH
       async-pool (~> 0.3)
       async-websocket (~> 0.19)
       oj (~> 3.12)
+      retryable (~> 3.0)
       zeitwerk (~> 2.4)
 
 GEM
@@ -91,6 +92,7 @@ GEM
     rainbow (3.0.0)
     rake (13.0.3)
     regexp_parser (2.2.0)
+    retryable (3.0.5)
     reverse_markdown (2.0.0)
       nokogiri
     rexml (3.2.5)
