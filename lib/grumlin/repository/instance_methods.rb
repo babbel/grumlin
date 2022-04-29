@@ -55,7 +55,7 @@ module Grumlin
       end
 
       # for vertices structure see #upsert_vertex
-      def upsert_vertices(vertices, batch_size: 100, retry_params: {}) # rubocop:disable Metrics/AbcSize
+      def upsert_vertices(vertices, batch_size: 100, retry_params: {})
         retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
         Retryable.retryable(**retry_params) do
           vertices.each_slice(batch_size) do |slice|
@@ -63,12 +63,7 @@ module Grumlin
               create_properties = except(create_properties, T.id, T.label)
               update_properties = except(update_properties, T.id, T.label)
 
-              t.V(id)
-               .fold
-               .coalesce( # TODO: extract upsert pattern to a shortcut
-                 __.unfold,
-                 __.addV(label).props(**create_properties.merge(T.id => id))
-               ).props(**update_properties)
+              t.upsertV(label, id, create_properties, update_properties)
             end.iterate
           end
         end

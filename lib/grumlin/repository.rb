@@ -14,6 +14,7 @@ module Grumlin
       base.include(Repository::InstanceMethods)
 
       base.shortcuts_from(Grumlin::Shortcuts::Properties)
+      base.shortcuts_from(Grumlin::Shortcuts::Upserts)
     end
 
     def query(name, return_mode: :list, postprocess_with: nil, &query_block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
