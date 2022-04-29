@@ -83,6 +83,12 @@ module Grumlin
   class AlreadyExistsError < ServerError
     attr_reader :id
 
+    def initialize(status, query)
+      super
+      id = status[:message].split(":").last.strip
+      @id = id == "" ? nil : id
+    end
+
     # TODO: parse message and assign @id
     # NOTE: Neptune does not return id.
   end
