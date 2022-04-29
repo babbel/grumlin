@@ -272,6 +272,42 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
     end
   end
 
+  describe "#upsert_vertices" do
+    subject { repository.upsert_vertices(vertices) }
+
+    let(:vertices) do
+      100.times.map do |id| # rubocop:disable Performance/TimesMap
+        ["test", id, { some_key: 1 }, { some_other_key: 2 }]
+      end
+    end
+
+    context "when vertices do not exist" do
+      it "upserts all passed vertices" do
+        expect { subject }.to change { g.V.count.next }.by(100)
+      end
+
+      it "assigns properties" do
+        subject
+        expect(g.V(99).elementMap.next).to eq({ T.id => 99, T.label => "test", some_key: 1, some_other_key: 2 })
+      end
+    end
+
+    context "when some vertices exist" do
+      before do
+        g.addV(:test).property(T.id, 99).iterate
+      end
+
+      it "updates existing vertices" do
+        subject
+        expect(g.V(99).elementMap.next).to eq({ T.id => 99, T.label => "test", some_other_key: 2 })
+      end
+
+      it "creates new vertices" do
+        expect { subject }.to change { g.V.count.next }.by(99)
+      end
+    end
+  end
+
   describe "#upsert_edge" do
     subject { repository.upsert_edge(:test, from: from, to: to, create_properties: create_properties, update_properties: update_properties) }
 
