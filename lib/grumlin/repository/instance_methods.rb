@@ -6,7 +6,7 @@ module Grumlin
       include Grumlin::Expressions
 
       UPSERT_RETRY_PARAMS = {
-        not: [Grumlin::StatusError],
+        on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentInsertFailedError],
         sleep_method: ->(n) { Async::Task.current.sleep(n) },
         tries: 3,
         sleep: ->(n) { (n**2) + 1 }
@@ -60,8 +60,7 @@ module Grumlin
       # [["label", "id", {create: :properties}, {update: properties}]]
       # retry_params can override Retryable config from UPSERT_RETRY_PARAMS
       def upsert_vertices(vertices, batch_size: 100, retry_params: {})
-        retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
-        Retryable.retryable(**retry_params) do
+        with_upsert_retry(retry_params) do
           vertices.each_slice(batch_size) do |slice|
             slice.reduce(g) do |t, (label, id, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties)
@@ -83,9 +82,7 @@ module Grumlin
       # [["label", "id", {create: :properties}, {update: properties}]]
       # retry_params can override Retryable config from UPSERT_RETRY_PARAMS
       def upsert_edges(edges, batch_size: 100, retry_params: {})
-        retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
-
-        Retryable.retryable(**retry_params) do
+        with_upsert_retry(retry_params) do
           edges.each_slice(batch_size) do |slice|
             slice.reduce(g) do |t, (label, from, to, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
@@ -97,6 +94,11 @@ module Grumlin
       end
 
       private
+
+      def with_upsert_retry(retry_params, &block)
+        retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
+        Retryable.retryable(**retry_params, &block)
+      end
 
       # A polyfill for Hash#except for ruby 2.x environments without ActiveSupport
       # TODO: delete and use native Hash#except when after ruby 2.7 is deprecated.
