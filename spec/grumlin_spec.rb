@@ -21,6 +21,27 @@ RSpec.describe Grumlin do
     end
   end
 
+  describe Grumlin::AlreadyExistsError do
+    subject { described_class.new(status, []) }
+
+    context "when message contains an id" do
+      let(:status) { { message: "Vertex with id already exists: test_id" } }
+
+      it "parses and assigns parsed id" do
+        expect(subject.id).to eq("test_id")
+      end
+    end
+
+    # AWS neptune does not return an id for some reason
+    context "when message does not contain an id" do
+      let(:status) { { message: "Vertex with id already exists: " } }
+
+      it "does not fail and does not assign id" do
+        expect(subject.id).to be_nil
+      end
+    end
+  end
+
   describe "#definitions" do
     # if these tests fail try running `rake definitions:format`
     describe "[:steps]" do

@@ -115,7 +115,7 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
 
   context "when task is stopped by timeout" do
     it "succeeds" do
-      t = reactor.async do |task|
+      t = Async do |task|
         task.with_timeout(3) do
           loop do
             upsert_query

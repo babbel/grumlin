@@ -80,6 +80,27 @@ module Grumlin
 
   class ServerError < ServerSideError; end
 
+  class AlreadyExistsError < ServerError
+    attr_reader :id
+
+    def initialize(status, query)
+      super
+      id = status[:message].split(":").last.strip
+      @id = id == "" ? nil : id
+    end
+
+    # TODO: parse message and assign @id
+    # NOTE: Neptune does not return id.
+  end
+
+  class VertexAlreadyExistsError < AlreadyExistsError; end
+  class EdgeAlreadyExistsError < AlreadyExistsError; end
+
+  class ConcurrentInsertFailedError < ServerError; end
+
+  class ConcurrentVertexInsertFailedError < ConcurrentInsertFailedError; end
+  class ConcurrentEdgeInsertFailedError < ConcurrentInsertFailedError; end
+
   class ServerSerializationError < ServerSideError; end
 
   class ServerTimeoutError < ServerSideError; end
