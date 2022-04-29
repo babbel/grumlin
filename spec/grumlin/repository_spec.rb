@@ -22,7 +22,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
   describe "included shortcuts" do
     it "includes shortcuts" do
-      expect(repository_class.shortcuts.keys).to eq(%i[props hasAll shortcut])
+      expect(repository_class.shortcuts.keys).to eq(%i[props hasAll upsertV upsertE shortcut])
     end
   end
 

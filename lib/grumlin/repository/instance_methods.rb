@@ -51,17 +51,20 @@ module Grumlin
       end
 
       def upsert_vertex(label, id, create_properties: {}, update_properties: {})
+        create_properties, update_properties = cleanup_properties(create_properties, update_properties)
+
         g.upsertV(label, id, create_properties, update_properties).next
       end
 
-      # for vertices structure see #upsert_vertex
+      # vertices:
+      # [["label", "id", {create: :properties}, {update: properties}]]
+      # retry_params can override Retryable config from UPSERT_RETRY_PARAMS
       def upsert_vertices(vertices, batch_size: 100, retry_params: {})
         retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
         Retryable.retryable(**retry_params) do
           vertices.each_slice(batch_size) do |slice|
             slice.reduce(g) do |t, (label, id, create_properties, update_properties)|
-              create_properties = except(create_properties, T.id, T.label)
-              update_properties = except(update_properties, T.id, T.label)
+              create_properties, update_properties = cleanup_properties(create_properties, update_properties)
 
               t.upsertV(label, id, create_properties, update_properties)
             end.iterate
@@ -71,17 +74,26 @@ module Grumlin
 
       # Only from and to are used to find the existing edge, if one wants to assign an id to a created edge,
       # it must be passed as T.id in create_properties.
-      def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}) # rubocop:disable Metrics/AbcSize
-        create_properties = except(create_properties, T.label)
-        update_properties = except(update_properties, T.id, T.label)
+      def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {})
+        create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
+        g.upsertE(label, from, to, create_properties, update_properties).next
+      end
 
-        g.V(from)
-         .outE(label).where(__.inV.hasId(to))
-         .fold
-         .coalesce(
-           __.unfold,
-           __.addE(label).from(__.V(from)).to(__.V(to)).props(**create_properties)
-         ).props(**update_properties).next
+      # edges:
+      # [["label", "id", {create: :properties}, {update: properties}]]
+      # retry_params can override Retryable config from UPSERT_RETRY_PARAMS
+      def upsert_edges(edges, batch_size: 100, retry_params: {})
+        retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
+
+        Retryable.retryable(**retry_params) do
+          edges.each_slice(batch_size) do |slice|
+            slice.reduce(g) do |t, (label, from, to, create_properties, update_properties)|
+              create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
+
+              t.upsertE(label, from, to, create_properties, update_properties)
+            end.iterate
+          end
+        end
       end
 
       private
@@ -93,6 +105,13 @@ module Grumlin
 
         hash.each_with_object({}) do |(k, v), res|
           res[k] = v unless keys.include?(k)
+        end
+      end
+
+      def cleanup_properties(create_properties, update_properties, *props_to_cleanup)
+        props_to_cleanup = [T.id, T.label] if props_to_cleanup.empty?
+        [create_properties, update_properties].map do |props|
+          except(props, props_to_cleanup)
         end
       end
     end
