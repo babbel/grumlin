@@ -47,7 +47,7 @@ RSpec.describe Grumlin::RequestDispatcher, async: true do
           context "when there were no partial content responses previously" do
             it "sends results via the response channel" do
               channel = dispatcher.requests[123][:channel]
-              task = reactor.async do
+              task = Async do
                 expect(channel.dequeue).to eq(["some data"])
               end
               subject
@@ -71,7 +71,7 @@ RSpec.describe Grumlin::RequestDispatcher, async: true do
 
             it "sends full results via the response channel" do
               channel = dispatcher.requests[123][:channel]
-              task = reactor.async do
+              task = Async do
                 expect(channel.dequeue).to eq(["some partial data", "some data"])
               end
               subject
@@ -94,7 +94,7 @@ RSpec.describe Grumlin::RequestDispatcher, async: true do
 
           it "sends results via the response channel" do
             channel = dispatcher.requests[123][:channel]
-            task = reactor.async do
+            task = Async do
               expect(channel.dequeue).to eq([])
             end
             subject
@@ -116,7 +116,7 @@ RSpec.describe Grumlin::RequestDispatcher, async: true do
 
           it "does not send anything via the response channel" do
             channel = dispatcher.requests[123][:channel]
-            task = reactor.async do
+            task = Async do
               expect(channel.dequeue).to be_nil
             end
             subject
@@ -145,7 +145,7 @@ RSpec.describe Grumlin::RequestDispatcher, async: true do
         shared_examples "sends an exception via the response channel" do |exception|
           it "sends #{exception} via the response channel" do
             channel = dispatcher.requests[123][:channel]
-            task = reactor.async do
+            task = Async do
               expect { channel.dequeue }.to raise_error(exception)
             end
             subject
@@ -274,7 +274,7 @@ RSpec.describe Grumlin::RequestDispatcher, async: true do
     it "sends errors to all channels" do
       tasks = [123, 124].map do |id|
         channel = dispatcher.requests[id][:channel]
-        reactor.async do
+        Async do
           expect { channel.dequeue }.to raise_error(Async::Channel::ChannelClosedError, "Channel was forcefully closed")
         end
       end

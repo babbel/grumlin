@@ -42,7 +42,6 @@ module Async
       @closed = true
     end
 
-    # TODO: cover me
     def close!
       return if closed?
 

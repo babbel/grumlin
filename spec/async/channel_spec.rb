@@ -38,9 +38,49 @@ RSpec.describe Async::Channel, async: true do
   end
 
   describe "#close" do
+    subject { channel.close }
+
     context "when the channel is not closed" do
       it "closes the channel" do
-        expect { channel.close }.to change(channel, :closed?).from(false).to(true)
+        expect { subject }.to change(channel, :closed?).from(false).to(true)
+      end
+    end
+
+    context "when channel is closed" do
+      before do
+        channel.close
+      end
+
+      it "does nothing" do
+        expect { subject }.not_to change(channel, :closed?)
+      end
+    end
+  end
+
+  describe "#close!" do
+    subject { channel.close! }
+
+    context "when the channel is not closed" do
+      it "closes the channel" do
+        expect { subject }.to change(channel, :closed?).from(false).to(true)
+      end
+
+      it "sends ChannelClosedError via the channel" do
+        task = Async do
+          expect { channel.dequeue }.to raise_error(Async::Channel::ChannelClosedError, "Channel was forcefully closed")
+        end
+        subject
+        task.wait
+      end
+    end
+
+    context "when channel is closed" do
+      before do
+        channel.close
+      end
+
+      it "does nothing" do
+        expect { subject }.not_to change(channel, :closed?)
       end
     end
   end
@@ -50,7 +90,7 @@ RSpec.describe Async::Channel, async: true do
       it "yields received payload" do
         messages = %w[test1 test2 test3]
 
-        reactor.async do
+        Async do
           n = 0
           channel.each do |msg|
             expect(msg).to eq(message[n])
