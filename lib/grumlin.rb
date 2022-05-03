@@ -17,6 +17,8 @@ require "async/barrier"
 require "async/http/endpoint"
 require "async/websocket/client"
 
+require "retryable"
+
 require "zeitwerk"
 
 loader = Zeitwerk::Loader.for_gem

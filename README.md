@@ -188,8 +188,16 @@ Each `return_mode` is mapped to a particular termination step:
 - `add_edge(label, id = nil, from:, to:, **properties)`
 - `drop_vertex(id)`
 - `drop_edge(id = nil, from: nil, to: nil, label: nil)`
-- `upsert_vertex(label, id, create_properties: {}, update_properties: {})`
-- `upsert_edge(label, from:, to:, create_properties: {}, update_properties: {})`
+
+and a few methods that emulate upserts:
+- `upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, **params)` 
+- `upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, **params)`
+- `upsert_edges(edges, batch_size: 100, on_failure: :retry, **params)`
+- `upsert_vertices(edges, batch_size: 100, on_failure: :retry, **params)`
+
+All of them support 3 different modes for error handling: `:retry`, `:ignore` and `:raise`. Retry mode is implemented
+with [retryable](https://github.com/nfedyashev/retryable). **params will be merged to the default config for upserts 
+and passed to `Retryable.retryable`. In case if you want to modify retryable behaviour you are to do so.
 
 **Usage**
 
