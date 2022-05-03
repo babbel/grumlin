@@ -12,6 +12,8 @@ module Grumlin
         sleep: ->(n) { (n**2) + 1 + rand }
       }.freeze
 
+      DEFAULT_ERROR_HANDLING_STRATEGY = ErrorHandlingStrategy.new(mode: :retry, **UPSERT_RETRY_PARAMS)
+
       def __
         @__ ||= TraversalStart.new(self.class.shortcuts)
       end
@@ -50,17 +52,19 @@ module Grumlin
         g.addE(label).from(__.V(from)).to(__.V(to)).props(**properties).next
       end
 
-      def upsert_vertex(label, id, create_properties: {}, update_properties: {})
-        create_properties, update_properties = cleanup_properties(create_properties, update_properties)
+      def upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, **params)
+        with_upsert_error_handling(on_failure, params) do
+          create_properties, update_properties = cleanup_properties(create_properties, update_properties)
 
-        g.upsertV(label, id, create_properties, update_properties).next
+          g.upsertV(label, id, create_properties, update_properties).next
+        end
       end
 
       # vertices:
       # [["label", "id", {create: :properties}, {update: properties}]]
-      # retry_params can override Retryable config from UPSERT_RETRY_PARAMS
-      def upsert_vertices(vertices, batch_size: 100, retry_params: {})
-        with_upsert_retry(retry_params) do
+      # params can override Retryable config from UPSERT_RETRY_PARAMS
+      def upsert_vertices(vertices, batch_size: 100, on_failure: :retry, **params)
+        with_upsert_error_handling(on_failure, params) do
           vertices.each_slice(batch_size) do |slice|
             slice.reduce(g) do |t, (label, id, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties)
@@ -73,16 +77,18 @@ module Grumlin
 
       # Only from and to are used to find the existing edge, if one wants to assign an id to a created edge,
       # it must be passed as T.id in create_properties.
-      def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {})
-        create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
-        g.upsertE(label, from, to, create_properties, update_properties).next
+      def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, **params) # rubocop:disable Metrics/ParameterLists
+        with_upsert_error_handling(on_failure, params) do
+          create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
+          g.upsertE(label, from, to, create_properties, update_properties).next
+        end
       end
 
       # edges:
       # [["label", "id", {create: :properties}, {update: properties}]]
-      # retry_params can override Retryable config from UPSERT_RETRY_PARAMS
-      def upsert_edges(edges, batch_size: 100, retry_params: {})
-        with_upsert_retry(retry_params) do
+      # params can override Retryable config from UPSERT_RETRY_PARAMS
+      def upsert_edges(edges, batch_size: 100, on_failure: :retry, **params)
+        with_upsert_error_handling(on_failure, params) do
           edges.each_slice(batch_size) do |slice|
             slice.reduce(g) do |t, (label, from, to, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
@@ -95,13 +101,21 @@ module Grumlin
 
       private
 
+      def with_upsert_error_handling(on_failure, params, &block)
+        if params.any?
+          ErrorHandlingStrategy.new(mode: on_failure, **UPSERT_RETRY_PARAMS.merge(params))
+        else
+          DEFAULT_ERROR_HANDLING_STRATEGY
+        end.apply!(&block)
+      end
+
       def with_upsert_retry(retry_params, &block)
         retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
         Retryable.retryable(**retry_params, &block)
       end
 
       # A polyfill for Hash#except for ruby 2.x environments without ActiveSupport
-      # TODO: delete and use native Hash#except when after ruby 2.7 is deprecated.
+      # TODO: delete and use native Hash#except after ruby 2.7 is deprecated.
       def except(hash, *keys)
         return hash.except(*keys) if hash.respond_to?(:except)
 
