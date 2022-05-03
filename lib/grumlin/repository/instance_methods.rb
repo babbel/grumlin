@@ -64,8 +64,8 @@ module Grumlin
       # [["label", "id", {create: :properties}, {update: properties}]]
       # params can override Retryable config from UPSERT_RETRY_PARAMS
       def upsert_vertices(vertices, batch_size: 100, on_failure: :retry, **params)
-        with_upsert_error_handling(on_failure, params) do
-          vertices.each_slice(batch_size) do |slice|
+        vertices.each_slice(batch_size) do |slice|
+          with_upsert_error_handling(on_failure, params) do
             slice.reduce(g) do |t, (label, id, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties)
 
@@ -88,8 +88,8 @@ module Grumlin
       # [["label", "id", {create: :properties}, {update: properties}]]
       # params can override Retryable config from UPSERT_RETRY_PARAMS
       def upsert_edges(edges, batch_size: 100, on_failure: :retry, **params)
-        with_upsert_error_handling(on_failure, params) do
-          edges.each_slice(batch_size) do |slice|
+        edges.each_slice(batch_size) do |slice|
+          with_upsert_error_handling(on_failure, params) do
             slice.reduce(g) do |t, (label, from, to, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
 
