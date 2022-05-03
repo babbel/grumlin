@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grumlin (0.18.1)
+    grumlin (0.19.0)
       async-pool (~> 0.3)
       async-websocket (~> 0.19)
       oj (~> 3.12)
@@ -22,13 +22,14 @@ GEM
       console (~> 1.10)
       nio4r (~> 2.3)
       timers (~> 4.1)
-    async-http (0.56.5)
+    async-http (0.56.6)
       async (>= 1.25)
       async-io (>= 1.28)
       async-pool (>= 0.2)
       protocol-http (~> 0.22.0)
       protocol-http1 (~> 0.14.0)
       protocol-http2 (~> 0.14.0)
+      traces (~> 0.4.0)
     async-io (1.33.0)
       async
     async-pool (0.3.9)
@@ -79,8 +80,8 @@ GEM
     parser (3.0.3.2)
       ast (~> 2.4.1)
     protocol-hpack (1.4.2)
-    protocol-http (0.22.5)
-    protocol-http1 (0.14.2)
+    protocol-http (0.22.6)
+    protocol-http1 (0.14.4)
       protocol-http (~> 0.22)
     protocol-http2 (0.14.2)
       protocol-hpack (~> 1.4)
@@ -155,6 +156,7 @@ GEM
     thor (1.1.0)
     tilt (2.0.10)
     timers (4.3.3)
+    traces (0.4.1)
     tzinfo (2.0.4)
       concurrent-ruby (~> 1.0)
     unicode-display_width (2.1.0)
