@@ -38,12 +38,6 @@ RSpec.describe Grumlin::Typing do
             expect(subject).to eq([Grumlin::Property.new(property_value)] * 3)
           end
         end
-
-        context "when @value is a an array with a malformed value" do
-          let(:value) { [{ "@type": "g:Vertex", "@value": { id: nil, label: "test_vertex" } }] }
-
-          include_examples "raises TypeError", '{:id=>nil, :label=>"test_vertex"} cannot be casted to Grumlin::Vertex'
-        end
       end
 
       context "when @type is g:Map" do
@@ -208,12 +202,6 @@ RSpec.describe Grumlin::Typing do
       it "returns a string" do
         expect(subject).to eq("string")
       end
-    end
-
-    context "when value is nil" do
-      let(:value_to_cast) { nil }
-
-      include_examples "raises TypeError", "nil cannot be casted"
     end
 
     context "when value is an array" do
