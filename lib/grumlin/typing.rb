@@ -21,7 +21,7 @@ module Grumlin
       "g:T" => ->(value) { Grumlin::Expressions::T.public_send(value) }
     }.freeze
 
-    CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass].freeze
+    CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass, NilClass].freeze
 
     class << self
       def cast(value)
