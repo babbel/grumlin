@@ -107,13 +107,13 @@ module Grumlin
     end
 
     def already_exists_error(status)
-      return VertexAlreadyExistsError if status[:message].include?(VERTEX_ALREADY_EXISTS)
-      return EdgeAlreadyExistsError if status[:message].include?(EDGE_ALREADY_EXISTS)
+      return VertexAlreadyExistsError if status[:message]&.include?(VERTEX_ALREADY_EXISTS)
+      return EdgeAlreadyExistsError if status[:message]&.include?(EDGE_ALREADY_EXISTS)
     end
 
     def concurrent_insert_error(status)
-      return ConcurrentVertexInsertFailedError if status[:message].include?(CONCURRENT_VERTEX_INSERT_FAILED)
-      return ConcurrentEdgeInsertFailedError if status[:message].include?(CONCURRENT_EDGE_INSERT_FAILED)
+      return ConcurrentVertexInsertFailedError if status[:message]&.include?(CONCURRENT_VERTEX_INSERT_FAILED)
+      return ConcurrentEdgeInsertFailedError if status[:message]&.include?(CONCURRENT_EDGE_INSERT_FAILED)
     end
   end
 end
