@@ -28,3 +28,5 @@ namespace :definitions do
     File.write(path, YAML.dump(definitions))
   end
 end
+
+Dir.glob(File.join("lib/tasks/**/*.rake")).each { |file| load file }
