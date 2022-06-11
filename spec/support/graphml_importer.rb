@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "parallel"
+
 class GraphMLImporter
   TYPES = {
     "string" => :to_s,
@@ -22,39 +24,49 @@ class GraphMLImporter
   private
 
   def import_nodes! # rubocop:disable Metrics/AbcSize
-    nodes.each_slice(100) do |slice|
-      t = g
-      slice.each do |node|
-        label = node.xpath("xmlns:data[@key='labelV']").text
+    Thread.new do
+      Parallel.each(nodes.each_slice(100).to_a) do |slice|
+        Sync do
+          t = g
+          slice.each do |node|
+            label = node.xpath("xmlns:data[@key='labelV']").text
 
-        t = t.addV(label).property(T.id, node.attributes["id"].value.to_i)
-        node.xpath("xmlns:data[not(@key='labelV')]").each do |attribute|
-          key = attribute.attributes["key"].value
-          cast_method = TYPES[properties[:node][key][0][:type]]
-          t = t.property(key, attribute.text.public_send(cast_method))
+            t = t.addV(label).property(T.id, node.attributes["id"].value.to_i)
+            node.xpath("xmlns:data[not(@key='labelV')]").each do |attribute|
+              key = attribute.attributes["key"].value
+              cast_method = TYPES[properties[:node][key][0][:type]]
+              t = t.property(key, attribute.text.public_send(cast_method))
+            end
+          end
+          t.iterate
+        ensure Grumlin.close
         end
       end
-      t.iterate
-    end
+    end.join
   end
 
   def import_edges! # rubocop:disable Metrics/AbcSize
-    edges.each_slice(100) do |slice|
-      t = g
-      slice.each do |edge|
-        label = edge.xpath("xmlns:data[@key='labelE']").text
+    Thread.new do
+      Parallel.each(edges.each_slice(100).to_a) do |slice|
+        Sync do
+          t = g
+          slice.each do |edge|
+            label = edge.xpath("xmlns:data[@key='labelE']").text
 
-        t = t.addE(label).property(T.id, edge.attributes["id"].value.to_i)
-             .from(__.V(edge.attributes["source"].value.to_i))
-             .to(__.V(edge.attributes["target"].value.to_i))
-        edge.xpath("xmlns:data[not(@key='labelE')]").each do |attribute|
-          key = attribute.attributes["key"].value
-          cast_method = TYPES[properties[:edge][key][0][:type]]
-          t = t.property(key, attribute.text.public_send(cast_method))
+            t = t.addE(label).property(T.id, edge.attributes["id"].value.to_i)
+                 .from(__.V(edge.attributes["source"].value.to_i))
+                 .to(__.V(edge.attributes["target"].value.to_i))
+            edge.xpath("xmlns:data[not(@key='labelE')]").each do |attribute|
+              key = attribute.attributes["key"].value
+              cast_method = TYPES[properties[:edge][key][0][:type]]
+              t = t.property(key, attribute.text.public_send(cast_method))
+            end
+          end
+          t.iterate
+        ensure Grumlin.close
         end
       end
-      t.iterate
-    end
+    end.join
   end
 
   def nodes
