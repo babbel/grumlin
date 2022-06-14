@@ -21,14 +21,14 @@ require "retryable"
 
 require "zeitwerk"
 
-loader = Zeitwerk::Loader.for_gem
+loader = Zeitwerk::Loader.for_gem(warn_on_extra_files: false)
 loader.inflector.inflect(
   "rspec" => "RSpec",
   "db_cleaner_context" => "DBCleanerContext"
 )
 
-db_adapters = "#{__dir__}/grumlin/test"
-loader.do_not_eager_load(db_adapters)
+test_helpers = "#{__dir__}/grumlin/test"
+loader.do_not_eager_load(test_helpers)
 
 module Grumlin
   class Error < StandardError; end

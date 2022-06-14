@@ -8,7 +8,7 @@ require "irb"
 require "irb/completion"
 
 Grumlin.configure do |config|
-  config.url = ENV["GREMLIN_URL"] || "ws://localhost:8182/gremlin"
+  config.url = ENV.fetch("GREMLIN_URL", "ws://localhost:8182/gremlin")
 end
 
 Async do

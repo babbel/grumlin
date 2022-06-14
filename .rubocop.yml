@@ -24,7 +24,7 @@ Metrics/ParameterLists:
   Max: 6
 
 Naming/MethodName:
-  IgnoredPatterns:
+  AllowedPatterns:
     - toList
     - inVLabel
     - outVLabel
