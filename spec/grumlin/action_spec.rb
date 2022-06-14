@@ -5,7 +5,7 @@ RSpec.describe Grumlin::Action do
   let(:name) { :V }
   let(:args) { [] }
   let(:params) { {} }
-  let(:shortcuts) { {} }
+  let(:shortcuts) { Grumlin::Shortcuts::Storage.new }
 
   describe "chaining" do
     context "when no shortcuts are used" do
@@ -37,7 +37,7 @@ RSpec.describe Grumlin::Action do
     context "when shortcuts are used" do
       subject { action.foo(:arg1, :arg2, param1: 1, param2: 2) }
 
-      let(:shortcuts) { { foo: -> {} } }
+      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ foo: -> {} }] }
 
       context "when shortcut is empty" do
         it "returns an Action" do
@@ -151,7 +151,7 @@ RSpec.describe Grumlin::Action do
     subject { action.shortcut? }
 
     context "when step is a shortcut" do
-      let(:shortcuts) { { shortcut: -> {} } }
+      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
       let(:name) { :shortcut }
 
       it "returns true" do

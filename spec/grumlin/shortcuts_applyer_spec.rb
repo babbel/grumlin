@@ -16,6 +16,7 @@ RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
 
     context "when steps uses shortcuts" do
       let(:shortcuts) do
+        Grumlin::Shortcuts::Storage[
         {
           hasColor: Grumlin::Shortcut.new(:hasColor) { |color| has(:color, color) },
           hasShape: Grumlin::Shortcut.new(:hasShape) { |shape| has(:shape, shape) },
@@ -24,6 +25,7 @@ RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
           preconfigure: Grumlin::Shortcut.new(:preconfigure) { addWeights },
           emptyShortcut: Grumlin::Shortcut.new(:preconfigure) { nil }
         }
+      ]
       end
 
       context "when shortcuts are used in the main traversal" do

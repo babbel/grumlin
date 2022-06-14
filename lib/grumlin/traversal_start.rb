@@ -25,13 +25,13 @@ module Grumlin
     end
 
     def method_missing(name, *args, **params)
-      return step(name, *args, **params) if @shortcuts.key?(name)
+      return step(name, *args, **params) if @shortcuts.known?(name)
 
       super
     end
 
     def __
-      @__ ||= TraversalStart.new(@shortcuts) # TODO: allow only regular and start steps
+      @__ ||= self.class.new(@shortcuts) # TODO: allow only regular and start steps
     end
 
     def to_s(*)
@@ -45,7 +45,7 @@ module Grumlin
     private
 
     def respond_to_missing?(name, _include_private = false)
-      @shortcuts.key?(name)
+      @shortcuts.known?(name)
     end
   end
 end
