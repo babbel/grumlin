@@ -2,7 +2,7 @@
 
 RSpec.describe Grumlin do
   it "has a version number" do
-    expect(Grumlin::VERSION).not_to be nil
+    expect(Grumlin::VERSION).not_to be_nil
   end
 
   describe Grumlin::UnknownResponseStatus do

@@ -29,9 +29,9 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency "async-pool", "~> 0.3"
   spec.add_dependency "async-websocket", "~> 0.19"
-  spec.add_dependency "oj", "~> 3.12"
+  spec.add_dependency "oj", "~> 3.13"
   spec.add_dependency "retryable", "~> 3.0"
-  spec.add_dependency "zeitwerk", "~> 2.4"
+  spec.add_dependency "zeitwerk", "~> 2.6"
   spec.metadata = {
     "rubygems_mfa_required" => "true"
   }

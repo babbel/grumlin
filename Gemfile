@@ -5,19 +5,23 @@ source "https://rubygems.org"
 gemspec
 
 gem "nokogiri"
-gem "rubocop"
-gem "rubocop-performance"
-gem "rubocop-rspec"
+gem "parallel"
 
 gem "solargraph"
 
-gem "async-rspec"
-gem "factory_bot"
 gem "overcommit"
 gem "rake"
+
+gem "async-rspec"
+gem "factory_bot"
 gem "rspec"
+
 gem "simplecov"
 
 gem "benchmark-ips"
 gem "memory_profiler"
 gem "ruby-prof"
+
+gem "rubocop"
+gem "rubocop-performance"
+gem "rubocop-rspec"

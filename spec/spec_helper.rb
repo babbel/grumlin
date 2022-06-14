@@ -20,7 +20,7 @@ require "grumlin/test/rspec"
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| load(f) }
 
 Grumlin.configure do |config|
-  config.url = ENV["GREMLIN_URL"] || "ws://localhost:8182/gremlin"
+  config.url = ENV.fetch("GREMLIN_URL", "ws://localhost:8182/gremlin")
 end
 
 RSpec.configure do |config|

@@ -9,6 +9,8 @@ class GraphMLImporter
     "double" => :to_f
   }.freeze
 
+  JOBS = 2
+
   include Grumlin::Sugar
 
   def initialize(graphml)
@@ -25,7 +27,7 @@ class GraphMLImporter
 
   def import_nodes! # rubocop:disable Metrics/AbcSize
     Thread.new do
-      Parallel.each(nodes.each_slice(100).to_a) do |slice|
+      Parallel.each(nodes.each_slice(100).to_a, in_processes: JOBS) do |slice|
         Sync do
           t = g
           slice.each do |node|
@@ -47,7 +49,7 @@ class GraphMLImporter
 
   def import_edges! # rubocop:disable Metrics/AbcSize
     Thread.new do
-      Parallel.each(edges.each_slice(100).to_a) do |slice|
+      Parallel.each(edges.each_slice(100).to_a, in_processes: JOBS) do |slice|
         Sync do
           t = g
           slice.each do |edge|

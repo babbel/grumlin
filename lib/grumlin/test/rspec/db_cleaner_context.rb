@@ -10,7 +10,8 @@ module Grumlin
         include DBCleanerContext
 
         before do
-          g.V().drop.iterate
+          g.E.drop.iterate
+          g.V.drop.iterate
         end
       end
     end
