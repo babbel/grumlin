@@ -8,6 +8,7 @@ steps:
   - aggregate
   - and
   - as
+  - barrier
   - both
   - bothE
   - by
@@ -40,6 +41,8 @@ steps:
   - limit
   - map
   - match
+  - max
+  - min
   - none
   - not
   - option
