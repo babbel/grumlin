@@ -16,7 +16,7 @@ module Grumlin
 
       class << self
         # TODO: support more predicates
-        %i[eq neq].each do |predicate|
+        %i[eq gt lt neq].each do |predicate|
           define_method predicate do |*args|
             Predicate.new("P", predicate, value: args[0])
           end
