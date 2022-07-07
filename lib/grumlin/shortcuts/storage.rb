@@ -3,6 +3,8 @@
 module Grumlin
   module Shortcuts
     class Storage
+      extend Forwardable
+
       def self.[](other)
         new(other)
       end
@@ -11,20 +13,12 @@ module Grumlin
         @storage = storage
       end
 
-      def [](key)
-        @storage[key]
-      end
-
-      def known?(key)
-        @storage.include?(key)
-      end
+      def_delegator :@storage, :[]
+      def_delegator :@storage, :include?, :known?
+      def_delegator :@storage, :keys, :names
 
       def ==(other)
         @storage == other.storage
-      end
-
-      def names
-        @storage.keys
       end
 
       def add(name, shortcut = nil)

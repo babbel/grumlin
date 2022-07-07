@@ -5,6 +5,8 @@ module Grumlin
     module InstanceMethods
       include Grumlin::Expressions
 
+      extend Forwardable
+
       UPSERT_RETRY_PARAMS = {
         on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentInsertFailedError],
         sleep_method: ->(n) { Async::Task.current.sleep(n) },
@@ -14,12 +16,10 @@ module Grumlin
 
       DEFAULT_ERROR_HANDLING_STRATEGY = ErrorHandlingStrategy.new(mode: :retry, **UPSERT_RETRY_PARAMS)
 
-      def g
-        self.class.shortcuts.g
-      end
+      def_delegators :shortcuts, :g, :__
 
-      def __
-        self.class.shortcuts.__
+      def shortcuts
+        self.class.shortcuts
       end
 
       def drop_vertex(id)

@@ -6,12 +6,10 @@ module Grumlin
       base.include(Grumlin::Expressions)
     end
 
-    def __(shortcuts = Grumlin::Shortcuts::Storage.new)
-      shortcuts.__
-    end
-
-    def g(shortcuts = Grumlin::Shortcuts::Storage.new)
-      shortcuts.g
+    %i[__ g].each do |name|
+      define_method name do |shortcuts = Grumlin::Shortcuts::Storage.new|
+        shortcuts.send(name)
+      end
     end
   end
 end
