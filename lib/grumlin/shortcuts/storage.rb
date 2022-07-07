@@ -21,7 +21,7 @@ module Grumlin
         @storage == other.storage
       end
 
-      def add(name, shortcut = nil)
+      def add(name, shortcut)
         raise ArgumentError, "shortcut '#{name}' already exists" if known?(name) && @storage[name] != shortcut
 
         @storage[name] = shortcut
