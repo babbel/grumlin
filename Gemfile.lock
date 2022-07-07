@@ -48,6 +48,7 @@ GEM
     concurrent-ruby (1.1.10)
     console (1.15.3)
       fiber-local
+    dead_end (4.0.0)
     diff-lcs (1.5.0)
     docile (1.4.0)
     e2mmap (0.1.0)
@@ -172,6 +173,7 @@ PLATFORMS
 DEPENDENCIES
   async-rspec
   benchmark-ips
+  dead_end
   factory_bot
   grumlin!
   memory_profiler

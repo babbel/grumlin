@@ -13,6 +13,7 @@ gem "overcommit"
 gem "rake"
 
 gem "async-rspec"
+gem "dead_end"
 gem "factory_bot"
 gem "rspec"
 
