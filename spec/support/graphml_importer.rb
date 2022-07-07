@@ -9,7 +9,7 @@ class GraphMLImporter
     "double" => :to_f
   }.freeze
 
-  JOBS = 2
+  JOBS = 1
 
   include Grumlin::Sugar
 

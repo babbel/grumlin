@@ -20,7 +20,7 @@ module Grumlin
       end
 
       def ==(other)
-        @storage == other.send(:storage)
+        @storage == other.storage
       end
 
       def names
@@ -34,12 +34,20 @@ module Grumlin
       end
 
       def add_from(other)
-        other.send(:storage).each do |name, shortcut|
+        other.storage.each do |name, shortcut|
           add(name, shortcut)
         end
       end
 
-      private
+      def g
+        __
+      end
+
+      def __
+        @__ ||= TraversalStart.new(self)
+      end
+
+      protected
 
       attr_reader :storage
     end

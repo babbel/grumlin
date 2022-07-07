@@ -8,9 +8,11 @@ steps:
   - aggregate
   - and
   - as
+  - barrier
   - both
   - bothE
   - by
+  - cap
   - choose
   - coalesce
   - constant
@@ -19,6 +21,7 @@ steps:
   - drop
   - elementMap
   - emit
+  - filter
   - fold
   - from
   - group
@@ -37,6 +40,9 @@ steps:
   - label
   - limit
   - map
+  - match
+  - max
+  - min
   - none
   - not
   - option
@@ -77,9 +83,13 @@ steps:
   - withSack
   - withSideEffect
 expressions:
+  cardinality:
+  - list
+  - set
+  - single
   column:
-    - keys
-    - values
+  - keys
+  - values
   operator:
   - addAll
   - and

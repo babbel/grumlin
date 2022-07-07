@@ -14,12 +14,12 @@ module Grumlin
 
       DEFAULT_ERROR_HANDLING_STRATEGY = ErrorHandlingStrategy.new(mode: :retry, **UPSERT_RETRY_PARAMS)
 
-      def __
-        @__ ||= TraversalStart.new(self.class.shortcuts)
+      def g
+        self.class.shortcuts.g
       end
 
-      def g
-        @g ||= TraversalStart.new(self.class.shortcuts)
+      def __
+        self.class.shortcuts.__
       end
 
       def drop_vertex(id)
