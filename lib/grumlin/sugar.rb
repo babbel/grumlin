@@ -7,11 +7,11 @@ module Grumlin
     end
 
     def __(shortcuts = Grumlin::Shortcuts::Storage.new)
-      Grumlin::TraversalStart.new(shortcuts) # TODO: allow only regular and start steps
+      shortcuts.__
     end
 
     def g(shortcuts = Grumlin::Shortcuts::Storage.new)
-      Grumlin::TraversalStart.new(shortcuts)
+      shortcuts.g
     end
   end
 end

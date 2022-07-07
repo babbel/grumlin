@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Action do
-  let(:action) { described_class.new(name, args: args, params: params, shortcuts: shortcuts) }
+  let(:action) { shortcuts.action_class.new(name, args: args, params: params, shortcuts: shortcuts) }
   let(:name) { :V }
   let(:args) { [] }
   let(:params) { {} }

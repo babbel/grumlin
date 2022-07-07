@@ -21,17 +21,11 @@ module Grumlin
     end
 
     def step(name, *args, **params)
-      Action.new(name, args: args, params: params, shortcuts: @shortcuts)
-    end
-
-    def method_missing(name, *args, **params)
-      return step(name, *args, **params) if @shortcuts.known?(name)
-
-      super
+      @shortcuts.action_class.new(name, args: args, params: params, shortcuts: @shortcuts)
     end
 
     def __
-      @__ ||= self.class.new(@shortcuts) # TODO: allow only regular and start steps
+      @shortcuts.__
     end
 
     def to_s(*)
@@ -40,12 +34,6 @@ module Grumlin
 
     def inspect
       self.class.inspect
-    end
-
-    private
-
-    def respond_to_missing?(name, _include_private = false)
-      @shortcuts.known?(name)
     end
   end
 end

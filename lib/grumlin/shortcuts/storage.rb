@@ -44,12 +44,40 @@ module Grumlin
       end
 
       def __
-        @__ ||= TraversalStart.new(self)
+        @__ ||= traversal_start_class.new(self)
+      end
+
+      def traversal_start_class
+        @traversal_start_class ||= shortcut_aware_class(TraversalStart)
+      end
+
+      def action_class
+        @action_class ||= shortcut_aware_class(Action)
       end
 
       protected
 
       attr_reader :storage
+
+      private
+
+      def shortcut_methods
+        st = storage
+        @shortcut_methods ||= Module.new do
+          st.each_key do |k|
+            define_method k do |*args, **params|
+              step(k, *args, **params)
+            end
+          end
+        end
+      end
+
+      def shortcut_aware_class(base)
+        methods = shortcut_methods
+        Class.new(base) do
+          include methods
+        end
+      end
     end
   end
 end

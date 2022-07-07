@@ -11,12 +11,14 @@ module Grumlin
     attr_reader :name, :args, :params, :shortcuts, :next_step, :configuration_steps, :previous_step
 
     def initialize(name, args: [], params: {}, previous_step: nil,
-                   shortcuts: Shortcuts::Storage.new, pool: Grumlin.default_pool)
+                   shortcuts: Shortcuts::Storage.new,
+                   pool: Grumlin.default_pool)
       @name = name.to_sym
       @args = args # TODO: add recursive validation: only json types or Action
       @params = params # TODO: add recursive validation: only json types
       @previous_step = previous_step
       @shortcuts = shortcuts
+      @shortcut = shortcuts[name]
       @pool = pool
     end
 
@@ -47,13 +49,7 @@ module Grumlin
     end
 
     def shortcut?
-      @shortcuts.known?(@name)
-    end
-
-    def method_missing(name, *args, **params)
-      return step(name, *args, **params) if @shortcuts.known?(name)
-
-      super
+      !!@shortcut
     end
 
     def ==(other)
@@ -108,12 +104,6 @@ module Grumlin
       @pool.acquire do |client|
         client.write(bytecode(no_return: true))
       end
-    end
-
-    private
-
-    def respond_to_missing?(name, _include_private = false)
-      @shortcuts.known?(name)
     end
   end
 end
