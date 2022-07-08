@@ -4,6 +4,7 @@ RSpec.describe Grumlin::StepsSerializers::String, gremlin: true do
   let(:serializer) { described_class.new(steps, apply_shortcuts: apply_shortcuts) }
 
   let(:shortcuts) do
+    Grumlin::Shortcuts::Storage[
     {
       hasColor: Grumlin::Shortcut.new(:hasColor) { |color| has(:color, color) },
       hasShape: Grumlin::Shortcut.new(:hasShape) { |shape| has(:shape, shape) },
@@ -11,6 +12,7 @@ RSpec.describe Grumlin::StepsSerializers::String, gremlin: true do
       addWeights: Grumlin::Shortcut.new(:addWeights) { withSideEffect(:weights, a: 1, b: 2) },
       preconfigure: Grumlin::Shortcut.new(:preconfigure) { addWeights }
     }
+  ]
   end
 
   describe "#serialize" do

@@ -56,7 +56,7 @@ module Grumlin
 
     def shortcuts?(steps_ary)
       steps_ary.any? do |step|
-        @shortcuts.include?(step.name) || step.args.any? do |arg|
+        @shortcuts.known?(step.name) || step.args.any? do |arg|
           arg.is_a?(Steps) ? arg.uses_shortcuts? : false
         end
       end

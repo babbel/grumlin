@@ -19,7 +19,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
     subject { steps.add(name, args: args) }
 
     let(:args) { [] }
-    let(:shortcuts) { {} }
+    let(:shortcuts) { Grumlin::Shortcuts::Storage.new }
 
     context "when there are no regular and configuration steps" do
       context "when adding a configuration step" do
@@ -56,7 +56,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
       context "when adding a shortcut" do
         let(:name) { :shortcut }
-        let(:shortcuts) { { shortcut: -> {} } }
+        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
 
         it "returns a StepData" do
           expect(subject).to be_a(Grumlin::StepData)
@@ -123,7 +123,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
       context "when adding a shortcut" do
         let(:name) { :shortcut }
-        let(:shortcuts) { { shortcut: -> {} } }
+        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
 
         it "returns a StepData" do
           expect(subject).to be_a(Grumlin::StepData)
@@ -197,7 +197,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
       context "when adding a shortcut" do
         let(:name) { :shortcut }
-        let(:shortcuts) { { shortcut: -> {} } }
+        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
 
         it "returns a StepData" do
           expect(subject).to be_a(Grumlin::StepData)
@@ -251,6 +251,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
     subject { steps.uses_shortcuts? }
 
     let(:shortcuts) do
+      Grumlin::Shortcuts::Storage[
       {
         hasColor: Grumlin::Shortcut.new(:hasColor) { |color| has(:color, color) },
         hasShape: Grumlin::Shortcut.new(:hasShape) { |shape| has(:shape, shape) },
@@ -258,6 +259,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         addWeights: Grumlin::Shortcut.new(:addWeights) { withSideEffect(:weights, a: 1, b: 2) },
         preconfigure: Grumlin::Shortcut.new(:preconfigure) { addWeights }
       }
+    ]
     end
 
     context "when shortcuts are not used" do
@@ -285,7 +287,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
     context "when when a shortcut is used in an anonymous traversal" do
       before do
         steps.add(:V, args: [])
-        steps.add(:where, args: [__(shortcuts).hasColor(:red)])
+        steps.add(:where, args: [shortcuts.__.hasColor(:red)])
       end
 
       it "returns true" do

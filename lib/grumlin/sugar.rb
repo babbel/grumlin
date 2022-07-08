@@ -6,12 +6,10 @@ module Grumlin
       base.include(Grumlin::Expressions)
     end
 
-    def __(shortcuts = {})
-      Grumlin::TraversalStart.new(shortcuts) # TODO: allow only regular and start steps
-    end
-
-    def g(shortcuts = {})
-      Grumlin::TraversalStart.new(shortcuts)
+    %i[__ g].each do |name|
+      define_method name do |shortcuts = Grumlin::Shortcuts::Storage.new|
+        shortcuts.send(name)
+      end
     end
   end
 end

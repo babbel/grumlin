@@ -46,7 +46,7 @@ module Grumlin
     end
 
     def validate_return_mode!(return_mode)
-      return return_mode if RETURN_MODES.key?(return_mode)
+      return return_mode if RETURN_MODES.include?(return_mode)
 
       raise ArgumentError, "unsupported return mode #{return_mode}. Supported modes: #{RETURN_MODES.keys}"
     end

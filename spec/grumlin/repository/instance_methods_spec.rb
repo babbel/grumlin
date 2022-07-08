@@ -14,13 +14,13 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
 
   describe "#__" do
     it "returns TraversalStart" do
-      expect(repository.__).to be_an_instance_of(Grumlin::TraversalStart)
+      expect(repository.__).to be_an(Grumlin::TraversalStart)
     end
   end
 
   describe "#g" do
     it "returns TraversalStart" do
-      expect(repository.g).to be_an_instance_of(Grumlin::TraversalStart)
+      expect(repository.g).to be_an(Grumlin::TraversalStart)
     end
   end
 

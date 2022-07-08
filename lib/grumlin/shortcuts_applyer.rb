@@ -26,8 +26,8 @@ module Grumlin
             arg.is_a?(Steps) ? ShortcutsApplyer.call(arg) : arg
           end
 
-          if shortcuts.include?(step.name)
-            t = TraversalStart.new(shortcuts)
+          if shortcuts.known?(step.name)
+            t = shortcuts.__
             action = shortcuts[step.name].apply(t, *args, **step.params)
             next if action.nil? || action == t # Shortcut did not add any steps
 

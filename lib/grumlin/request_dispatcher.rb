@@ -38,7 +38,7 @@ module Grumlin
     end
 
     def add_request(request)
-      raise RequestAlreadyAddedError if @requests.key?(request[:requestId])
+      raise RequestAlreadyAddedError if @requests.include?(request[:requestId])
 
       Async::Channel.new.tap do |channel|
         @requests[request[:requestId]] = { request: request, result: [], channel: channel }
@@ -73,7 +73,7 @@ module Grumlin
     end
 
     def ongoing_request?(request_id)
-      @requests.key?(request_id)
+      @requests.include?(request_id)
     end
 
     def clear

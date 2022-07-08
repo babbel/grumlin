@@ -1,30 +1,31 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Action do
-  let(:action) { described_class.new(name, args: args, params: params, shortcuts: shortcuts) }
+  let(:action_class) { shortcuts.action_class }
+  let(:action) { action_class.new(name, args: args, params: params) }
   let(:name) { :V }
   let(:args) { [] }
   let(:params) { {} }
-  let(:shortcuts) { {} }
+  let(:shortcuts) { Grumlin::Shortcuts::Storage.new }
 
   describe "chaining" do
     context "when no shortcuts are used" do
       it "chains" do
-        configuration_step = described_class.new(:withSideEffect, args: [:a], params: { a: 1 })
+        configuration_step = action_class.new(:withSideEffect, args: [:a], params: { a: 1 })
         expect(configuration_step.previous_step).to be_nil
-        expect(configuration_step).to be_an(described_class)
+        expect(configuration_step).to be_an(action_class)
         expect(configuration_step.name).to eq(:withSideEffect)
         expect(configuration_step.args).to eq([:a])
         expect(configuration_step.params).to eq({ a: 1 })
 
         start_step = configuration_step.V
-        expect(start_step).to be_an(described_class)
+        expect(start_step).to be_an(action_class)
         expect(start_step.name).to eq(:V)
         expect(start_step.args).to be_empty
         expect(start_step.params).to be_empty
 
         regular_step = start_step.has(:property, :value)
-        expect(regular_step).to be_an(described_class)
+        expect(regular_step).to be_an(action_class)
         expect(regular_step.name).to eq(:has)
         expect(regular_step.args).to eq(%i[property value])
         expect(regular_step.params).to be_empty
@@ -37,11 +38,11 @@ RSpec.describe Grumlin::Action do
     context "when shortcuts are used" do
       subject { action.foo(:arg1, :arg2, param1: 1, param2: 2) }
 
-      let(:shortcuts) { { foo: -> {} } }
+      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ foo: -> {} }] }
 
       context "when shortcut is empty" do
         it "returns an Action" do
-          expect(subject).to be_an(described_class)
+          expect(subject).to be_an(action_class)
         end
 
         it "assigns passes args and params to the new Action" do
@@ -60,7 +61,7 @@ RSpec.describe Grumlin::Action do
     subject { action.step("step", :arg1, :arg2, param1: 1, param2: 2) }
 
     it "returns an Action" do
-      expect(subject).to be_an(described_class)
+      expect(subject).to be_an(action_class)
     end
 
     it "assigns passes args and params to the new Action" do
@@ -151,7 +152,7 @@ RSpec.describe Grumlin::Action do
     subject { action.shortcut? }
 
     context "when step is a shortcut" do
-      let(:shortcuts) { { shortcut: -> {} } }
+      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
       let(:name) { :shortcut }
 
       it "returns true" do
@@ -170,8 +171,8 @@ RSpec.describe Grumlin::Action do
     subject { action == other_action }
 
     context "when name, args, params and previous step are equal" do
-      let(:action) { described_class.new(:V).has(:property, :value).where(described_class.new(:has, args: %i[property value])) }
-      let(:other_action) { described_class.new(:V).has(:property, :value).where(described_class.new(:has, args: %i[property value])) }
+      let(:action) { action_class.new(:V).has(:property, :value).where(action_class.new(:has, args: %i[property value])) }
+      let(:other_action) { action_class.new(:V).has(:property, :value).where(action_class.new(:has, args: %i[property value])) }
 
       it "returns true" do
         expect(subject).to be_truthy
@@ -179,8 +180,8 @@ RSpec.describe Grumlin::Action do
     end
 
     context "when something is not equal" do
-      let(:action) { described_class.new(:V).has(:property, :value).where(described_class.new(:has, args: %i[property value])) }
-      let(:other_action) { described_class.new(:V).has(:property, :value).where(described_class.new(:V, args: [:id])) }
+      let(:action) { action_class.new(:V).has(:property, :value).where(action_class.new(:has, args: %i[property value])) }
+      let(:other_action) { action_class.new(:V).has(:property, :value).where(action_class.new(:V, args: [:id])) }
 
       it "returns false" do
         expect(subject).to be_falsey
