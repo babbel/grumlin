@@ -5,7 +5,7 @@ RSpec.describe Grumlin::Shortcuts::Upserts do
     # Upserts using coalesce
     # https://stackoverflow.com/questions/49758417/cosmosdb-graph-upsert-query-pattern
     it "uses coalesce to upsert a vertex" do
-      t = Grumlin::TraversalStart.new(Grumlin::Shortcuts::Properties.shortcuts)
+      t = Grumlin::Shortcuts::Properties.shortcuts.__
       result = described_class.shortcuts[:upsertV].apply(t, "test", 1, { a: 1 }, { b: 2 })
       expect(result.bytecode.serialize).to eq({
                                                 step:
@@ -30,7 +30,7 @@ RSpec.describe Grumlin::Shortcuts::Upserts do
   end
 
   it "uses coalesce to upsert an edge" do
-    t = Grumlin::TraversalStart.new(Grumlin::Shortcuts::Properties.shortcuts)
+    t = Grumlin::Shortcuts::Properties.shortcuts.__
     result = described_class.shortcuts[:upsertE].apply(t, "test", 1, 2, { a: 1 }, { b: 2 })
     expect(result.bytecode.serialize).to eq({
                                               step: [

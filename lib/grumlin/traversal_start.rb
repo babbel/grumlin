@@ -16,17 +16,11 @@ module Grumlin
       end
     end
 
-    attr_reader :shortcuts
-
-    def initialize(shortcuts)
-      @shortcuts = shortcuts
-    end
-
     def step(name, *args, **params)
-      @shortcuts.action_class.new(name, args: args, params: params, shortcuts: @shortcuts)
+      shortcuts.action_class.new(name, args: args, params: params)
     end
 
-    def_delegator :@shortcuts, :__
+    def_delegator :shortcuts, :__
 
     def to_s(*)
       self.class.to_s

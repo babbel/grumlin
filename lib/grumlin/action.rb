@@ -8,17 +8,14 @@ module Grumlin
 
     ALL_STEPS = START_STEPS + CONFIGURATION_STEPS + REGULAR_STEPS
 
-    attr_reader :name, :args, :params, :shortcuts, :next_step, :configuration_steps, :previous_step
+    attr_reader :name, :args, :params, :next_step, :configuration_steps, :previous_step
 
     def initialize(name, args: [], params: {}, previous_step: nil,
-                   shortcuts: Shortcuts::Storage.new,
                    pool: Grumlin.default_pool)
       @name = name.to_sym
       @args = args # TODO: add recursive validation: only json types or Action
       @params = params # TODO: add recursive validation: only json types
       @previous_step = previous_step
-      @shortcuts = shortcuts
-      @shortcut = shortcuts[name]
       @pool = pool
     end
 
@@ -29,7 +26,7 @@ module Grumlin
     end
 
     def step(name, *args, **params)
-      self.class.new(name, args: args, params: params, previous_step: self, shortcuts: @shortcuts, pool: @pool)
+      self.class.new(name, args: args, params: params, previous_step: self, pool: @pool)
     end
 
     def configuration_step?
@@ -49,7 +46,7 @@ module Grumlin
     end
 
     def shortcut?
-      !!@shortcut
+      !!shortcuts[@name]
     end
 
     def ==(other)
@@ -58,7 +55,7 @@ module Grumlin
         @args == other.args &&
         @params == other.params &&
         @previous_step == other.previous_step &&
-        @shortcuts == other.shortcuts
+        shortcuts == other.shortcuts
     end
 
     def steps

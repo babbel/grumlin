@@ -38,7 +38,7 @@ module Grumlin
       end
 
       def __
-        @__ ||= traversal_start_class.new(self)
+        @__ ||= traversal_start_class.new
       end
 
       def traversal_start_class
@@ -56,11 +56,18 @@ module Grumlin
       private
 
       def shortcut_methods
-        st = storage
-        @shortcut_methods ||= Module.new do
-          st.each_key do |k|
-            define_method k do |*args, **params|
-              step(k, *args, **params)
+        @shortcut_methods ||= begin
+          st = storage
+          shorts = self
+          Module.new do
+            st.each_key do |k|
+              define_method k do |*args, **params|
+                step(k, *args, **params)
+              end
+            end
+
+            define_method :shortcuts do
+              shorts
             end
           end
         end
