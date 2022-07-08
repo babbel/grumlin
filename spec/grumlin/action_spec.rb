@@ -148,21 +148,21 @@ RSpec.describe Grumlin::Action do
     end
   end
 
-  describe "#shortcut?" do
-    subject { action.shortcut? }
+  describe "#shortcut" do
+    subject { action.shortcut }
 
     context "when step is a shortcut" do
-      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
-      let(:name) { :shortcut }
+      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ cut: Grumlin::Shortcut.new(:name) { nil } }] }
+      let(:name) { :cut }
 
-      it "returns true" do
-        expect(subject).to be_truthy
+      it "returns a Shortcut" do
+        expect(subject).to be_a(Grumlin::Shortcut)
       end
     end
 
     context "when step is no a shortcut" do
-      it "returns false" do
-        expect(subject).to be_falsey
+      it "returns nil" do
+        expect(subject).to be_nil
       end
     end
   end

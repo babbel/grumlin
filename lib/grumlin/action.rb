@@ -2,7 +2,7 @@
 
 module Grumlin
   class Action < Steppable
-    attr_reader :name, :args, :params, :next_step, :configuration_steps, :previous_step
+    attr_reader :name, :args, :params, :next_step, :configuration_steps, :previous_step, :shortcut
 
     def initialize(name, args: [], params: {}, previous_step: nil, pool: nil)
       super()
@@ -10,6 +10,7 @@ module Grumlin
       @args = args # TODO: add recursive validation: only json types or Action
       @params = params # TODO: add recursive validation: only json types
       @previous_step = previous_step
+      @shortcut = shortcuts[@name]
       @pool = pool || Grumlin.default_pool
     end
 
@@ -27,10 +28,6 @@ module Grumlin
 
     def supported_step?
       ALL_STEPS.include?(@name)
-    end
-
-    def shortcut?
-      !!shortcuts[@name]
     end
 
     def ==(other)
