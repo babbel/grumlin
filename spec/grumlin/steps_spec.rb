@@ -56,7 +56,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
       context "when adding a shortcut" do
         let(:name) { :shortcut }
-        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
+        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: Grumlin::Shortcut.new(:shortcut) { nil } }] }
 
         it "returns a StepData" do
           expect(subject).to be_a(Grumlin::StepData)
@@ -123,7 +123,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
       context "when adding a shortcut" do
         let(:name) { :shortcut }
-        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
+        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: Grumlin::Shortcut.new(:shortcut) { nil } }] }
 
         it "returns a StepData" do
           expect(subject).to be_a(Grumlin::StepData)
@@ -197,7 +197,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
 
       context "when adding a shortcut" do
         let(:name) { :shortcut }
-        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: -> {} }] }
+        let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: Grumlin::Shortcut.new(:shortcut) { nil } }] }
 
         it "returns a StepData" do
           expect(subject).to be_a(Grumlin::StepData)

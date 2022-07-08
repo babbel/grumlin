@@ -20,15 +20,15 @@ module Grumlin
 
       private
 
-      def process_steps(steps, shortcuts) # rubocop:disable Metrics/AbcSize
+      def process_steps(steps, shortcuts) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         steps.each_with_object([]) do |step, result|
           args = step.args.map do |arg|
             arg.is_a?(Steps) ? ShortcutsApplyer.call(arg) : arg
           end
 
-          if shortcuts.known?(step.name)
+          if (shortcut = shortcuts[step.name])&.lazy?
             t = shortcuts.__
-            action = shortcuts[step.name].apply(t, *args, **step.params)
+            action = shortcut.apply(t, *args, **step.params)
             next if action.nil? || action == t # Shortcut did not add any steps
 
             new_steps = ShortcutsApplyer.call(Steps.from(action))

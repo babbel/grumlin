@@ -27,10 +27,17 @@ module Grumlin
       def add(name, shortcut)
         raise ArgumentError, "shortcut '#{name}' already exists" if known?(name) && @storage[name] != shortcut
 
+        unless shortcut.lazy?
+          m = Module.new do
+            define_method(name, &shortcut.block)
+          end
+          action_class.include(m)
+        end
+
         @storage[name] = shortcut
 
         shortcut_methods_module.define_method(name) do |*args, **params|
-          step(name, *args, **params)
+          next step(name, *args, **params)
         end
       end
 

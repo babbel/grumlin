@@ -38,7 +38,7 @@ RSpec.describe Grumlin::Action do
     context "when shortcuts are used" do
       subject { action.foo(:arg1, :arg2, param1: 1, param2: 2) }
 
-      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ foo: -> {} }] }
+      let(:shortcuts) { Grumlin::Shortcuts::Storage[{ foo: Grumlin::Shortcut.new(:foo) { nil } }] }
 
       context "when shortcut is empty" do
         it "returns an Action" do

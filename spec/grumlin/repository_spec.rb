@@ -8,9 +8,17 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       shortcut :shortcut do
         property(:shortcut, true)
       end
+
+      shortcut :addV, override: true do
+        super().property(:a, :b)
+      end
     end
   end
   let(:repository) { repository_class.new }
+
+  it "works" do
+    pp repository.g.addV
+  end
 
   describe "class methods" do
     %i[shortcut shortcuts shortcuts_from].each do |method|
