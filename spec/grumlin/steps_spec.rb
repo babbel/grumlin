@@ -287,7 +287,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
     context "when when a shortcut is used in an anonymous traversal" do
       before do
         steps.add(:V, args: [])
-        steps.add(:where, args: [__(shortcuts).hasColor(:red)])
+        steps.add(:where, args: [shortcuts.__.hasColor(:red)])
       end
 
       it "returns true" do

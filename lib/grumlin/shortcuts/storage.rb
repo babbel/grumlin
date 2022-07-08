@@ -11,6 +11,9 @@ module Grumlin
 
       def initialize(storage = {})
         @storage = storage
+        storage.each do |n, s|
+          add(n, s)
+        end
       end
 
       def_delegator :@storage, :[]
@@ -25,6 +28,10 @@ module Grumlin
         raise ArgumentError, "shortcut '#{name}' already exists" if known?(name) && @storage[name] != shortcut
 
         @storage[name] = shortcut
+
+        shortcut_methods_module.define_method(name) do |*args, **params|
+          step(name, *args, **params)
+        end
       end
 
       def add_from(other)
@@ -55,17 +62,10 @@ module Grumlin
 
       private
 
-      def shortcut_methods
-        @shortcut_methods ||= begin
-          st = storage
+      def shortcut_methods_module
+        @shortcut_methods_module ||= begin
           shorts = self
           Module.new do
-            st.each_key do |k|
-              define_method k do |*args, **params|
-                step(k, *args, **params)
-              end
-            end
-
             define_method :shortcuts do
               shorts
             end
@@ -74,7 +74,7 @@ module Grumlin
       end
 
       def shortcut_aware_class(base)
-        methods = shortcut_methods
+        methods = shortcut_methods_module
         Class.new(base) do
           include methods
         end
