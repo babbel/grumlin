@@ -9,13 +9,18 @@ module Grumlin
     def_delegator :@block, :arity
     def_delegator :@block, :source_location
 
-    def initialize(name, &block)
+    def initialize(name, lazy: true, &block)
       @name = name
+      @lazy = lazy
       @block = block
     end
 
     def ==(other)
       @name == other.name && @block == other.block
+    end
+
+    def lazy?
+      @lazy
     end
 
     # TODO: to_s, inspect, preview

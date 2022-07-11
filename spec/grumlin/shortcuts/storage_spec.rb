@@ -2,10 +2,11 @@
 
 RSpec.describe Grumlin::Shortcuts::Storage do
   let(:storage) { described_class.new(shortcuts) }
-  let(:shortcuts) { { foo: :bar, bar: :foo } }
+  let(:shortcuts) { { foo: Grumlin::Shortcut.new(:foo) { nil }, bar: bar_shortcut } }
+  let(:bar_shortcut) { Grumlin::Shortcut.new(:bar) { nil } }
 
   describe ".[]" do
-    subject { described_class.new({ a: 1, b: 2 }) }
+    subject { described_class.new({ a: Grumlin::Shortcut.new(:a) { nil }, b: Grumlin::Shortcut.new(:b) { nil } }) }
 
     it "creates a new storage with given shortcuts" do
       expect(subject.names).to eq(%i[a b])
@@ -26,7 +27,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     end
 
     context "when storage are not equal" do
-      let(:another_shortcuts) { { c: 3, d: 4 } }
+      let(:another_shortcuts) { { c: Grumlin::Shortcut.new(:c) { nil }, d: Grumlin::Shortcut.new(:d) { nil } } }
 
       it "returns false" do
         expect(subject).to be_falsey
@@ -35,7 +36,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
   end
 
   describe "#add" do
-    subject { storage.add(name, :foo) }
+    subject { storage.add(name, bar_shortcut) }
 
     context "when shortcut does not exist" do
       let(:name) { :baz }
@@ -66,7 +67,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
   describe "#add_from" do
     subject { storage.add_from(another_storage) }
 
-    let(:another_storage) { described_class.new({ baz: :foo }) }
+    let(:another_storage) { described_class.new({ baz: Grumlin::Shortcut.new(:baz) { nil } }) }
 
     it "adds all shortcuts from another storage" do
       subject

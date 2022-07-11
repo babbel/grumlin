@@ -27,7 +27,7 @@ RSpec.describe Grumlin::Shortcuts do
     context "when shortcut name conflicts with gremlin steps" do
       subject { klass.shortcut(:has) { nil } }
 
-      include_examples "raises an exception", ArgumentError, "cannot use names of standard gremlin steps"
+      include_examples "raises an exception", ArgumentError, "overriding standard gremlin steps is not allowed, if you know what you're doing, pass `override: true`"
     end
 
     context "when shortcut name conflicts with other shortcut" do

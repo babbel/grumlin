@@ -11,18 +11,18 @@ module Grumlin
       subclass.shortcuts_from(self)
     end
 
-    def shortcut(name, shortcut = nil, &block)
+    def shortcut(name, shortcut = nil, override: false, lazy: true, &block)
       name = name.to_sym
-      # TODO: blocklist of names to avoid conflicts with standard methods?
-      raise ArgumentError, "cannot use names of standard gremlin steps" if Grumlin::Action::REGULAR_STEPS.include?(name)
+      lazy = false if override
 
-      if (shortcut.nil? && block.nil?) || (shortcut && block)
-        raise ArgumentError, "either shortcut or block must be passed"
+      if Grumlin::Action::REGULAR_STEPS.include?(name) && !override
+        raise ArgumentError,
+              "overriding standard gremlin steps is not allowed, if you know what you're doing, pass `override: true`"
       end
 
-      shortcut ||= Shortcut.new(name, &block)
+      raise ArgumentError, "either shortcut or block must be passed" if [shortcut, block].count(&:nil?) != 1
 
-      shortcuts.add(name, shortcut)
+      shortcuts.add(name, shortcut || Shortcut.new(name, lazy: lazy, &block))
     end
 
     def shortcuts_from(other_shortcuts)
