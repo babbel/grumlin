@@ -11,7 +11,7 @@ module Grumlin
       subclass.shortcuts_from(self)
     end
 
-    def shortcut(name, shortcut = nil, override: false, lazy: true, &block) # rubocop:disable Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
+    def shortcut(name, shortcut = nil, override: false, lazy: true, &block)
       name = name.to_sym
       lazy = false if override
 
@@ -20,9 +20,7 @@ module Grumlin
               "overriding standard gremlin steps is not allowed, if you know what you're doing, pass `override: true`"
       end
 
-      if (shortcut.nil? && block.nil?) || (shortcut && block)
-        raise ArgumentError, "either shortcut or block must be passed"
-      end
+      raise ArgumentError, "either shortcut or block must be passed" if [shortcut, block].count(&:nil?) != 1
 
       shortcuts.add(name, shortcut || Shortcut.new(name, lazy: lazy, &block))
     end
