@@ -11,7 +11,7 @@ module Grumlin
       shortcuts = action.shortcuts
       actions = []
 
-      until action.nil?
+      until action.nil? || action.is_a?(TraversalStart)
         actions.unshift(action)
         action = action.previous_step
       end

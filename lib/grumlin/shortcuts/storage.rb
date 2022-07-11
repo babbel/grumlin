@@ -33,8 +33,10 @@ module Grumlin
 
         @storage[name] = shortcut
 
+        ac = action_class
+
         shortcut_methods_module.define_method(name) do |*args, **params|
-          next step(name, *args, **params)
+          next ac.new(name, args: args, params: params, previous_step: self)
         end
         extend_traversal_classes(shortcut) unless shortcut.lazy?
       end

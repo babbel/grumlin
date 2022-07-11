@@ -19,7 +19,7 @@ module Grumlin
 
     ALL_STEPS.each do |step|
       define_method step do |*args, **params|
-        step(step, *args, **params)
+        shortcuts.action_class.new(step, args: args, params: params, previous_step: self)
       end
     end
 
