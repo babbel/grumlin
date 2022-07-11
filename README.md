@@ -143,6 +143,20 @@ class MyRepository
 end
 ```
 
+##### Overriding standard steps
+
+Sometimes it may be useful to override standard steps. Grumlin does not allow it by default, but one
+is still able to override standard steps if they know what they are doing:
+
+```ruby
+shortcut :addV, override: true do |label|
+  super(label).property(:default, :value)
+end
+```
+
+This will create a new shortcut that overrides the standard step `addV` and adds default properties to all vertices
+created by the repository that uses this shortcut.
+
 #### Grumlin::Repository
 `Grumlin::Repository` combines functionality of `Grumlin::Sugar` and `Grumlin::Shortcuts` as well as adds a few useful
 shortcuts to make gremlin code more rubyish. Can be used as a drop in replacement for `Grumlin::Sugar`. Remember that
