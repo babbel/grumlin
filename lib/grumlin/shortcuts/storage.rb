@@ -25,13 +25,10 @@ module Grumlin
       end
 
       def add(name, shortcut)
-        raise ArgumentError, "shortcut '#{name}' already exists" if known?(name) && @storage[name] != shortcut
-
-        unless shortcut.lazy?
-          m = Module.new do
-            define_method(name, &shortcut.block)
-          end
-          action_class.include(m)
+        # not lazy shortcuts are allowed to be overridden
+        if known?(name) && @storage[name] != shortcut && shortcut.lazy?
+          raise ArgumentError,
+                "shortcut '#{name}' already exists"
         end
 
         @storage[name] = shortcut
@@ -39,6 +36,7 @@ module Grumlin
         shortcut_methods_module.define_method(name) do |*args, **params|
           next step(name, *args, **params)
         end
+        extend_traversal_classes(shortcut) unless shortcut.lazy?
       end
 
       def add_from(other)
@@ -85,6 +83,14 @@ module Grumlin
         Class.new(base) do
           include methods
         end
+      end
+
+      def extend_traversal_classes(shortcut)
+        m = Module.new do
+          define_method(shortcut.name, &shortcut.block)
+        end
+        action_class.include(m)
+        traversal_start_class.include(m)
       end
     end
   end

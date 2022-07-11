@@ -8,17 +8,9 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       shortcut :shortcut do
         property(:shortcut, true)
       end
-
-      shortcut :addV, override: true do
-        super().property(:a, :b)
-      end
     end
   end
   let(:repository) { repository_class.new }
-
-  it "works" do
-    pp repository.g.addV
-  end
 
   describe "class methods" do
     %i[shortcut shortcuts shortcuts_from].each do |method|
@@ -419,6 +411,49 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
         it "returns postprocessed data" do
           expect(repository.test_query).to eq("test")
+        end
+      end
+    end
+  end
+
+  describe "overriding standard gremlin steps" do
+    let(:repository_class) do
+      Class.new do
+        extend Grumlin::Repository
+
+        shortcut :addV, override: true do |label|
+          super(label).property(:a, :b)
+        end
+      end
+    end
+    let(:repository) { repository_class.new }
+
+    context "when super is called" do
+      it "calls the original step" do
+        expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], %i[property a b]] })
+      end
+
+      context "when overridden shortcut is inherited" do
+        let(:repository_class) do
+          Class.new(super())
+        end
+
+        it "calls the original step" do
+          expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], %i[property a b]] })
+        end
+      end
+
+      context "when overriden shortcut is overridden again" do
+        let(:repository_class) do
+          Class.new(super()) do
+            shortcut :addV, override: true do |label|
+              super(label).property(:b, :c)
+            end
+          end
+        end
+
+        it "calls the previous override and the original step" do
+          expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], %i[property a b], %i[property b c]] })
         end
       end
     end
