@@ -19,7 +19,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
     subject { steps.add(name, args: args) }
 
     let(:args) { [] }
-    let(:shortcuts) { Grumlin::Shortcuts::Storage.new }
+    let(:shortcuts) { Grumlin::Shortcuts::Storage.empty }
 
     context "when there are no regular and configuration steps" do
       context "when adding a configuration step" do

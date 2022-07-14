@@ -181,6 +181,23 @@ class MyRepository
     hasAll(T.label => :triangle, color: color)
   end
 
+  # `default_vertex_properties` and `default_edge_properties`
+  # override `addV` and `addE` according and inject hashes returned from passed
+  # as properties for newly created vertices and edges.
+  # In case if a repository is inherited, newly defined default properties will be merged to
+  # default properties defined in the parent repository.
+  default_vertex_properties do |_label|
+    {
+      created_at: Time.now.to_i
+    }
+  end
+
+  default_edge_properties do |_label|
+    {
+      created_at: Time.now.to_i
+    }
+  end
+
   # g and __ are already aware of shortcuts
   query(:triangles_with_color, return_mode: :list) do |color| # :list is the default return mode, also possible: :none, :single, :traversal
     g.V.hasLabel(:triangle)

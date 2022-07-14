@@ -23,7 +23,7 @@ module Grumlin
 
       define_method name do |*args, query_params: {}, **params, &block|
         t = instance_exec(*args, **params, &query_block)
-        return t if self.class.empty_result?(t)
+        return t if t.nil? || (t.respond_to?(:empty?) && t.empty?)
 
         unless t.is_a?(Grumlin::Action)
           raise WrongQueryResult,
@@ -45,6 +45,18 @@ module Grumlin
       end
     end
 
+    def default_vertex_properties(&block)
+      shortcut :addV, override: true do |*args|
+        super(*args).props(**block.call(*args)) # rubocop:disable Performance/RedundantBlockCall
+      end
+    end
+
+    def default_edge_properties(&block)
+      shortcut :addE, override: true do |*args|
+        super(*args).props(**block.call(*args))  # rubocop:disable Performance/RedundantBlockCall
+      end
+    end
+
     def validate_return_mode!(return_mode)
       return return_mode if RETURN_MODES.include?(return_mode)
 
@@ -59,10 +71,6 @@ module Grumlin
 
       raise ArgumentError,
             "postprocess_with must be a String, Symbol or a callable object, given: #{postprocess_with.class}"
-    end
-
-    def empty_result?(result)
-      result.nil? || (result.respond_to?(:empty?) && result.empty?)
     end
   end
 end

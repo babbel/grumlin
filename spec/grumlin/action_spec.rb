@@ -6,7 +6,7 @@ RSpec.describe Grumlin::Action do
   let(:name) { :V }
   let(:args) { [] }
   let(:params) { {} }
-  let(:shortcuts) { Grumlin::Shortcuts::Storage.new }
+  let(:shortcuts) { Grumlin::Shortcuts::Storage.empty }
 
   describe "chaining" do
     context "when no shortcuts are used" do
