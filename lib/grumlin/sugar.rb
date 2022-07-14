@@ -7,8 +7,8 @@ module Grumlin
     end
 
     %i[__ g].each do |name|
-      define_method name do |shortcuts = Grumlin::Shortcuts::Storage.new|
-        shortcuts.send(name)
+      define_method name do |cuts = Shortcuts::Storage.empty|
+        cuts.send(name)
       end
     end
   end

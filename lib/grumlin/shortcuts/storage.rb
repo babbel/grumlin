@@ -5,8 +5,14 @@ module Grumlin
     class Storage
       extend Forwardable
 
-      def self.[](other)
-        new(other)
+      class << self
+        def [](other)
+          new(other)
+        end
+
+        def empty
+          @empty ||= new
+        end
       end
 
       def initialize(storage = {})
