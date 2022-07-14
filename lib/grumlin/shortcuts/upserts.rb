@@ -5,16 +5,16 @@ module Grumlin
     module Upserts
       extend Grumlin::Shortcuts
 
-      shortcut :upsertV do |label, id, create_properties, update_properties|
+      shortcut :upsertV do |label, id, create_properties = {}, update_properties = {}|
         self.V(id)
             .fold
-            .coalesce( # TODO: extract upsert pattern to a shortcut
+            .coalesce(
               __.unfold,
               __.addV(label).props(**create_properties.merge(T.id => id))
             ).props(**update_properties)
       end
 
-      shortcut :upsertE do |label, from, to, create_properties, update_properties|
+      shortcut :upsertE do |label, from, to, create_properties = {}, update_properties = {}|
         self.V(from)
             .outE(label).where(__.inV.hasId(to))
             .fold
