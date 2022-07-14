@@ -45,7 +45,7 @@ module Grumlin
       end
     end
 
-    def default_node_properties(&block)
+    def default_vertex_properties(&block)
       shortcut :addV, override: true do |*args|
         super(*args).props(**block.call(*args)) # rubocop:disable Performance/RedundantBlockCall
       end

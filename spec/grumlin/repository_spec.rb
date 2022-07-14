@@ -426,7 +426,6 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
     end
-    let(:repository) { repository_class.new }
 
     context "when super is called" do
       it "calls the original step" do
@@ -464,7 +463,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       Class.new do
         extend Grumlin::Repository
 
-        default_node_properties do |label|
+        default_vertex_properties do |label|
           {
             node: true,
             default_label: label
@@ -479,8 +478,6 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
     end
-
-    let(:repository) { repository_class.new }
 
     context "when using addV directly" do
       it "assigns default properties" do
@@ -536,6 +533,43 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       it "assigns default properties" do
         repository.g.upsertE(:test, 1, 2).iterate
         expect(repository.g.E.hasLabel(:test).elementMap.next.except(T.id)).to eq({ T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
+      end
+    end
+
+    describe "inheritance" do
+      let(:repository_class) do
+        Class.new(super()) do
+          default_vertex_properties do |_label|
+            {
+              inherited: true
+            }
+          end
+
+          default_edge_properties do |_label|
+            {
+              inherited: true
+            }
+          end
+        end
+      end
+
+      context "when using addV directly" do
+        it "assigns default properties" do
+          repository.g.addV(:test).property(T.id, :test_node).iterate
+          expect(repository.g.V(:test_node).elementMap.next).to eq({ T.id => "test_node", T.label => "test", node: true, default_label: "test", inherited: true })
+        end
+      end
+
+      context "when using addE directly" do
+        before do
+          g.addV(:test).property(T.id, 1).iterate
+          g.addV(:test).property(T.id, 2).iterate
+        end
+
+        it "assigns default properties" do
+          repository.g.addE(:test).property(T.id, :test_edge).from(__.V(1)).to(__.V(2)).iterate
+          expect(repository.g.E(:test_edge).elementMap.next).to eq({ T.id => "test_edge", T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test", inherited: true })
+        end
       end
     end
   end
