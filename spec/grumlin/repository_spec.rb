@@ -84,24 +84,6 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
           expect { subject }.not_to raise_error
         end
       end
-
-      context "when conflicting shortcuts point to different implementations" do
-        let(:another_shortcut_module) do
-          Module.new do
-            extend Grumlin::Shortcuts
-
-            shortcut :another_shortcut do
-              property(:another_shortcut, true)
-            end
-          end
-        end
-
-        before do
-          repository_class.shortcuts_from(another_shortcut_module)
-        end
-
-        include_examples "raises an exception", ArgumentError, "shortcut 'another_shortcut' already exists"
-      end
     end
   end
 
@@ -140,24 +122,6 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         it "successfully imports shortcuts" do
           expect { subject }.not_to raise_error
         end
-      end
-
-      context "when conflicting shortcuts point to different implementations" do
-        let(:yet_another_repository_class) do
-          Class.new do
-            extend Grumlin::Repository
-
-            shortcut :another_shortcut do
-              property(:another_shortcut, true)
-            end
-          end
-        end
-
-        before do
-          repository_class.shortcuts_from(yet_another_repository_class)
-        end
-
-        include_examples "raises an exception", ArgumentError, "shortcut 'another_shortcut' already exists"
       end
     end
   end
@@ -531,8 +495,14 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
 
       it "assigns default properties" do
-        repository.g.upsertE(:test, 1, 2).iterate
-        expect(repository.g.E.hasLabel(:test).elementMap.next.except(T.id)).to eq({ T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
+        repository.g
+                  .upsertE(:test, 1, 2)
+                  .upsertE(:test, 2, 1)
+                  .iterate
+        expect(repository.g.E.hasLabel(:test).elementMap.toList.map{_1.except(T.id)}).to eq([
+                                                                                              { T.label => "test", "IN" => { T.id => 1, T.label => "test" }, "OUT" => { T.id => 2, T.label => "test" }, edge: true, default_label: "test" },
+                                                                                              { T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" }
+                                                                                            ])
       end
     end
 

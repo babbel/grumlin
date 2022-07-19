@@ -66,4 +66,12 @@ RSpec.describe Grumlin do
       end
     end
   end
+
+  describe ".fake_uuid_from" do
+    subject { described_class.fake_uuid_from("seed") }
+
+    it "returns a UUID-like string derived from the argument" do
+      expect(subject).to eq("19b25856-e1c1-50ca-834c-ffc8b59b23ad")
+    end
+  end
 end

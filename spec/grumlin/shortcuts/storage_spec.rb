@@ -55,12 +55,6 @@ RSpec.describe Grumlin::Shortcuts::Storage do
           expect(storage.names).to eq(%i[foo bar])
         end
       end
-
-      context "when shortcut is not the same" do
-        let(:name) { :foo }
-
-        include_examples "raises an exception", ArgumentError, "shortcut 'foo' already exists"
-      end
     end
   end
 

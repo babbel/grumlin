@@ -30,12 +30,6 @@ RSpec.describe Grumlin::Shortcuts do
       include_examples "raises an exception", ArgumentError, "overriding standard gremlin steps is not allowed, if you know what you're doing, pass `override: true`"
     end
 
-    context "when shortcut name conflicts with other shortcut" do
-      subject { klass.shortcut(:test_step1) { nil } }
-
-      include_examples "raises an exception", ArgumentError, "shortcut 'test_step1' already exists"
-    end
-
     context "when shortcut has no conflicts" do
       it "add a new shortcut" do
         klass.shortcut(:custom_step) { nil }
