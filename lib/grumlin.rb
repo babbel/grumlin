@@ -174,11 +174,6 @@ module Grumlin
     def definitions
       @definitions ||= YAML.safe_load(File.read(File.join(__dir__, "definitions.yml")), symbolize_names: true)
     end
-
-    def fake_uuid_from(seed_string)
-      sha = Digest::SHA256.hexdigest(seed_string)[0..31]
-      "#{sha[0..7]}-#{sha[8..11]}-#{sha[12..15]}-#{sha[16..19]}-#{sha[20..]}"
-    end
   end
 end
 
