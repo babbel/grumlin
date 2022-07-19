@@ -311,12 +311,11 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
   describe "#upsert_edge" do
     subject { repository.upsert_edge(:test, from: from, to: to, create_properties: create_properties, update_properties: update_properties) }
 
-    let(:create_properties) { { key: :value } }
+    let(:create_properties) { { key: :value, T.id => 1234 } }
     let(:update_properties) { { another_key: :another_value } }
 
     let(:from) { 1 }
     let(:to) { 2 }
-    let(:edge_id) { Grumlin.fake_uuid_from("test/#{from}/#{to}") }
 
     before do
       g.addV(:test).property(T.id, from)
@@ -326,16 +325,16 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
     context "when edge does not exist" do
       it "creates an edge" do
         expect { subject }.to change { g.E.count.next }.by(1)
-        expect(g.E(edge_id).elementMap.next).to eq({ T.id => edge_id, T.label => "test",
-                                                     "IN" => { T.id => 2, T.label => "test" },
-                                                     "OUT" => { T.id => 1, T.label => "test" },
-                                                     another_key: "another_value", key: "value" })
+        expect(g.E(1234).elementMap.next).to eq({ T.id => 1234, T.label => "test",
+                                                  "IN" => { T.id => 2, T.label => "test" },
+                                                  "OUT" => { T.id => 1, T.label => "test" },
+                                                  another_key: "another_value", key: "value" })
       end
     end
 
     context "when edge exists" do
       before do
-        g.addE(:test).from(__.V(from)).to(__.V(to)).property(T.id, edge_id).iterate
+        g.addE(:test).from(__.V(from)).to(__.V(to)).property(T.id, 1234).iterate
       end
 
       it "does not create new edges" do
@@ -344,10 +343,10 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
 
       it "updates properties with update_properties" do
         subject
-        expect(g.E(edge_id).elementMap.next).to eq({ T.id => edge_id, T.label => "test",
-                                                     "IN" => { T.id => 2, T.label => "test" },
-                                                     "OUT" => { T.id => 1, T.label => "test" },
-                                                     another_key: "another_value" })
+        expect(g.E(1234).elementMap.next).to eq({ T.id => 1234, T.label => "test",
+                                                  "IN" => { T.id => 2, T.label => "test" },
+                                                  "OUT" => { T.id => 1, T.label => "test" },
+                                                  another_key: "another_value" })
       end
     end
   end

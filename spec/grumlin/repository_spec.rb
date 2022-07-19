@@ -67,23 +67,9 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
     end
 
-    context "when there are no shortcut naming conflicts" do
-      it "imports shortcuts" do
-        subject
-        expect(repository.g).to respond_to(:another_shortcut)
-      end
-    end
-
-    context "when there is a naming conflict" do
-      context "when conflicting shortcuts point to one implementation" do
-        before do
-          repository_class.shortcuts_from(shortcut_module)
-        end
-
-        it "successfully imports shortcuts" do
-          expect { subject }.not_to raise_error
-        end
-      end
+    it "imports shortcuts" do
+      subject
+      expect(repository.g).to respond_to(:another_shortcut)
     end
   end
 
@@ -100,29 +86,9 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
     end
 
-    context "when there are no shortcut naming conflicts" do
-      it "imports shortcuts" do
-        subject
-        expect(repository.g).to respond_to(:another_shortcut)
-      end
-    end
-
-    context "when there is a naming conflict" do
-      context "when conflicting shortcuts point to one implementation" do
-        let(:another_repository_class) do
-          Class.new do # props and hasAll in this case
-            extend Grumlin::Repository
-          end
-        end
-
-        before do
-          repository_class.shortcuts_from(another_repository_class)
-        end
-
-        it "successfully imports shortcuts" do
-          expect { subject }.not_to raise_error
-        end
-      end
+    it "imports shortcuts" do
+      subject
+      expect(repository.g).to respond_to(:another_shortcut)
     end
   end
 
@@ -495,14 +461,8 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
 
       it "assigns default properties" do
-        repository.g
-                  .upsertE(:test, 1, 2)
-                  .upsertE(:test, 2, 1)
-                  .iterate
-        expect(repository.g.E.hasLabel(:test).elementMap.toList.map{_1.except(T.id)}).to eq([
-                                                                                              { T.label => "test", "IN" => { T.id => 1, T.label => "test" }, "OUT" => { T.id => 2, T.label => "test" }, edge: true, default_label: "test" },
-                                                                                              { T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" }
-                                                                                            ])
+        repository.g.upsertE(:test, 1, 2).iterate
+        expect(repository.g.E.hasLabel(:test).elementMap.next.except(T.id)).to eq({ T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
       end
     end
 

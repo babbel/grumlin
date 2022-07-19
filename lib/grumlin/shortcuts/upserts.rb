@@ -15,14 +15,12 @@ module Grumlin
       end
 
       shortcut :upsertE do |label, from, to, create_properties = {}, update_properties = {}|
-        id = Grumlin.fake_uuid_from("#{label}/#{from}/#{to}")
-
         self.V(from)
-            .outE(label).where(__.hasId(id).and.or.inV.hasId(to))
+            .outE(label).where(__.inV.hasId(to))
             .fold
             .coalesce(
               __.unfold,
-              __.V(from).addE(label).to(__.V(to)).props(**create_properties.merge(T.id => id))
+              __.addE(label).from(__.V(from)).to(__.V(to)).props(**create_properties)
             ).props(**update_properties)
       end
     end
