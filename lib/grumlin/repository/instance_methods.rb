@@ -85,7 +85,7 @@ module Grumlin
       end
 
       # edges:
-      # [["label", "id", {create: :properties}, {update: properties}]]
+      # [["label", "from", "to", {create: :properties}, {update: properties}]]
       # params can override Retryable config from UPSERT_RETRY_PARAMS
       def upsert_edges(edges, batch_size: 100, on_failure: :retry, **params)
         edges.each_slice(batch_size) do |slice|

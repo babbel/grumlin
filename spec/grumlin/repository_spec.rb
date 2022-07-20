@@ -67,41 +67,9 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
     end
 
-    context "when there are no shortcut naming conflicts" do
-      it "imports shortcuts" do
-        subject
-        expect(repository.g).to respond_to(:another_shortcut)
-      end
-    end
-
-    context "when there is a naming conflict" do
-      context "when conflicting shortcuts point to one implementation" do
-        before do
-          repository_class.shortcuts_from(shortcut_module)
-        end
-
-        it "successfully imports shortcuts" do
-          expect { subject }.not_to raise_error
-        end
-      end
-
-      context "when conflicting shortcuts point to different implementations" do
-        let(:another_shortcut_module) do
-          Module.new do
-            extend Grumlin::Shortcuts
-
-            shortcut :another_shortcut do
-              property(:another_shortcut, true)
-            end
-          end
-        end
-
-        before do
-          repository_class.shortcuts_from(another_shortcut_module)
-        end
-
-        include_examples "raises an exception", ArgumentError, "shortcut 'another_shortcut' already exists"
-      end
+    it "imports shortcuts" do
+      subject
+      expect(repository.g).to respond_to(:another_shortcut)
     end
   end
 
@@ -118,47 +86,9 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
     end
 
-    context "when there are no shortcut naming conflicts" do
-      it "imports shortcuts" do
-        subject
-        expect(repository.g).to respond_to(:another_shortcut)
-      end
-    end
-
-    context "when there is a naming conflict" do
-      context "when conflicting shortcuts point to one implementation" do
-        let(:another_repository_class) do
-          Class.new do # props and hasAll in this case
-            extend Grumlin::Repository
-          end
-        end
-
-        before do
-          repository_class.shortcuts_from(another_repository_class)
-        end
-
-        it "successfully imports shortcuts" do
-          expect { subject }.not_to raise_error
-        end
-      end
-
-      context "when conflicting shortcuts point to different implementations" do
-        let(:yet_another_repository_class) do
-          Class.new do
-            extend Grumlin::Repository
-
-            shortcut :another_shortcut do
-              property(:another_shortcut, true)
-            end
-          end
-        end
-
-        before do
-          repository_class.shortcuts_from(yet_another_repository_class)
-        end
-
-        include_examples "raises an exception", ArgumentError, "shortcut 'another_shortcut' already exists"
-      end
+    it "imports shortcuts" do
+      subject
+      expect(repository.g).to respond_to(:another_shortcut)
     end
   end
 

@@ -80,8 +80,7 @@ sequences of standard gremlin steps, other shortcuts and even add new initially 
 Remember ActiveRecord scopes? Shortcuts are very similar.
 
 **Important**: if a shortcut's name matches a name of a method defined on the wrapped object, this shortcut will be
-be ignored because methods have higher priority. You cannot override supported by Grumlin steps with shortcuts, 
-`Grumlin::Shortcuts.shortcut` will raise an `ArgumentError`. Please carefully choose names for your shortcuts.
+be ignored because methods have higher priority.
 
 Shortcuts are designed to be used with `Grumlin::Repository` but still can be used separately, with `Grumlin::Sugar`
 for example.
@@ -143,7 +142,7 @@ class MyRepository
 end
 ```
 
-##### Overriding standard steps
+##### Overriding standard steps and shortcuts
 
 Sometimes it may be useful to override standard steps. Grumlin does not allow it by default, but one
 is still able to override standard steps if they know what they are doing:
@@ -156,6 +155,8 @@ end
 
 This will create a new shortcut that overrides the standard step `addV` and adds default properties to all vertices
 created by the repository that uses this shortcut.
+
+Shortcuts also can be overridden, but super() is not available.
 
 #### Grumlin::Repository
 `Grumlin::Repository` combines functionality of `Grumlin::Sugar` and `Grumlin::Shortcuts` as well as adds a few useful

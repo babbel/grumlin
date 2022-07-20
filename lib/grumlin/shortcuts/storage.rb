@@ -31,12 +31,6 @@ module Grumlin
       end
 
       def add(name, shortcut)
-        # not lazy shortcuts are allowed to be overridden
-        if known?(name) && @storage[name] != shortcut && shortcut.lazy?
-          raise ArgumentError,
-                "shortcut '#{name}' already exists"
-        end
-
         @storage[name] = shortcut
 
         ac = action_class
