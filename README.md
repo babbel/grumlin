@@ -233,7 +233,7 @@ and passed to `Retryable.retryable`. In case if you want to modify retryable beh
 
 If you don't want to define you own repository, simply use
 
-`Grumlin::Repository.new` - it will return an instance of an anonymous class extenring `Grumlin::repository`. 
+`Grumlin::Repository.new` returns an instance of an anonymous class extending `Grumlin::Repository`. 
 
 **Usage**
 
