@@ -2,6 +2,8 @@
 
 module Grumlin
   class TraversalStart < Steppable
+    include WithExtension
+
     def to_s(*)
       self.class.to_s
     end

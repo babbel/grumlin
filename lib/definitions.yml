@@ -82,6 +82,7 @@ steps:
   configuration:
   - withSack
   - withSideEffect
+  - withStrategies
 expressions:
   cardinality:
   - list

@@ -13,8 +13,7 @@ module Grumlin
     def initialize
       return if respond_to?(:shortcuts)
 
-      raise RuntimerError,
-            "steppable must not be initialized directly, use Grumlin::Shortcuts::Storage#g or #__ instead"
+      raise "steppable must not be initialized directly, use Grumlin::Shortcuts::Storage#g or #__ instead"
     end
 
     ALL_STEPS.each do |step|
