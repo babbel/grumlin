@@ -231,6 +231,10 @@ All of them support 3 different modes for error handling: `:retry`, `:ignore` an
 with [retryable](https://github.com/nfedyashev/retryable). **params will be merged to the default config for upserts 
 and passed to `Retryable.retryable`. In case if you want to modify retryable behaviour you are to do so.
 
+If you don't want to define you own repository, simply use
+
+`Grumlin::Repository.new` - it will return an instance of an anonymous class extenring `Grumlin::repository`. 
+
 **Usage**
 
 To execute the query defined in a query block one simply needs to call a method with the same name:
