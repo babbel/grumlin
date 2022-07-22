@@ -56,7 +56,7 @@ module Grumlin
         with_upsert_error_handling(on_failure, params) do
           create_properties, update_properties = cleanup_properties(create_properties, update_properties)
 
-          g.upsertV(label, id, create_properties, update_properties).next
+          g.upsertV(label, id, create_properties, update_properties).id.next
         end
       end
 
@@ -70,7 +70,7 @@ module Grumlin
               create_properties, update_properties = cleanup_properties(create_properties, update_properties)
 
               t.upsertV(label, id, create_properties, update_properties)
-            end.iterate
+            end.id.iterate
           end
         end
       end
@@ -80,7 +80,7 @@ module Grumlin
       def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, **params) # rubocop:disable Metrics/ParameterLists
         with_upsert_error_handling(on_failure, params) do
           create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
-          g.upsertE(label, from, to, create_properties, update_properties).next
+          g.upsertE(label, from, to, create_properties, update_properties).id.next
         end
       end
 
@@ -94,7 +94,7 @@ module Grumlin
               create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
 
               t.upsertE(label, from, to, create_properties, update_properties)
-            end.iterate
+            end.id.iterate
           end
         end
       end
