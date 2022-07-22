@@ -12,6 +12,14 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
   let(:repository) { repository_class.new }
 
+  describe ".new" do
+    subject { described_class.new }
+
+    it "returns an empty repository object" do
+      expect(subject.class.ancestors).to be_include(described_class::InstanceMethods)
+    end
+  end
+
   describe "class methods" do
     %i[shortcut shortcuts shortcuts_from].each do |method|
       it "responds to ##{method}" do

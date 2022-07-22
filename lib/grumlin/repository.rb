@@ -10,11 +10,18 @@ module Grumlin
     }.freeze
 
     def self.extended(base)
+      super
       base.extend(Grumlin::Shortcuts)
       base.include(Repository::InstanceMethods)
 
       base.shortcuts_from(Grumlin::Shortcuts::Properties)
       base.shortcuts_from(Grumlin::Shortcuts::Upserts)
+    end
+
+    def self.new
+      @repository ||= Class.new do # rubocop:disable Naming/MemoizedInstanceVariableName
+        extend Grumlin::Repository
+      end.new
     end
 
     def query(name, return_mode: :list, postprocess_with: nil, &query_block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
