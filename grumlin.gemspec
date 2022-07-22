@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/zhulik/grumlin"
-  spec.metadata["changelog_uri"] = "https://github.com/zhulik/grumlin/blob/master/CHANGELOG.md"
+  spec.metadata["changelog_uri"] = "https://github.com/babbel/grumlin/releases"
   spec.metadata["rubygems_mfa_required"] = "true"
 
   spec.files = Dir.chdir(File.expand_path(__dir__)) do
