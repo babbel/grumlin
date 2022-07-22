@@ -17,9 +17,7 @@ RSpec.describe Grumlin::WithExtension, gremlin: true do
     it "adds withStrategies step with OptionStrategy argument" do
       expect(subject).to eq({ step: [[:V], [:valueMap], [:with, "~tinkerpop.valueMap.tokens"]],
                               source: [[:withStrategies,
-                                        { :@type => "g:OptionsStrategy", :@value => { some_name: "some_value" } }],
-                                       [:withStrategies,
-                                        { :@type => "g:OptionsStrategy", :@value => { other_name: "other_value" } }]] })
+                                        { :@type => "g:OptionsStrategy", :@value => { some_name: "some_value", other_name: "other_value" } }]] })
     end
   end
 end

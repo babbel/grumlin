@@ -3,8 +3,14 @@
 module Grumlin
   module WithExtension
     def with(name, value)
-      with_action_class.new(:withStrategies, args: [TraversalStrategies::OptionsStrategy.new({ name => value })],
-                                             previous_step: self)
+      prev = self
+      strategy = if is_a?(with_action_class)
+                   prev = previous_step
+                   TraversalStrategies::OptionsStrategy.new(args.first.value.merge(name => value))
+                 else
+                   TraversalStrategies::OptionsStrategy.new({ name => value })
+                 end
+      with_action_class.new(:withStrategies, args: [strategy], previous_step: prev)
     end
 
     private
