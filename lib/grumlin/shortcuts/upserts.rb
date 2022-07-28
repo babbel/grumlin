@@ -10,8 +10,8 @@ module Grumlin
             .fold
             .coalesce(
               __.unfold,
-              __.addV(label).props(**create_properties.merge(T.id => id))
-            ).props(**update_properties)
+              __.addV(label).props(Cardinality.single, **create_properties.merge(T.id => id))
+            ).props(Cardinality.single, **update_properties)
       end
 
       shortcut :upsertE do |label, from, to, create_properties = {}, update_properties = {}|

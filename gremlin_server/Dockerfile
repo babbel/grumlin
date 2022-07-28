@@ -1,4 +1,4 @@
-FROM tinkerpop/gremlin-server
+FROM tinkerpop/gremlin-server:3.5.3
 
 RUN rm -rf /opt/gremlin-server/ext/tinkergraph-gremlin
 
