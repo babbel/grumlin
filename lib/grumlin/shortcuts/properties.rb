@@ -5,11 +5,12 @@ module Grumlin
     module Properties
       extend Grumlin::Shortcuts
 
-      shortcut :props do |**props|
-        props.reduce(self) do |tt, (prop, value)| # rubocop:disable Style/EachWithObject
-          next tt.property(prop, value) unless value.nil? # nils are not supported
+      shortcut :props do |cardinality = nil, **props|
+        props.reduce(self) do |tt, (prop, value)|
+          next tt if value.nil? # nils are not supported
+          next tt.property(prop, value) if cardinality.nil?
 
-          tt
+          tt.property(cardinality, prop, value)
         end
       end
 
