@@ -10,23 +10,6 @@ module Grumlin
       206 => :partial_content
     }.freeze
 
-    ERRORS = {
-      499 => InvalidRequestArgumentsError,
-      500 => ServerError,
-      597 => ScriptEvaluationError,
-      599 => ServerSerializationError,
-      598 => ServerTimeoutError,
-
-      401 => ClientSideError,
-      407 => ClientSideError,
-      498 => ClientSideError
-    }.freeze
-
-    VERTEX_ALREADY_EXISTS = "Vertex with id already exists:"
-    EDGE_ALREADY_EXISTS = "Edge with id already exists:"
-    CONCURRENT_VERTEX_INSERT_FAILED = "Failed to complete Insert operation for a Vertex due to conflicting concurrent"
-    CONCURRENT_EDGE_INSERT_FAILED = "Failed to complete Insert operation for an Edge due to conflicting concurrent"
-
     class DispatcherError < Grumlin::Error; end
 
     class RequestAlreadyAddedError < DispatcherError; end
@@ -47,14 +30,16 @@ module Grumlin
 
     # builds a response object, when it's ready sends it to the client via a channel
     # TODO: sometimes response does not include requestID, no idea how to handle it so far.
-    def add_response(response) # rubocop:disable Metrics/AbcSize
+    def add_response(response) # rubocop:disable Metrics/AbcSize, Metrics/MethodLength
       request_id = response[:requestId]
       raise UnknownRequestError unless ongoing_request?(request_id)
 
       begin
         request = @requests[request_id]
 
-        check_errors!(response[:status], request[:request])
+        RequestErrorFactory.build(request, response).tap do |err|
+          raise err unless err.nil?
+        end
 
         case SUCCESS[response.dig(:status, :code)]
         when :success
@@ -90,30 +75,6 @@ module Grumlin
 
       request = @requests.delete(request_id)
       request[:channel].close
-    end
-
-    def check_errors!(status, query)
-      if (error = ERRORS[status[:code]])
-        raise (
-          already_exists_error(status) ||
-          concurrent_insert_error(status) ||
-          error
-        ).new(status, query)
-      end
-
-      return unless SUCCESS[status[:code]].nil?
-
-      raise(UnknownResponseStatus, status)
-    end
-
-    def already_exists_error(status)
-      return VertexAlreadyExistsError if status[:message]&.include?(VERTEX_ALREADY_EXISTS)
-      return EdgeAlreadyExistsError if status[:message]&.include?(EDGE_ALREADY_EXISTS)
-    end
-
-    def concurrent_insert_error(status)
-      return ConcurrentVertexInsertFailedError if status[:message]&.include?(CONCURRENT_VERTEX_INSERT_FAILED)
-      return ConcurrentEdgeInsertFailedError if status[:message]&.include?(CONCURRENT_EDGE_INSERT_FAILED)
     end
   end
 end
