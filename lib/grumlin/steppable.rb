@@ -10,7 +10,8 @@ module Grumlin
 
     ALL_STEPS = START_STEPS + CONFIGURATION_STEPS + REGULAR_STEPS
 
-    def initialize
+    def initialize(client: nil)
+      @client = client
       return if respond_to?(:shortcuts)
 
       raise "steppable must not be initialized directly, use Grumlin::Shortcuts::Storage#g or #__ instead"
