@@ -40,6 +40,12 @@ RSpec.describe Grumlin::RequestErrorFactory do
 
         include_examples "returns an exception", Grumlin::ConcurrentEdgeInsertFailedError
       end
+
+      context "when concurrent modification failed" do
+        let(:message) { "Failed to complete operation due to conflicting concurrent" }
+
+        include_examples "returns an exception", Grumlin::ConcurrentModificationError
+      end
     end
 
     context "when status is 499" do

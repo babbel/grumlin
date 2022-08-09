@@ -8,7 +8,7 @@ module Grumlin
       extend Forwardable
 
       UPSERT_RETRY_PARAMS = {
-        on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentInsertFailedError],
+        on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentModificationError],
         sleep_method: ->(n) { Async::Task.current.sleep(n) },
         tries: 3,
         sleep: ->(n) { (n**2) + 1 + rand }

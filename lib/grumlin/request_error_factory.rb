@@ -14,10 +14,17 @@ module Grumlin
       498 => ClientSideError
     }.freeze
 
+    # Neptune presumably returns message as a JSON string of format
+    # {"detailedMessage":"",
+    #  "requestId":"UUID",
+    #  "code":"ConcurrentModificationException"}
+    # Currencly we simply search for substings to identify the exact error
+    # TODO: parse json and use `code` instead
     VERTEX_ALREADY_EXISTS = "Vertex with id already exists:"
     EDGE_ALREADY_EXISTS = "Edge with id already exists:"
     CONCURRENT_VERTEX_INSERT_FAILED = "Failed to complete Insert operation for a Vertex due to conflicting concurrent"
     CONCURRENT_EDGE_INSERT_FAILED = "Failed to complete Insert operation for an Edge due to conflicting concurrent"
+    CONCURRENCT_MODIFICATION_FAILED = "Failed to complete operation due to conflicting concurrent"
 
     class << self
       def build(request, response)
@@ -27,7 +34,7 @@ module Grumlin
         if (error = ERRORS[status[:code]])
           return (
             already_exists_error(status) ||
-            concurrent_insert_error(status) ||
+            concurrent_modification_error(status) ||
             error
           ).new(status, query)
         end
@@ -42,9 +49,10 @@ module Grumlin
         return EdgeAlreadyExistsError if status[:message]&.include?(EDGE_ALREADY_EXISTS)
       end
 
-      def concurrent_insert_error(status)
+      def concurrent_modification_error(status)
         return ConcurrentVertexInsertFailedError if status[:message]&.include?(CONCURRENT_VERTEX_INSERT_FAILED)
         return ConcurrentEdgeInsertFailedError if status[:message]&.include?(CONCURRENT_EDGE_INSERT_FAILED)
+        return ConcurrentModificationError if status[:message]&.include?(CONCURRENCT_MODIFICATION_FAILED)
       end
     end
   end
