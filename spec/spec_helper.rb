@@ -15,6 +15,9 @@ SimpleCov.start do
 end
 
 require "grumlin"
+
+Zeitwerk::Loader.eager_load_all
+
 require "grumlin/test/rspec"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| load(f) }

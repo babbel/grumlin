@@ -4,14 +4,15 @@ module Grumlin
   class Action < Steppable
     attr_reader :name, :args, :params, :next_step, :configuration_steps, :previous_step, :shortcut
 
-    def initialize(name, args: [], params: {}, previous_step: nil, pool: nil)
-      super()
+    # client is only used when a traversal is a part of transaction
+    def initialize(name, args: [], params: {}, previous_step: nil, pool: Grumlin.default_pool, session_id: nil)
+      super(pool: pool, session_id: session_id)
+
       @name = name.to_sym
       @args = args # TODO: add recursive validation: only json types or Action
       @params = params # TODO: add recursive validation: only json types
       @previous_step = previous_step
       @shortcut = shortcuts[@name]
-      @pool = pool || Grumlin.default_pool
     end
 
     def configuration_step?
@@ -73,14 +74,18 @@ module Grumlin
     end
 
     def toList
-      @pool.acquire do |client|
-        client.write(bytecode)
-      end
+      client_write(bytecode)
     end
 
     def iterate
+      client_write(bytecode(no_return: true))
+    end
+
+    private
+
+    def client_write(payload)
       @pool.acquire do |client|
-        client.write(bytecode(no_return: true))
+        client.write(payload, session_id: @session_id)
       end
     end
   end
