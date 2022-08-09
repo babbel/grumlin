@@ -98,7 +98,8 @@ module Grumlin
   class VertexAlreadyExistsError < AlreadyExistsError; end
   class EdgeAlreadyExistsError < AlreadyExistsError; end
 
-  class ConcurrentInsertFailedError < ServerError; end
+  class ConcurrentModificationError < ServerError; end
+  class ConcurrentInsertFailedError < ConcurrentModificationError; end
 
   class ConcurrentVertexInsertFailedError < ConcurrentInsertFailedError; end
   class ConcurrentEdgeInsertFailedError < ConcurrentInsertFailedError; end
