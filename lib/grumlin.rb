@@ -128,25 +128,24 @@ module Grumlin
 
   class WrongQueryResult < RepositoryError; end
 
-  class Config
-    attr_accessor :url, :pool_size, :client_concurrency, :client_factory
-
-    def initialize
-      @pool_size = 10
-      @client_concurrency = 5
-      @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent: parent) }
-    end
-  end
-
   @pool_mutex = Mutex.new
 
   class << self
     def configure
       yield config
+
+      config.validate!
     end
 
     def config
       @config ||= Config.new
+    end
+
+    # returns a subset of features for currently configured backend.
+    # The features lists are hardcoded as there is no way to get them
+    # from the remote server.
+    def features
+      Features.for(config.provider) # no memoization as provider may be changed
     end
 
     def default_pool
