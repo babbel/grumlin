@@ -46,7 +46,31 @@ Or install it yourself as:
 ```ruby
 Grumlin.configure do |config|
   config.url = "ws://localhost:8182/gremlin"
+
+  # make sure you select right provider for better compatibility
+  config.provider = :tinkergraph
 end
+```
+
+#### Providers
+
+Currently `Grumlin` supports 2 providers:
+- tinkergraph (default)
+- neptune
+
+As different providers may have or may have not support for specific features it's recommended to
+explicitly specify the provider you use.
+
+#### Provider features
+
+Every provider is described by a set of features. In the future `Grumlin` may decide to disable or enable 
+some parts of it's functionality to comply provider's supported features. Currently there is no difference
+in behaviour when working with different providers.
+
+To check current providers supported features use
+
+```ruby
+Grumlin.features
 ```
 
 ### Traversing graphs

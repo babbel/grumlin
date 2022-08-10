@@ -42,7 +42,7 @@ RSpec.describe Grumlin do
     end
   end
 
-  describe "#definitions" do
+  describe ".definitions" do
     # if these tests fail try running `rake definitions:format`
     describe "[:steps]" do
       subject { described_class.definitions[:steps] }
@@ -62,6 +62,24 @@ RSpec.describe Grumlin do
         subject.except(:with_options).each_value do |list|
           expect(list).to eq(list.sort)
           expect(list).to eq(list.uniq)
+        end
+      end
+    end
+  end
+
+  describe ".features" do
+    subject { described_class.features }
+
+    %i[neptune tinkergraph].each do |name|
+      before do
+        described_class.configure do |config|
+          config.provider = name
+        end
+      end
+
+      context "when provider is #{name}" do
+        it "returns a features list" do
+          expect(subject).to be_a_kind_of(Grumlin::Features::FeatureList)
         end
       end
     end
