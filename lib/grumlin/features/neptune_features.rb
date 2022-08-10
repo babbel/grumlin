@@ -2,7 +2,7 @@
 
 module Grumlin
   module Features
-    class NeptuneFeatures
+    class NeptuneFeatures < FeatureList
       def user_supplied_ids?
         true
       end

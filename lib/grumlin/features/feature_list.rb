@@ -2,13 +2,13 @@
 
 module Grumlin
   module Features
-    class TinkergraphFeatures < FeatureList
+    class FeatureList
       def user_supplied_ids?
-        true
+        raise NotImplementedError
       end
 
       def supports_transactions?
-        false
+        raise NotImplementedError
       end
     end
   end
