@@ -13,6 +13,7 @@ module Grumlin
     def initialize(pool: Grumlin.default_pool, session_id: nil)
       @pool = pool
       @session_id = session_id
+
       return if respond_to?(:shortcuts)
 
       raise "steppable must not be initialized directly, use Grumlin::Shortcuts::Storage#g or #__ instead"
