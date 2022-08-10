@@ -2,7 +2,14 @@
 
 module Grumlin
   module Features
-    class NeptuneFeatures  # rubocop:disable Lint/EmptyClass
+    class NeptuneFeatures
+      def user_supplied_ids?
+        true
+      end
+
+      def supports_transactions?
+        true
+      end
     end
   end
 end

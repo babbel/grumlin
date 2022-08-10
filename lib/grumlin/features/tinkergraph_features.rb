@@ -2,7 +2,14 @@
 
 module Grumlin
   module Features
-    class TinkergraphFeatures  # rubocop:disable Lint/EmptyClass
+    class TinkergraphFeatures
+      def user_supplied_ids?
+        true
+      end
+
+      def supports_transactions?
+        false
+      end
     end
   end
 end
