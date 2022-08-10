@@ -64,7 +64,14 @@ explicitly specify the provider you use.
 #### Provider features
 
 Every provider is described by a set of features. In the future `Grumlin` may decide to disable or enable 
-some parts of it's functionality to comply provider's supported features.
+some parts of it's functionality to comply provider's supported features. Currently there is no difference
+in behaviour when working with different providers.
+
+To check current providers supported features use
+
+```ruby
+Grumlin.features
+```
 
 ### Traversing graphs
 

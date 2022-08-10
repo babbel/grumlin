@@ -3,12 +3,10 @@
 module Grumlin
   module Features
     class TinkergraphFeatures < FeatureList
-      def user_supplied_ids?
-        true
-      end
-
-      def supports_transactions?
-        false
+      def initialize
+        super
+        @user_supplied_ids = true
+        @supports_transactions = false
       end
     end
   end
