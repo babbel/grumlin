@@ -4,6 +4,8 @@ module Grumlin
   class Steppable
     extend Forwardable
 
+    attr_reader :session_id
+
     START_STEPS = Grumlin.definitions.dig(:steps, :start).map(&:to_sym).freeze
     REGULAR_STEPS = Grumlin.definitions.dig(:steps, :regular).map(&:to_sym).freeze
     CONFIGURATION_STEPS = Grumlin.definitions.dig(:steps, :configuration).map(&:to_sym).freeze
