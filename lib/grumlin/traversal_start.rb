@@ -10,7 +10,19 @@ module Grumlin
     def tx
       raise AlreadyBoundToTransationError if @session_id
 
-      Transaction.new(self.class, pool: @pool)
+      transaction = Transaction.new(self.class, pool: @pool)
+      return transaction unless block_given?
+
+      begin
+        yield transaction.begin
+      rescue Grumlin::Rollback
+        transaction.rollback
+      rescue StandardError
+        transaction.rollback
+        raise
+      else
+        transaction.commit
+      end
     end
 
     def to_s(*)
