@@ -15,14 +15,12 @@ SimpleCov.start do
 end
 
 require "grumlin"
+
+Zeitwerk::Loader.eager_load_all
+
 require "grumlin/test/rspec"
 
 Dir["#{File.dirname(__FILE__)}/support/**/*.rb"].each { |f| load(f) }
-
-Grumlin.configure do |config|
-  config.url = ENV.fetch("GREMLIN_URL", "ws://localhost:8182/gremlin")
-  config.provider = :tinkergraph
-end
 
 RSpec.configure do |config|
   config.disable_monkey_patching!
@@ -57,5 +55,12 @@ RSpec.configure do |config|
 
     groups = items.group_by { |item| item.metadata[:practical_gremlin] }
     (groups[true] || []) + (groups[nil] || []).shuffle
+  end
+
+  config.before do
+    Grumlin.configure do |cfg|
+      cfg.url = ENV.fetch("GREMLIN_URL", "ws://localhost:8182/gremlin")
+      cfg.provider = :tinkergraph
+    end
   end
 end

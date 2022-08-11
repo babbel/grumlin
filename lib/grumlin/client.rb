@@ -24,8 +24,14 @@ module Grumlin
         @client.close
       end
 
-      def write(bytecode)
-        @client.write(bytecode)
+      def write(bytecode, session_id: nil)
+        @client.write(bytecode, session_id: session_id)
+      ensure
+        @count += 1
+      end
+
+      def finalize_tx(action, session_id)
+        @client.finalize_tx(action, session_id)
       ensure
         @count += 1
       end
@@ -94,19 +100,19 @@ module Grumlin
     end
 
     # TODO: support yielding
-    def write(bytecode)
+    def write(bytecode, session_id: nil)
       raise NotConnectedError unless connected?
 
-      request = to_query(bytecode)
-      channel = @request_dispatcher.add_request(request)
-      @transport.write(request)
+      request = to_query(bytecode, session_id: session_id)
+      submit_request(request)
+    end
 
-      begin
-        channel.dequeue.flat_map { |item| Typing.cast(item) }
-      rescue Async::Stop, Async::TimeoutError
-        close(check_requests: false)
-        raise
-      end
+    def finalize_tx(action, session_id)
+      raise NotConnectedError unless connected?
+      raise ArgumentError, "session_id cannot be nil" if session_id.nil?
+
+      request = finalize_tx_query(action, session_id)
+      submit_request(request)
     end
 
     def inspect
@@ -119,20 +125,52 @@ module Grumlin
 
     private
 
+    def submit_request(request)
+      channel = @request_dispatcher.add_request(request)
+      @transport.write(request)
+
+      begin
+        channel.dequeue.flat_map { |item| Typing.cast(item) }
+      rescue Async::Stop, Async::TimeoutError
+        close(check_requests: false)
+        raise
+      end
+    end
+
     # This might be overridden in successors
     def build_transport
       Transport.new(@url, parent: @parent, **@client_options)
     end
 
-    def to_query(bytecode)
+    def to_query(bytecode, session_id:)
       {
         requestId: SecureRandom.uuid,
-        op: "bytecode",
-        processor: "traversal",
+        op: :bytecode,
+        processor: session_id ? :session : :traversal,
         args: {
-          gremlin: { :@type => "g:Bytecode", :@value => bytecode.serialize },
-          aliases: { g: :g }
-        }
+          gremlin: {
+            :@type => "g:Bytecode",
+            :@value => bytecode.serialize
+          },
+          aliases: { g: :g },
+          session: session_id
+        }.compact
+      }
+    end
+
+    def finalize_tx_query(action, session_id)
+      {
+        requestId: SecureRandom.uuid,
+        op: :bytecode,
+        processor: session_id ? :session : :traversal,
+        args: {
+          gremlin: {
+            :@type => "g:Bytecode",
+            :@value => { source: [[:tx, action]] }
+          },
+          aliases: { g: :g },
+          session: session_id
+        }.compact
       }
     end
   end
