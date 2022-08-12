@@ -10,7 +10,7 @@ module Grumlin
     def tx
       raise AlreadyBoundToTransationError if @session_id
 
-      transaction = Transaction.new(self.class, pool: @pool)
+      transaction = tx_class.new(self.class, pool: @pool)
       return transaction unless block_given?
 
       begin
@@ -31,6 +31,12 @@ module Grumlin
 
     def inspect
       self.class.inspect
+    end
+
+    private
+
+    def tx_class
+      Grumlin.features.supports_transactions? ? Transaction : DummyTransaction
     end
   end
 end

@@ -10,18 +10,7 @@ module Grumlin
       @traversal_start_class = traversal_start_class
       @pool = pool
 
-      if supported?
-        @uuid = SecureRandom.uuid
-        return
-      end
-
-      logger.info(self) do
-        "#{Grumlin.config.provider} does not support transactions. commit and rollback are ignored, data will be saved"
-      end
-    end
-
-    def supported?
-      Grumlin.features.supports_transactions?
+      @uuid = SecureRandom.uuid
     end
 
     def begin
@@ -29,14 +18,10 @@ module Grumlin
     end
 
     def commit
-      return unless supported?
-
       finalize(:commit)
     end
 
     def rollback
-      return unless supported?
-
       finalize(:rollback)
     end
 
