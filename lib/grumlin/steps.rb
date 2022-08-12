@@ -32,7 +32,9 @@ module Grumlin
     end
 
     def add(name, args: [], params: {})
-      return add_configuration_step(name, args: args, params: params) if CONFIGURATION_STEPS.include?(name)
+      if CONFIGURATION_STEPS.include?(name) || name.to_sym == :tx
+        return add_configuration_step(name, args: args, params: params)
+      end
 
       StepData.new(name, args: cast_arguments(args), params: params).tap do |step|
         @steps << step

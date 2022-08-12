@@ -4,8 +4,8 @@ RSpec.describe Grumlin::DummyTransaction, gremlin_server: true do
   let(:tx) { g.tx }
 
   describe "defaults" do
-    it "has not assigned uuid" do
-      expect(tx.uuid).to be_nil
+    it "has not assigned session_id" do
+      expect(tx.session_id).to be_nil
     end
   end
 

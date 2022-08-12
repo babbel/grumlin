@@ -16,7 +16,7 @@ module Grumlin
     end
 
     def configuration_step?
-      CONFIGURATION_STEPS.include?(@name)
+      CONFIGURATION_STEPS.include?(@name) || name.to_sym == :tx
     end
 
     def start_step?

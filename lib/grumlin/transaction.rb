@@ -2,34 +2,37 @@
 
 module Grumlin
   class Transaction
-    attr_reader :uuid
+    attr_reader :session_id
 
     include Console
+
+    COMMIT = Grumlin::Repository.new.g.step(:tx, :commit).bytecode
+    ROLLBACK = Grumlin::Repository.new.g.step(:tx, :rollback).bytecode
 
     def initialize(traversal_start_class, pool: Grumlin.default_pool)
       @traversal_start_class = traversal_start_class
       @pool = pool
 
-      @uuid = SecureRandom.uuid
+      @session_id = SecureRandom.uuid
     end
 
     def begin
-      @traversal_start_class.new(session_id: @uuid)
+      @traversal_start_class.new(session_id: @session_id)
     end
 
     def commit
-      finalize(:commit)
+      finalize(COMMIT)
     end
 
     def rollback
-      finalize(:rollback)
+      finalize(ROLLBACK)
     end
 
     private
 
     def finalize(action)
       @pool.acquire do |client|
-        client.finalize_tx(action, @uuid)
+        client.write(action, session_id: @session_id)
       end
     end
   end

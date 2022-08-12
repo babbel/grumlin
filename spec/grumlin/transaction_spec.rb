@@ -9,7 +9,7 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
 
   describe "defaults" do
     it "has assigned uuid" do
-      expect(tx.uuid).not_to be_nil
+      expect(tx.session_id).not_to be_nil
     end
   end
 
