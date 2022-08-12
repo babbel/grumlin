@@ -51,9 +51,75 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
     end
   end
 
-  xdescribe "#commit" do # rubocop:disable Lint/EmptyBlock, RSpec/EmptyExampleGroup
+  describe "#commit" do
+    subject { tx.commit }
+
+    context "when provider is :tinkergraph" do
+      it "does nothing" do
+        expect_any_instance_of(Grumlin::Transport).not_to receive(:write) # rubocop:disable RSpec/AnyInstance, no easier way
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context "when provider is :neptune" do
+      before do
+        allow(SecureRandom).to receive(:uuid).and_return("529962d2-374b-4470-915f-cf452bead1be")
+        Grumlin.config.provider = :neptune
+      end
+
+      it "submits commit step" do
+        expect_any_instance_of(Grumlin::Transport).to receive(:write).with( # rubocop:disable RSpec/AnyInstance, RSpec/StubbedMock no easier way
+          { args: { aliases: { g: :g },
+                    gremlin: { :@type => "g:Bytecode", :@value => { source: [%i[tx commit]] } },
+                    session: "529962d2-374b-4470-915f-cf452bead1be" },
+            op: :bytecode,
+            processor: :session,
+            requestId: "529962d2-374b-4470-915f-cf452bead1be" }
+        ).and_raise(Async::Stop)
+        # we raise a RuntimeError because otherwise client will be stuck waiting for the commit result
+        # which are not sent on tinkergraph as it does not support transactions
+        begin
+          subject
+        rescue Async::Stop
+          nil
+        end
+      end
+    end
   end
 
-  xdescribe "#rollback" do # rubocop:disable Lint/EmptyBlock, RSpec/EmptyExampleGroup
+  describe "#rollback" do
+    subject { tx.rollback }
+
+    context "when provider is :tinkergraph" do
+      it "does nothing" do
+        expect_any_instance_of(Grumlin::Transport).not_to receive(:write) # rubocop:disable RSpec/AnyInstance, no easier way
+        expect { subject }.not_to raise_error
+      end
+    end
+
+    context "when provider is :neptune" do
+      before do
+        allow(SecureRandom).to receive(:uuid).and_return("529962d2-374b-4470-915f-cf452bead1be")
+        Grumlin.config.provider = :neptune
+      end
+
+      it "submits commit step" do
+        expect_any_instance_of(Grumlin::Transport).to receive(:write).with( # rubocop:disable RSpec/AnyInstance, RSpec/StubbedMock no easier way
+          { args: { aliases: { g: :g },
+                    gremlin: { :@type => "g:Bytecode", :@value => { source: [%i[tx rollback]] } },
+                    session: "529962d2-374b-4470-915f-cf452bead1be" },
+            op: :bytecode,
+            processor: :session,
+            requestId: "529962d2-374b-4470-915f-cf452bead1be" }
+        ).and_raise(Async::Stop)
+        # we raise a RuntimeError because otherwise client will be stuck waiting for the commit result
+        # which are not sent on tinkergraph as it does not support transactions
+        begin
+          subject
+        rescue Async::Stop
+          nil
+        end
+      end
+    end
   end
 end

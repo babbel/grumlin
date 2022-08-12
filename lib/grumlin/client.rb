@@ -127,9 +127,8 @@ module Grumlin
 
     def submit_request(request)
       channel = @request_dispatcher.add_request(request)
-      @transport.write(request)
-
       begin
+        @transport.write(request)
         channel.dequeue.flat_map { |item| Typing.cast(item) }
       rescue Async::Stop, Async::TimeoutError
         close(check_requests: false)
