@@ -64,14 +64,19 @@ explicitly specify the provider you use.
 #### Provider features
 
 Every provider is described by a set of features. In the future `Grumlin` may decide to disable or enable 
-some parts of it's functionality to comply provider's supported features. Currently there is no difference
-in behaviour when working with different providers.
+some parts of it's functionality to comply provider's supported features.
 
 To check current providers supported features use
 
 ```ruby
 Grumlin.features
 ```
+
+Current differences between providers:
+
+| Feature      | TinkerGraph                                                                                                                                               |AWS Neptune|
+|--------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------|-----------|
+| Transactions | Transaction semantic is ignoroed, data is always writen, `tx.rollback` does nothing, an info is printed every time transactions are used with TinkerGraph |Full support
 
 ### Traversing graphs
 
@@ -281,6 +286,24 @@ it may be useful for debugging. Note that one needs to call a termination step m
 `MyRepository.new.triangles_with_color(:red, query_params: { profile: true })`
 
 method will return profiling data of the results.
+
+#### Transactions
+
+Since 0.22.0 `Grumlin` supports transactions when working with providers that supports them:
+```ruby
+# Using Transaction directly
+tx = g.tx
+gtx = tx.begin
+gtx.addV(:vertex).iterate
+tx.commit # or tx.rollback
+
+# Using with a block
+g.tx do |gtx|
+  gtx.addV(:vertex).iterate
+  # raise Grumlin::Rollback to manually rollback
+  # any other exception will also rollback the transaction and will be reraised 
+end # commits automatically
+```
 
 #### IRB
 
