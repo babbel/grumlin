@@ -245,20 +245,27 @@ Each `return_mode` is mapped to a particular termination step:
 - `:traversal` - do not execute the query and return the traversal as is
 
 `Grumlin::Repository` also provides a set of generic CRUD operations:
-- `add_vertex(label, id = nil, **properties)`
-- `add_edge(label, id = nil, from:, to:, **properties)`
-- `drop_vertex(id)`
-- `drop_edge(id = nil, from: nil, to: nil, label: nil)`
+- `add_vertex(label, id = nil, start: g, **properties)`
+- `add_edge(label, id = nil, from:, to:, start: g, **properties)`
+- `drop_vertex(id, start: g)`
+- `drop_edge(id = nil, from: nil, to: nil, label: nil, start: g)`
 
 and a few methods that emulate upserts:
-- `upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, **params)` 
-- `upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, **params)`
-- `upsert_edges(edges, batch_size: 100, on_failure: :retry, **params)`
-- `upsert_vertices(edges, batch_size: 100, on_failure: :retry, **params)`
+- `upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)` 
+- `upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)`
+- `upsert_edges(edges, batch_size: 100, on_failure: :retry, start: g, **params)`
+- `upsert_vertices(edges, batch_size: 100, on_failure: :retry, start: g, **params)`
 
 All of them support 3 different modes for error handling: `:retry`, `:ignore` and `:raise`. Retry mode is implemented
 with [retryable](https://github.com/nfedyashev/retryable). **params will be merged to the default config for upserts 
 and passed to `Retryable.retryable`. In case if you want to modify retryable behaviour you are to do so.
+
+If you want to use these methods inside a transaction simply pass your `gtx` as `start` parameter:
+```ruby
+g.tx do |gtx|
+  add_vertex(:vertex, start: gtx)
+end
+```
 
 If you don't want to define you own repository, simply use
 
