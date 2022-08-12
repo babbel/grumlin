@@ -2,49 +2,37 @@
 
 module Grumlin
   class Transaction
-    attr_reader :uuid
+    attr_reader :session_id
 
     include Console
+
+    COMMIT = Grumlin::Repository.new.g.step(:tx, :commit).bytecode
+    ROLLBACK = Grumlin::Repository.new.g.step(:tx, :rollback).bytecode
 
     def initialize(traversal_start_class, pool: Grumlin.default_pool)
       @traversal_start_class = traversal_start_class
       @pool = pool
 
-      if supported?
-        @uuid = SecureRandom.uuid
-        return
-      end
-
-      logger.info(self) do
-        "#{Grumlin.config.provider} does not support transactions. commit and rollback are ignored, data will be saved"
-      end
-    end
-
-    def supported?
-      Grumlin.features.supports_transactions?
+      @session_id = SecureRandom.uuid
     end
 
     def begin
-      @traversal_start_class.new(session_id: @uuid)
+      @traversal_start_class.new(session_id: @session_id)
     end
 
     def commit
-      return unless supported?
-
-      finalize(:commit)
+      finalize(COMMIT)
     end
 
     def rollback
-      return unless supported?
-
-      finalize(:rollback)
+      finalize(ROLLBACK)
     end
 
     private
 
     def finalize(action)
       @pool.acquire do |client|
-        client.finalize_tx(action, @uuid)
+        client.write(action, session_id: @session_id)
       end
     end
   end

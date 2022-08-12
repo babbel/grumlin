@@ -33,6 +33,9 @@ loader.do_not_eager_load(test_helpers)
 module Grumlin
   class Error < StandardError; end
 
+  class TransactionError < Error; end
+  class Rollback < TransactionError; end
+
   class UnknownError < Error; end
 
   class ConnectionError < Error; end

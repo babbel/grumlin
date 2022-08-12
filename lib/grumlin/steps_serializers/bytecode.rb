@@ -10,16 +10,18 @@ module Grumlin
 
       def serialize
         steps = ShortcutsApplyer.call(@steps)
-        no_return = @params[:no_return] || false
-
-        {
-          step: (steps.steps + (no_return ? [NONE_STEP] : [])).map { |s| serialize_step(s) }
-        }.tap do |v|
-          v.merge!(source: steps.configuration_steps.map { |s| serialize_step(s) }) if steps.configuration_steps.any?
+        no_return = @params.fetch(:no_return, false)
+        {}.tap do |result|
+          result[:step] = serialize_steps(steps.steps + (no_return ? [NONE_STEP] : [])) if steps.steps.any?
+          result[:source] = serialize_steps(steps.configuration_steps) if steps.configuration_steps.any?
         end
       end
 
       private
+
+      def serialize_steps(steps)
+        steps.map { |s| serialize_step(s) }
+      end
 
       def serialize_step(step)
         [step.name].tap do |result|

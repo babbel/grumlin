@@ -22,51 +22,51 @@ module Grumlin
         self.class.shortcuts
       end
 
-      def drop_vertex(id)
-        g.V(id).drop.iterate
+      def drop_vertex(id, start: g)
+        start.V(id).drop.iterate
       end
 
-      def drop_edge(id = nil, from: nil, to: nil, label: nil) # rubocop:disable Metrics/AbcSize
+      def drop_edge(id = nil, from: nil, to: nil, label: nil, start: g) # rubocop:disable Metrics/AbcSize
         raise ArgumentError, "either id or from:, to: and label: must be passed" if [id, from, to, label].all?(&:nil?)
-        return g.E(id).drop.iterate unless id.nil?
+        return start.E(id).drop.iterate unless id.nil?
 
         raise ArgumentError, "from:, to: and label: must be passed" if [from, to, label].any?(&:nil?)
 
-        g.V(from).outE(label).where(__.inV.hasId(to)).limit(1).drop.iterate
+        start.V(from).outE(label).where(__.inV.hasId(to)).limit(1).drop.iterate
       end
 
-      def add_vertex(label, id = nil, **properties)
+      def add_vertex(label, id = nil, start: g, **properties)
         id ||= properties[T.id]
         properties = except(properties, T.id)
 
-        t = g.addV(label)
+        t = start.addV(label)
         t = t.props(T.id => id) unless id.nil?
         t.props(**properties).next
       end
 
-      def add_edge(label, id = nil, from:, to:, **properties)
+      def add_edge(label, id = nil, from:, to:, start: g, **properties)
         id ||= properties[T.id]
         properties = except(properties, T.label)
         properties[T.id] = id
 
-        g.addE(label).from(__.V(from)).to(__.V(to)).props(**properties).next
+        start.addE(label).from(__.V(from)).to(__.V(to)).props(**properties).next
       end
 
-      def upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, **params)
+      def upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params) # rubocop:disable Metrics/ParameterLists
         with_upsert_error_handling(on_failure, params) do
           create_properties, update_properties = cleanup_properties(create_properties, update_properties)
 
-          g.upsertV(label, id, create_properties, update_properties).id.next
+          start.upsertV(label, id, create_properties, update_properties).id.next
         end
       end
 
       # vertices:
       # [["label", "id", {create: :properties}, {update: properties}]]
       # params can override Retryable config from UPSERT_RETRY_PARAMS
-      def upsert_vertices(vertices, batch_size: 100, on_failure: :retry, **params)
+      def upsert_vertices(vertices, batch_size: 100, on_failure: :retry, start: g, **params)
         vertices.each_slice(batch_size) do |slice|
           with_upsert_error_handling(on_failure, params) do
-            slice.reduce(g) do |t, (label, id, create_properties, update_properties)|
+            slice.reduce(start) do |t, (label, id, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties)
 
               t.upsertV(label, id, create_properties, update_properties)
@@ -77,20 +77,21 @@ module Grumlin
 
       # Only from and to are used to find the existing edge, if one wants to assign an id to a created edge,
       # it must be passed as T.id in create_properties.
-      def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, **params) # rubocop:disable Metrics/ParameterLists
+      def upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, # rubocop:disable Metrics/ParameterLists
+                      on_failure: :retry, start: g, **params)
         with_upsert_error_handling(on_failure, params) do
           create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
-          g.upsertE(label, from, to, create_properties, update_properties).id.next
+          start.upsertE(label, from, to, create_properties, update_properties).id.next
         end
       end
 
       # edges:
       # [["label", "from", "to", {create: :properties}, {update: properties}]]
       # params can override Retryable config from UPSERT_RETRY_PARAMS
-      def upsert_edges(edges, batch_size: 100, on_failure: :retry, **params)
+      def upsert_edges(edges, batch_size: 100, on_failure: :retry, start: g, **params)
         edges.each_slice(batch_size) do |slice|
           with_upsert_error_handling(on_failure, params) do
-            slice.reduce(g) do |t, (label, from, to, create_properties, update_properties)|
+            slice.reduce(start) do |t, (label, from, to, create_properties, update_properties)|
               create_properties, update_properties = cleanup_properties(create_properties, update_properties, T.label)
 
               t.upsertE(label, from, to, create_properties, update_properties)

@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 ENV["ENV"] ||= "test"
+ENV["CONSOLE_LEVEL"] ||= "warn"
 
 require "csv"
 
