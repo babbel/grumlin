@@ -5,10 +5,10 @@ module Grumlin
     include WithExtension
 
     class TraversalError < Grumlin::Error; end
-    class AlreadyBoundToTransationError < TraversalError; end
+    class AlreadyBoundToTransactionError < TraversalError; end
 
     def tx
-      raise AlreadyBoundToTransationError if @session_id
+      raise AlreadyBoundToTransactionError if @session_id
 
       transaction = tx_class.new(self.class, pool: @pool)
       return transaction unless block_given?
