@@ -36,9 +36,9 @@ module Grumlin
         end
 
         batches.times do |batch|
-          Console.logger.info(self) { "drop_in_batches: deleting batch #{batch}..." }
+          Console.logger.info(self) { "drop_in_batches: deleting batch #{batch + 1}/#{batches}..." }
           traversal.limit(batch_size).drop.iterate
-          Console.logger.info(self) { "drop_in_batches: batch #{batch} deleted" }
+          Console.logger.info(self) { "drop_in_batches: batch #{batch + 1}/#{batches} deleted" }
         end
 
         return if traversal.count.next.zero?
