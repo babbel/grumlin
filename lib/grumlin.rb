@@ -107,6 +107,9 @@ module Grumlin
   class ConcurrentVertexInsertFailedError < ConcurrentInsertFailedError; end
   class ConcurrentEdgeInsertFailedError < ConcurrentInsertFailedError; end
 
+  class ConcurrentVertexPropertyInsertFailedError < ConcurrentInsertFailedError; end
+  class ConcurrentEdgePropertyInsertFailedError < ConcurrentInsertFailedError; end
+
   class ServerSerializationError < ServerSideError; end
 
   class ServerTimeoutError < ServerSideError; end
