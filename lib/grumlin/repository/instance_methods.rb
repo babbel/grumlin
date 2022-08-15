@@ -2,7 +2,7 @@
 
 module Grumlin
   module Repository
-    module InstanceMethods
+    module InstanceMethods # rubocop:disable Metrics/ModuleLength
       include Grumlin::Expressions
 
       extend Forwardable
@@ -24,6 +24,28 @@ module Grumlin
 
       def drop_vertex(id, start: g)
         start.V(id).drop.iterate
+      end
+
+      def drop_in_batches(traversal, batch_size: 10_000) # rubocop:disable Metrics/AbcSize
+        total_count = traversal.count.next
+
+        batches = (total_count / batch_size) + 1
+
+        Console.logger.info(self) do
+          "drop_in_batches: total_count: #{total_count}, batch_size: #{batch_size}, batches: #{batches}"
+        end
+
+        batches.times do |batch|
+          Console.logger.info(self) { "drop_in_batches: deleting batch #{batch + 1}/#{batches}..." }
+          traversal.limit(batch_size).drop.iterate
+          Console.logger.info(self) { "drop_in_batches: batch #{batch + 1}/#{batches} deleted" }
+        end
+
+        return if traversal.count.next.zero?
+
+        drop_in_batches(traversal, batch_size: batch_size)
+
+        Console.logger.info(self) { "drop_in_batches: finished." }
       end
 
       def drop_edge(id = nil, from: nil, to: nil, label: nil, start: g) # rubocop:disable Metrics/AbcSize

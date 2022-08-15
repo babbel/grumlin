@@ -126,6 +126,34 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
     end
   end
 
+  describe "#drop_in_batches", timeout: 300 do
+    subject { repository.drop_in_batches(traversal) }
+
+    before do
+      repository.upsert_vertices(vertices_to_drop)
+      repository.upsert_vertices(vertices_to_keep)
+    end
+
+    let(:vertices_to_drop) do
+      20_000.times.map do |id| # rubocop:disable Performance/TimesMap
+        ["test", id, { some_key: 1 }, { some_other_key: 2 }]
+      end
+    end
+
+    let(:vertices_to_keep) do
+      1_000.times.map do |id| # rubocop:disable Performance/TimesMap
+        ["test", id + 20_000, { some_key: 100 }, { some_other_key: 200 }]
+      end
+    end
+
+    let(:traversal) { g.V.hasLabel("test").has(:some_key, 1) }
+
+    it "deletes data from the traversal" do
+      expect { subject }.to change { traversal.count.next }.from(20_000).to(0)
+      expect(g.V.hasLabel("test").has(:some_key, 100).count.next).to eq(1000)
+    end
+  end
+
   describe "#add_vertex" do
     subject { repository.add_vertex(:test, id, **properties) }
 

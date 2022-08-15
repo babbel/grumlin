@@ -249,6 +249,7 @@ Each `return_mode` is mapped to a particular termination step:
 - `add_edge(label, id = nil, from:, to:, start: g, **properties)`
 - `drop_vertex(id, start: g)`
 - `drop_edge(id = nil, from: nil, to: nil, label: nil, start: g)`
+- `drop_in_batches(traversal, batch_size: 10_000)`
 
 and a few methods that emulate upserts:
 - `upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)` 
