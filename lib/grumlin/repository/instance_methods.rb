@@ -10,7 +10,7 @@ module Grumlin
       UPSERT_RETRY_PARAMS = {
         on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentModificationError],
         sleep_method: ->(n) { Async::Task.current.sleep(n) },
-        tries: 3,
+        tries: 5,
         sleep: ->(n) { (n**2) + 1 + rand }
       }.freeze
 
