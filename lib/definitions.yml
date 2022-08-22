@@ -70,6 +70,7 @@ steps:
   - union
   - until
   - valueMap
+  - value
   - values
   - where
   - with

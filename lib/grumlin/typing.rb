@@ -9,13 +9,13 @@ module Grumlin
       "g:Vertex" => ->(value) { cast_entity(Grumlin::Vertex, value) },
       "g:Edge" => ->(value) { cast_entity(Grumlin::Edge, value) },
       "g:Path" => ->(value) { cast_entity(Grumlin::Path, value) },
-      "g:Traverser" => ->(value) { cast_entity(Traverser, value) },
-      "g:Property" => ->(value) { cast_entity(Property, value) },
+      "g:Traverser" => ->(value) { cast_entity(Grumlin::Traverser, value) },
+      "g:Property" => ->(value) { cast_entity(Grumlin::Property, value) },
       "g:Int64" => ->(value) { cast_int(value) },
       "g:Int32" => ->(value) { cast_int(value) },
       "g:Double" => ->(value) { cast_double(value) },
       "g:Direction" => ->(value) { value },
-      # "g:VertexProperty"=> ->(value) { value }, # TODO: implement me
+      "g:VertexProperty" => ->(value) { cast_entity(Grumlin::VertexProperty, value) },
       "g:TraversalMetrics" => ->(value) { cast_map(value[:@value]) },
       "g:Metrics" => ->(value) { cast_map(value[:@value]) },
       "g:T" => ->(value) { Grumlin::Expressions::T.public_send(value) }
