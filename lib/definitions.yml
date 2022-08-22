@@ -69,6 +69,7 @@ steps:
   - unfold
   - union
   - until
+  - value
   - valueMap
   - values
   - where
