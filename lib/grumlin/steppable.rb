@@ -12,7 +12,7 @@ module Grumlin
 
     ALL_STEPS = START_STEPS + CONFIGURATION_STEPS + REGULAR_STEPS
 
-    def initialize(pool: Grumlin.default_pool, session_id: nil)
+    def initialize(pool: nil, session_id: nil)
       @pool = pool
       @session_id = session_id
 
@@ -23,12 +23,14 @@ module Grumlin
 
     ALL_STEPS.each do |step|
       define_method step do |*args, **params|
-        shortcuts.action_class.new(step, args: args, params: params, previous_step: self, session_id: @session_id)
+        shortcuts.action_class.new(step, args: args, params: params, previous_step: self,
+                                         session_id: @session_id, pool: @pool)
       end
     end
 
     def step(name, *args, **params)
-      shortcuts.action_class.new(name, args: args, params: params, previous_step: self, session_id: @session_id)
+      shortcuts.action_class.new(name, args: args, params: params, previous_step: self,
+                                       session_id: @session_id, pool: @pool)
     end
 
     def_delegator :shortcuts, :__
