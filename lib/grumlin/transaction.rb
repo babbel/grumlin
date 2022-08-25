@@ -9,7 +9,7 @@ module Grumlin
     COMMIT = Grumlin::Repository.new.g.step(:tx, :commit).bytecode
     ROLLBACK = Grumlin::Repository.new.g.step(:tx, :rollback).bytecode
 
-    def initialize(traversal_start_class, pool: Grumlin.default_pool)
+    def initialize(traversal_start_class, pool:)
       @traversal_start_class = traversal_start_class
       @pool = pool
 

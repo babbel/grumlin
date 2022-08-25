@@ -36,7 +36,7 @@ module Grumlin
         ac = action_class
 
         shortcut_methods_module.define_method(name) do |*args, **params|
-          next ac.new(name, args: args, params: params, previous_step: self)
+          next ac.new(name, args: args, params: params, previous_step: self, pool: Grumlin.default_pool)
         end
         extend_traversal_classes(shortcut) unless shortcut.lazy?
       end
@@ -52,7 +52,7 @@ module Grumlin
       end
 
       def __
-        @__ ||= traversal_start_class.new
+        traversal_start_class.new(pool: Grumlin.default_pool)
       end
 
       def traversal_start_class
