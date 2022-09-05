@@ -8,17 +8,10 @@ module Grumlin
     def self.from(step)
       raise ArgumentError, "expected: #{Step}, given: #{step.class}" unless step.is_a?(Step)
 
-      shortcuts = step.shortcuts
-      actions = []
-
-      until step.nil? || step.is_a?(TraversalStart)
-        actions.unshift(step)
-        step = step.previous_step
-      end
-
-      new(shortcuts).tap do |chain|
-        actions.each do |act|
-          chain.add(act.name, args: act.args, params: act.params)
+      new(step.shortcuts).tap do |chain|
+        until step.nil? || step.is_a?(TraversalStart)
+          chain.add(step.name, args: step.args, params: step.params, to: :begin)
+          step = step.previous_step
         end
       end
     end
@@ -31,13 +24,16 @@ module Grumlin
       @steps = steps
     end
 
-    def add(name, args: [], params: {})
+    def add(name, args: [], params: {}, to: :end)
       if CONFIGURATION_STEPS.include?(name) || name.to_sym == :tx
-        return add_configuration_step(name, args: args, params: params)
+        return add_configuration_step(name, args: args, params: params, to: to)
       end
 
       StepData.new(name, args: cast_arguments(args), params: params).tap do |step|
-        @steps << step
+        next @steps << step if to == :end
+        next @steps.unshift(step) if to == :begin
+
+        raise ArgumentError, "'to:' must be either :begin or :end, given: '#{to}'"
       end
     end
 
@@ -64,11 +60,14 @@ module Grumlin
       end
     end
 
-    def add_configuration_step(name, args: [], params: {})
-      raise ArgumentError, "cannot use configuration steps after start step was used" unless @steps.empty?
+    def add_configuration_step(name, args: [], params: {}, to: :end)
+      raise ArgumentError, "cannot use configuration steps after start step was used" if @steps.any? && to == :end
 
       StepData.new(name, args: cast_arguments(args), params: params).tap do |step|
-        @configuration_steps << step
+        next @configuration_steps << step if to == :end
+        next @configuration_steps.unshift(step) if to == :begin
+
+        raise ArgumentError, "to must be either :begin or :end, given: '#{to}'"
       end
     end
 
