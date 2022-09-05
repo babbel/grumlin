@@ -220,10 +220,10 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
 
-      it "returns a Grumlin::action" do
+      it "returns a Grumlin::Step" do
         result = repository.test_query(:white)
 
-        expect(result).to be_an(Grumlin::Action)
+        expect(result).to be_an(Grumlin::Step)
       end
     end
 
@@ -275,7 +275,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
 
       it "yields the traversal" do
-        expect { |b| repository.test_query(:white, &b) }.to yield_with_args(Grumlin::Action)
+        expect { |b| repository.test_query(:white, &b) }.to yield_with_args(Grumlin::Step)
       end
     end
 
@@ -291,7 +291,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
 
       it "raises an exception" do
-        expect { repository.test_query }.to raise_error(Grumlin::WrongQueryResult, "queries must return Grumlin::Action, nil or an empty collection. Given: String")
+        expect { repository.test_query }.to raise_error(Grumlin::WrongQueryResult, "queries must return Grumlin::Step, nil or an empty collection. Given: String")
       end
     end
 

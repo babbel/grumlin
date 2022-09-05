@@ -4,10 +4,10 @@ RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
   describe ".call" do
     subject { described_class.call(steps) }
 
-    let(:steps) { action.steps }
+    let(:steps) { step.steps }
 
     context "when steps does not use shortcuts" do
-      let(:action) { g.V.hasLabel(:test).where(__.out.has(:property, :value)) }
+      let(:step) { g.V.hasLabel(:test).where(__.out.has(:property, :value)) }
 
       it "returns steps as is" do
         expect(subject).to eq(steps)
@@ -29,7 +29,7 @@ RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
       end
 
       context "when shortcuts are used in the main traversal" do
-        let(:action) do
+        let(:step) do
           g(shortcuts).V.hasColor(:red).hasShape(:triangle)
         end
 
@@ -45,7 +45,7 @@ RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
       end
 
       context "when shortcuts are used in anonymous traversals" do
-        let(:action) do
+        let(:step) do
           g(shortcuts).V
                       .where(
                         __(shortcuts).hasColor(:red)
@@ -69,7 +69,7 @@ RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
       end
 
       context "when shortcuts are used in another shortcuts" do
-        let(:action) do
+        let(:step) do
           g(shortcuts).V.hasShapeAndColor(:triangle, :red)
         end
 
@@ -85,7 +85,7 @@ RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
       end
 
       context "when shortcut is empty" do
-        let(:action) do
+        let(:step) do
           g(shortcuts).V.emptyShortcut
         end
 

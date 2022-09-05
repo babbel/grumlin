@@ -2,18 +2,18 @@
 
 module Grumlin
   class Steps
-    CONFIGURATION_STEPS = Action::CONFIGURATION_STEPS
-    ALL_STEPS = Action::ALL_STEPS
+    CONFIGURATION_STEPS = Step::CONFIGURATION_STEPS
+    ALL_STEPS = Step::ALL_STEPS
 
-    def self.from(action)
-      raise ArgumentError, "expected: #{Action}, given: #{action.class}" unless action.is_a?(Action)
+    def self.from(step)
+      raise ArgumentError, "expected: #{Step}, given: #{step.class}" unless step.is_a?(Step)
 
-      shortcuts = action.shortcuts
+      shortcuts = step.shortcuts
       actions = []
 
-      until action.nil? || action.is_a?(TraversalStart)
-        actions.unshift(action)
-        action = action.previous_step
+      until step.nil? || step.is_a?(TraversalStart)
+        actions.unshift(step)
+        step = step.previous_step
       end
 
       new(shortcuts).tap do |chain|
@@ -73,7 +73,7 @@ module Grumlin
     end
 
     def cast_arguments(arguments)
-      arguments.map { |arg| arg.is_a?(Action) ? Steps.from(arg) : arg }
+      arguments.map { |arg| arg.is_a?(Step) ? Steps.from(arg) : arg }
     end
   end
 end

@@ -4,22 +4,22 @@ module Grumlin
   module WithExtension
     def with(name, value)
       prev = self
-      strategy = if is_a?(with_action_class)
+      strategy = if is_a?(with_step_class)
                    prev = previous_step
                    TraversalStrategies::OptionsStrategy.new(args.first.value.merge(name => value))
                  else
                    TraversalStrategies::OptionsStrategy.new({ name => value })
                  end
-      with_action_class.new(:withStrategies, args: [strategy], previous_step: prev)
+      with_step_class.new(:withStrategies, args: [strategy], previous_step: prev)
     end
 
     private
 
-    def with_action_class
-      @with_action_class ||= Class.new(shortcuts.action_class) do
+    def with_step_class
+      @with_step_class ||= Class.new(shortcuts.step_class) do
         include WithExtension
 
-        def with_action_class
+        def with_step_class
           self.class
         end
       end

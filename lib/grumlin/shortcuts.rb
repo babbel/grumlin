@@ -15,7 +15,7 @@ module Grumlin
       name = name.to_sym
       lazy = false if override
 
-      if Grumlin::Action::REGULAR_STEPS.include?(name) && !override
+      if Grumlin::Step::REGULAR_STEPS.include?(name) && !override
         raise ArgumentError,
               "overriding standard gremlin steps is not allowed, if you know what you're doing, pass `override: true`"
       end

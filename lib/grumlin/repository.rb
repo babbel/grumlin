@@ -32,9 +32,9 @@ module Grumlin
         t = instance_exec(*args, **params, &query_block)
         return t if t.nil? || (t.respond_to?(:empty?) && t.empty?)
 
-        unless t.is_a?(Grumlin::Action)
+        unless t.is_a?(Grumlin::Step)
           raise WrongQueryResult,
-                "queries must return #{Grumlin::Action}, nil or an empty collection. Given: #{t.class}"
+                "queries must return #{Grumlin::Step}, nil or an empty collection. Given: #{t.class}"
         end
 
         return block.call(t) unless block.nil?

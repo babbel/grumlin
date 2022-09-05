@@ -99,11 +99,11 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     end
   end
 
-  describe "#action_class" do
-    subject { storage.action_class }
+  describe "#step_class" do
+    subject { storage.step_class }
 
-    it "returns an Action subclass" do
-      expect(subject.superclass).to eq(Grumlin::Action)
+    it "returns a Step subclass" do
+      expect(subject.superclass).to eq(Grumlin::Step)
       expect(subject.instance_methods).to include(:foo)
       expect(subject.instance_methods).to include(:bar)
     end

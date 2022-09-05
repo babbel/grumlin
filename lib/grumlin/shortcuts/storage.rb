@@ -33,10 +33,10 @@ module Grumlin
       def add(name, shortcut)
         @storage[name] = shortcut
 
-        ac = action_class
+        sc = step_class
 
         shortcut_methods_module.define_method(name) do |*args, **params|
-          next ac.new(name, args: args, params: params, previous_step: self, pool: Grumlin.default_pool)
+          next sc.new(name, args: args, params: params, previous_step: self, pool: Grumlin.default_pool)
         end
         extend_traversal_classes(shortcut) unless shortcut.lazy?
       end
@@ -59,8 +59,8 @@ module Grumlin
         @traversal_start_class ||= shortcut_aware_class(TraversalStart)
       end
 
-      def action_class
-        @action_class ||= shortcut_aware_class(Action)
+      def step_class
+        @step_class ||= shortcut_aware_class(Step)
       end
 
       protected
@@ -91,7 +91,7 @@ module Grumlin
         m = Module.new do
           define_method(shortcut.name, &shortcut.block)
         end
-        action_class.include(m)
+        step_class.include(m)
         traversal_start_class.include(m)
       end
     end
