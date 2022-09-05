@@ -34,6 +34,7 @@ module Grumlin
   class Error < StandardError; end
 
   class TransactionError < Error; end
+
   class Rollback < TransactionError; end
 
   class UnknownError < Error; end
@@ -99,15 +100,19 @@ module Grumlin
   end
 
   class VertexAlreadyExistsError < AlreadyExistsError; end
+
   class EdgeAlreadyExistsError < AlreadyExistsError; end
 
   class ConcurrentModificationError < ServerError; end
+
   class ConcurrentInsertFailedError < ConcurrentModificationError; end
 
   class ConcurrentVertexInsertFailedError < ConcurrentInsertFailedError; end
+
   class ConcurrentEdgeInsertFailedError < ConcurrentInsertFailedError; end
 
   class ConcurrentVertexPropertyInsertFailedError < ConcurrentInsertFailedError; end
+
   class ConcurrentEdgePropertyInsertFailedError < ConcurrentInsertFailedError; end
 
   class ServerSerializationError < ServerSideError; end
@@ -134,8 +139,6 @@ module Grumlin
 
   class WrongQueryResult < RepositoryError; end
 
-  @pool_mutex = Mutex.new
-
   class << self
     def configure
       yield config
@@ -155,26 +158,22 @@ module Grumlin
     end
 
     def default_pool
-      if Thread.current.thread_variable_get(:grumlin_default_pool)
-        return Thread.current.thread_variable_get(:grumlin_default_pool)
-      end
+      t = Thread.current
+      return t.thread_variable_get(:grumlin_default_pool) if t.thread_variable_get(:grumlin_default_pool)
 
-      @pool_mutex.synchronize do
-        Thread.current.thread_variable_set(:grumlin_default_pool,
-                                           Async::Pool::Controller.new(Grumlin::Client::PoolResource,
-                                                                       limit: config.pool_size))
-      end
+      t.thread_variable_set(:grumlin_default_pool,
+                            Async::Pool::Controller.new(Grumlin::Client::PoolResource,
+                                                        limit: config.pool_size))
     end
 
     def close
-      return if Thread.current.thread_variable_get(:grumlin_default_pool).nil?
+      t = Thread.current
+      return if t.thread_variable_get(:grumlin_default_pool).nil?
 
-      @pool_mutex.synchronize do
-        pool = Thread.current.thread_variable_get(:grumlin_default_pool)
-        pool.wait while pool.busy?
-        pool.close
-        Thread.current.thread_variable_set(:grumlin_default_pool, nil)
-      end
+      pool = t.thread_variable_get(:grumlin_default_pool)
+      pool.wait while pool.busy?
+      pool.close
+      t.thread_variable_set(:grumlin_default_pool, nil)
     end
 
     def definitions
