@@ -30,10 +30,10 @@ module Grumlin
           next result << StepData.new(step.name, args: args, params: step.params) unless shortcut&.lazy?
 
           t = shortcuts.__
-          action = shortcut.apply(t, *args, **step.params)
-          next if action.nil? || action == t # Shortcut did not add any steps
+          step = shortcut.apply(t, *args, **step.params)
+          next if step.nil? || step == t # Shortcut did not add any steps
 
-          new_steps = call(Steps.from(action))
+          new_steps = call(Steps.from(step))
           result.concat(new_steps.configuration_steps, new_steps.steps)
         end
       end

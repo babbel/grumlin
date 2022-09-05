@@ -4,9 +4,9 @@ RSpec.describe Grumlin::Steps, gremlin: true do
   let(:steps) { described_class.new(shortcuts) }
 
   describe ".from" do
-    subject { described_class.from(action) }
+    subject { described_class.from(step) }
 
-    let(:action) do
+    let(:step) do
       g.withSideEffect(:a, b: 1).V.has(:property, :value).where(__.out(:name))
     end
 
@@ -223,7 +223,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
           expect { subject }.not_to change(steps, :configuration_steps)
         end
 
-        context "with actions in arguments" do
+        context "with steps in arguments" do
           let(:name) { :where }
           let(:args) { [__.has(:proeprty, :value)] }
 

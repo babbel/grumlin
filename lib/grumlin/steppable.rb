@@ -23,14 +23,14 @@ module Grumlin
 
     ALL_STEPS.each do |step|
       define_method step do |*args, **params|
-        shortcuts.action_class.new(step, args: args, params: params, previous_step: self,
-                                         session_id: @session_id, pool: @pool)
+        shortcuts.step_class.new(step, args: args, params: params, previous_step: self,
+                                       session_id: @session_id, pool: @pool)
       end
     end
 
     def step(name, *args, **params)
-      shortcuts.action_class.new(name, args: args, params: params, previous_step: self,
-                                       session_id: @session_id, pool: @pool)
+      shortcuts.step_class.new(name, args: args, params: params, previous_step: self,
+                                     session_id: @session_id, pool: @pool)
     end
 
     def_delegator :shortcuts, :__

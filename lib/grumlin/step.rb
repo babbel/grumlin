@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Grumlin
-  class Action < Steppable
+  class Step < Steppable
     attr_reader :name, :args, :params, :next_step, :configuration_steps, :previous_step, :shortcut
 
     # client is only used when a traversal is a part of transaction
@@ -9,7 +9,7 @@ module Grumlin
       super(pool: pool, session_id: session_id)
 
       @name = name.to_sym
-      @args = args # TODO: add recursive validation: only json types or Action
+      @args = args # TODO: add recursive validation: only json types or Step
       @params = params # TODO: add recursive validation: only json types
       @previous_step = previous_step
       @shortcut = shortcuts[@name]

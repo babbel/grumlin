@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Action do
-  let(:action_class) { shortcuts.action_class }
-  let(:action) { action_class.new(name, args: args, params: params) }
+RSpec.describe Grumlin::Step do
+  let(:step_class) { shortcuts.step_class }
+  let(:step) { step_class.new(name, args: args, params: params) }
   let(:name) { :V }
   let(:args) { [] }
   let(:params) { {} }
@@ -11,21 +11,21 @@ RSpec.describe Grumlin::Action do
   describe "chaining" do
     context "when no shortcuts are used" do
       it "chains" do
-        configuration_step = action_class.new(:withSideEffect, args: [:a], params: { a: 1 })
+        configuration_step = step_class.new(:withSideEffect, args: [:a], params: { a: 1 })
         expect(configuration_step.previous_step).to be_nil
-        expect(configuration_step).to be_an(action_class)
+        expect(configuration_step).to be_an(step_class)
         expect(configuration_step.name).to eq(:withSideEffect)
         expect(configuration_step.args).to eq([:a])
         expect(configuration_step.params).to eq({ a: 1 })
 
         start_step = configuration_step.V
-        expect(start_step).to be_an(action_class)
+        expect(start_step).to be_an(step_class)
         expect(start_step.name).to eq(:V)
         expect(start_step.args).to be_empty
         expect(start_step.params).to be_empty
 
         regular_step = start_step.has(:property, :value)
-        expect(regular_step).to be_an(action_class)
+        expect(regular_step).to be_an(step_class)
         expect(regular_step.name).to eq(:has)
         expect(regular_step.args).to eq(%i[property value])
         expect(regular_step.params).to be_empty
@@ -36,46 +36,46 @@ RSpec.describe Grumlin::Action do
     end
 
     context "when shortcuts are used" do
-      subject { action.foo(:arg1, :arg2, param1: 1, param2: 2) }
+      subject { step.foo(:arg1, :arg2, param1: 1, param2: 2) }
 
       let(:shortcuts) { Grumlin::Shortcuts::Storage[{ foo: Grumlin::Shortcut.new(:foo) { nil } }] }
 
       context "when shortcut is empty" do
-        it "returns an Action" do
-          expect(subject).to be_an(action_class)
+        it "returns a Step" do
+          expect(subject).to be_an(step_class)
         end
 
-        it "assigns passes args and params to the new Action" do
+        it "assigns passes args and params to the new Step" do
           expect(subject.args).to eq(%i[arg1 arg2])
           expect(subject.params).to eq({ param1: 1, param2: 2 })
         end
 
         it "assigns previous_step" do
-          expect(subject.previous_step).to equal(action)
+          expect(subject.previous_step).to equal(step)
         end
       end
     end
   end
 
   describe "#step" do
-    subject { action.step("step", :arg1, :arg2, param1: 1, param2: 2) }
+    subject { step.step("step", :arg1, :arg2, param1: 1, param2: 2) }
 
-    it "returns an Action" do
-      expect(subject).to be_an(action_class)
+    it "returns a Step" do
+      expect(subject).to be_an(step_class)
     end
 
-    it "assigns passes args and params to the new Action" do
+    it "assigns passes args and params to the new Step" do
       expect(subject.args).to eq(%i[arg1 arg2])
       expect(subject.params).to eq({ param1: 1, param2: 2 })
     end
 
     it "assigns previous_step" do
-      expect(subject.previous_step).to equal(action)
+      expect(subject.previous_step).to equal(step)
     end
   end
 
   describe "#configuration_step?" do
-    subject { action.configuration_step? }
+    subject { step.configuration_step? }
 
     context "when step is a configuration step" do
       let(:name) { "withSideEffect" }
@@ -93,7 +93,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#start_step?" do
-    subject { action.start_step? }
+    subject { step.start_step? }
 
     context "when step a start step" do
       it "returns true" do
@@ -111,7 +111,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#regular_step?" do
-    subject { action.regular_step? }
+    subject { step.regular_step? }
 
     context "when step a regular step" do
       let(:name) { :has }
@@ -131,7 +131,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#supported_step?" do
-    subject { action.supported_step? }
+    subject { step.supported_step? }
 
     context "when step is supported" do
       it "returns true" do
@@ -149,7 +149,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#shortcut" do
-    subject { action.shortcut }
+    subject { step.shortcut }
 
     context "when step is a shortcut" do
       let(:shortcuts) { Grumlin::Shortcuts::Storage[{ cut: Grumlin::Shortcut.new(:name) { nil } }] }
@@ -168,11 +168,11 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#==" do
-    subject { action == other_action }
+    subject { step == other_step }
 
     context "when name, args, params and previous step are equal" do
-      let(:action) { action_class.new(:V).has(:property, :value).where(action_class.new(:has, args: %i[property value])) }
-      let(:other_action) { action_class.new(:V).has(:property, :value).where(action_class.new(:has, args: %i[property value])) }
+      let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
+      let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
 
       it "returns true" do
         expect(subject).to be_truthy
@@ -180,8 +180,8 @@ RSpec.describe Grumlin::Action do
     end
 
     context "when something is not equal" do
-      let(:action) { action_class.new(:V).has(:property, :value).where(action_class.new(:has, args: %i[property value])) }
-      let(:other_action) { action_class.new(:V).has(:property, :value).where(action_class.new(:V, args: [:id])) }
+      let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
+      let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:V, args: [:id])) }
 
       it "returns false" do
         expect(subject).to be_falsey
@@ -190,7 +190,7 @@ RSpec.describe Grumlin::Action do
   end
 
   describe "#steps" do
-    subject { action.steps }
+    subject { step.steps }
 
     it "returns steps" do
       expect(subject).to be_an(Grumlin::Steps)
