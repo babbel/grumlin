@@ -4,8 +4,10 @@ module Grumlin
   class Step < Steppable
     attr_reader :name, :args, :params, :next_step, :configuration_steps, :previous_step, :shortcut
 
-    def initialize(name, args: [], params: {}, previous_step: nil, pool: nil, session_id: nil)
-      super(pool: pool, session_id: session_id)
+    # TODO: replace pool, session_id and middlewares with a context?
+    def initialize(name, args: [], params: {}, previous_step: nil, pool: nil, session_id: nil, # rubocop:disable Metrics/ParameterLists
+                   middlewares: Grumlin.default_middlewares)
+      super(pool: pool, session_id: session_id, middlewares: middlewares)
 
       @name = name.to_sym
       @args = args # TODO: add recursive validation: only json types or Step
@@ -73,19 +75,22 @@ module Grumlin
     end
 
     def toList
-      client_write(bytecode)
+      client_write(bytecode, no_return: false)
     end
 
     def iterate
-      client_write(bytecode(no_return: true))
+      client_write(bytecode(no_return: true), no_return: true)
     end
 
     private
 
-    def client_write(payload, middlewares: Grumlin.default_middlewares)
+    def client_write(payload, no_return:)
       @pool.acquire do |client|
-        executor = -> { client.write(payload, session_id: @session_id) }
-        middlewares.call(traversal: self, executor: executor)
+        @middlewares.call(traversal: self,
+                          no_return: no_return,
+                          payload: payload,
+                          session_id: @session_id,
+                          client: client)
       end
     end
   end

@@ -8,7 +8,7 @@ module Grumlin
       end
 
       def call(env)
-        env[:executor].call
+        env[:client].write(env[:payload], session_id: env[:session_id])
       end
     end
   end

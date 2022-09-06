@@ -5,8 +5,6 @@ module Grumlin
     module InstanceMethods # rubocop:disable Metrics/ModuleLength
       include Grumlin::Expressions
 
-      extend Forwardable
-
       UPSERT_RETRY_PARAMS = {
         on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentModificationError],
         sleep_method: ->(n) { Async::Task.current.sleep(n) },
@@ -16,7 +14,13 @@ module Grumlin
 
       DEFAULT_ERROR_HANDLING_STRATEGY = ErrorHandlingStrategy.new(mode: :retry, **UPSERT_RETRY_PARAMS)
 
-      def_delegators :shortcuts, :g, :__
+      def g
+        __
+      end
+
+      def __
+        shortcuts.traversal_start_class.new(pool: Grumlin.default_pool)
+      end
 
       def shortcuts
         self.class.shortcuts
