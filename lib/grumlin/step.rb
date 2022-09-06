@@ -4,7 +4,6 @@ module Grumlin
   class Step < Steppable
     attr_reader :name, :args, :params, :next_step, :configuration_steps, :previous_step, :shortcut
 
-    # client is only used when a traversal is a part of transaction
     def initialize(name, args: [], params: {}, previous_step: nil, pool: nil, session_id: nil)
       super(pool: pool, session_id: session_id)
 
