@@ -83,9 +83,10 @@ module Grumlin
 
     private
 
-    def client_write(payload)
+    def client_write(payload, middlewares: Grumlin.default_middlewares)
       @pool.acquire do |client|
-        client.write(payload, session_id: @session_id)
+        executor = -> { client.write(payload, session_id: @session_id) }
+        middlewares.call(traversal: self, executor: executor)
       end
     end
   end
