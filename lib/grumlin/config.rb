@@ -11,6 +11,7 @@ module Grumlin
       b.use Middlewares::ApplyShortcuts
       b.use Middlewares::SerializeToBytecode
       b.use Middlewares::BuildQuery
+      b.use Middlewares::CastResults
       b.use Middlewares::RunQuery
     end.freeze
 

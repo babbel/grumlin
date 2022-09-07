@@ -295,6 +295,10 @@ it may be useful for debugging. Note that one needs to call a termination step m
 
 method will return profiling data of the results.
 
+##### Middlewares
+
+See [doc/middlewares.md](doc/middlewares.md)
+
 #### Transactions
 
 Since 0.22.0 `Grumlin` supports transactions when working with providers that supports them:
