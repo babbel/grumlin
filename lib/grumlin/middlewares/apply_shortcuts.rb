@@ -2,11 +2,7 @@
 
 module Grumlin
   module Middlewares
-    class ApplyShortcuts
-      def initialize(app)
-        @app = app
-      end
-
+    class ApplyShortcuts < Middleware
       def call(env)
         env[:steps_without_shortcuts] = ShortcutsApplyer.call(env[:steps])
         @app.call(env)

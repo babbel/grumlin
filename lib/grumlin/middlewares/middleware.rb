@@ -2,9 +2,13 @@
 
 module Grumlin
   module Middlewares
-    class RunQuery < Middleware
+    class Middleware
+      def initialize(app)
+        @app = app
+      end
+
       def call(env)
-        env[:pool].acquire { |c| c.write(env[:query]) }
+        raise NotImplementedError
       end
     end
   end

@@ -2,11 +2,7 @@
 
 module Grumlin
   module Middlewares
-    class BuildQuery
-      def initialize(app)
-        @app = app
-      end
-
+    class BuildQuery < Middleware
       def call(env)
         env[:query] = {
           requestId: SecureRandom.uuid,
