@@ -24,8 +24,8 @@ module Grumlin
         @client.close
       end
 
-      def write(bytecode, session_id: nil)
-        @client.write(bytecode, session_id: session_id)
+      def write(query)
+        @client.write(query)
       ensure
         @count += 1
       end
@@ -94,14 +94,12 @@ module Grumlin
     end
 
     # TODO: support yielding
-    def write(bytecode, session_id: nil)
+    def write(query)
       raise NotConnectedError unless connected?
 
-      request = to_query(bytecode, session_id: session_id)
-
-      channel = @request_dispatcher.add_request(request)
+      channel = @request_dispatcher.add_request(query)
       begin
-        @transport.write(request)
+        @transport.write(query)
         channel.dequeue.flat_map { |item| Typing.cast(item) }
       rescue Async::Stop, Async::TimeoutError
         close(check_requests: false)
@@ -122,22 +120,6 @@ module Grumlin
     # This might be overridden in successors
     def build_transport
       Transport.new(@url, parent: @parent, **@client_options)
-    end
-
-    def to_query(bytecode, session_id:)
-      {
-        requestId: SecureRandom.uuid,
-        op: :bytecode,
-        processor: session_id ? :session : :traversal,
-        args: {
-          gremlin: {
-            :@type => "g:Bytecode",
-            :@value => bytecode.serialize
-          },
-          aliases: { g: :g },
-          session: session_id
-        }.compact
-      }
     end
   end
 end

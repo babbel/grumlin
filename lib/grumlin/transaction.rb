@@ -6,14 +6,14 @@ module Grumlin
 
     include Console
 
-    COMMIT = Grumlin::Repository.new.g.step(:tx, :commit).bytecode
-    ROLLBACK = Grumlin::Repository.new.g.step(:tx, :rollback).bytecode
+    COMMIT = Grumlin::Repository.new.g.step(:tx, :commit)
+    ROLLBACK = Grumlin::Repository.new.g.step(:tx, :rollback)
 
-    def initialize(traversal_start_class, pool:)
+    def initialize(traversal_start_class, pool:, middlewares:)
       @traversal_start_class = traversal_start_class
       @pool = pool
-
       @session_id = SecureRandom.uuid
+      @middlewares = middlewares
     end
 
     def begin
@@ -30,10 +30,11 @@ module Grumlin
 
     private
 
-    def finalize(action)
-      @pool.acquire do |client|
-        client.write(action, session_id: @session_id)
-      end
+    def finalize(step)
+      @middlewares.call(traversal: step,
+                        need_results: false,
+                        session_id: @session_id,
+                        pool: @pool)
     end
   end
 end

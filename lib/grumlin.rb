@@ -17,6 +17,7 @@ require "async/barrier"
 require "async/http/endpoint"
 require "async/websocket/client"
 
+require "middleware"
 require "retryable"
 
 require "zeitwerk"
@@ -178,6 +179,16 @@ module Grumlin
 
     def definitions
       @definitions ||= YAML.safe_load(File.read(File.join(__dir__, "definitions.yml")), symbolize_names: true)
+    end
+
+    def default_middlewares
+      @default_middlewares ||= Middleware::Builder.new do |b|
+        b.use Middlewares::SerializeToSteps
+        b.use Middlewares::ApplyShortcuts
+        b.use Middlewares::SerializeToBytecode
+        b.use Middlewares::BuildQuery
+        b.use Middlewares::RunQuery
+      end
     end
   end
 end
