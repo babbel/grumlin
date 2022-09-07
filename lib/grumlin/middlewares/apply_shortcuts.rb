@@ -2,13 +2,13 @@
 
 module Grumlin
   module Middlewares
-    class SerializeToBytecode
+    class ApplyShortcuts
       def initialize(app)
         @app = app
       end
 
       def call(env)
-        env[:bytecode] = StepsSerializers::Bytecode.new(env[:steps_without_shortcuts], no_return: !env[:need_results])
+        env[:steps_without_shortcuts] = ShortcutsApplyer.call(env[:steps])
         @app.call(env)
       end
     end

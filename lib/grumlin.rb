@@ -184,6 +184,7 @@ module Grumlin
     def default_middlewares
       @default_middlewares ||= Middleware::Builder.new do |b|
         b.use Middlewares::SerializeToSteps
+        b.use Middlewares::ApplyShortcuts
         b.use Middlewares::SerializeToBytecode
         b.use Middlewares::RunQuery
       end
