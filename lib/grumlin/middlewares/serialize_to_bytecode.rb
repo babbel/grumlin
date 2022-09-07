@@ -8,7 +8,8 @@ module Grumlin
       end
 
       def call(env)
-        env[:bytecode] = StepsSerializers::Bytecode.new(env[:steps_without_shortcuts], no_return: !env[:need_results])
+        env[:bytecode] = StepsSerializers::Bytecode.new(env[:steps_without_shortcuts],
+                                                        no_return: !env[:need_results]).serialize
         @app.call(env)
       end
     end

@@ -10,7 +10,7 @@ module Grumlin
     def tx
       raise AlreadyBoundToTransactionError if @session_id
 
-      transaction = tx_class.new(self.class, pool: @pool)
+      transaction = tx_class.new(self.class, pool: @pool, middlewares: @middlewares)
       return transaction unless block_given?
 
       begin

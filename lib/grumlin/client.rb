@@ -97,7 +97,7 @@ module Grumlin
     def write(bytecode, session_id: nil)
       raise NotConnectedError unless connected?
 
-      request = to_query(bytecode.serialize, session_id: session_id)
+      request = to_query(bytecode, session_id: session_id)
 
       channel = @request_dispatcher.add_request(request)
       begin
