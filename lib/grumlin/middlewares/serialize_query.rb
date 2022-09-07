@@ -2,13 +2,14 @@
 
 module Grumlin
   module Middlewares
-    class RunQuery
+    class SerializeQuery
       def initialize(app)
         @app = app
       end
 
       def call(env)
-        env[:client].write(env[:bytecode], session_id: env[:session_id])
+        env[:bytecode] = StepsSerializers::Bytecode.new(env[:traversal].steps, no_return: !env[:need_results])
+        @app.call(env)
       end
     end
   end

@@ -75,20 +75,19 @@ module Grumlin
     end
 
     def toList
-      client_write(bytecode, no_return: false)
+      client_write(need_results: true)
     end
 
     def iterate
-      client_write(bytecode(no_return: true), no_return: true)
+      client_write(need_results: false)
     end
 
     private
 
-    def client_write(payload, no_return:)
+    def client_write(need_results:)
       @pool.acquire do |client|
         @middlewares.call(traversal: self,
-                          no_return: no_return,
-                          payload: payload,
+                          need_results: need_results,
                           session_id: @session_id,
                           client: client)
       end

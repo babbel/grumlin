@@ -183,6 +183,7 @@ module Grumlin
 
     def default_middlewares
       @default_middlewares ||= Middleware::Builder.new do |b|
+        b.use Middlewares::SerializeQuery
         b.use Middlewares::RunQuery
       end
     end
