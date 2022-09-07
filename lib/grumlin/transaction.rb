@@ -31,12 +31,10 @@ module Grumlin
     private
 
     def finalize(step)
-      @pool.acquire do |client|
-        @middlewares.call(traversal: step,
-                          need_results: false,
-                          session_id: @session_id,
-                          client: client)
-      end
+      @middlewares.call(traversal: step,
+                        need_results: false,
+                        session_id: @session_id,
+                        pool: @pool)
     end
   end
 end

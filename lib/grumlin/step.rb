@@ -85,12 +85,10 @@ module Grumlin
     private
 
     def client_write(need_results:)
-      @pool.acquire do |client|
-        @middlewares.call(traversal: self,
-                          need_results: need_results,
-                          session_id: @session_id,
-                          client: client)
-      end
+      @middlewares.call(traversal: self,
+                        need_results: need_results,
+                        session_id: @session_id,
+                        pool: @pool)
     end
   end
 end

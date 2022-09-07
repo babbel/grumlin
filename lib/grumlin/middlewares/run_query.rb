@@ -8,7 +8,7 @@ module Grumlin
       end
 
       def call(env)
-        env[:client].write(env[:query])
+        env[:pool].acquire { |c| c.write(env[:query]) }
       end
     end
   end
