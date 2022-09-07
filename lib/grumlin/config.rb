@@ -6,6 +6,14 @@ module Grumlin
 
     SUPPORTED_PROVIDERS = %i[neptune tinkergraph].freeze
 
+    DEFAULT_MIDDLEWARES = Middleware::Builder.new do |b|
+      b.use Middlewares::SerializeToSteps
+      b.use Middlewares::ApplyShortcuts
+      b.use Middlewares::SerializeToBytecode
+      b.use Middlewares::BuildQuery
+      b.use Middlewares::RunQuery
+    end.freeze
+
     class ConfigurationError < Grumlin::Error; end
 
     class UnknownProviderError < ConfigurationError; end
@@ -15,6 +23,12 @@ module Grumlin
       @client_concurrency = 5
       @provider = :tinkergraph
       @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent: parent) }
+    end
+
+    def middlewares
+      @middlewares ||= Middleware::Builder.new do |b|
+        b.use DEFAULT_MIDDLEWARES
+      end
     end
 
     def validate!
