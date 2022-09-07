@@ -8,7 +8,7 @@ module Grumlin
       end
 
       def call(env)
-        env[:client].write(env[:bytecode], session_id: env[:session_id])
+        env[:client].write(env[:query])
       end
     end
   end
