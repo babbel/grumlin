@@ -75,16 +75,16 @@ module Grumlin
     end
 
     def toList
-      client_write(need_results: true)
+      send_query(need_results: true)
     end
 
     def iterate
-      client_write(need_results: false)
+      send_query(need_results: false)
     end
 
     private
 
-    def client_write(need_results:)
+    def send_query(need_results:)
       @middlewares.call(traversal: self,
                         need_results: need_results,
                         session_id: @session_id,
