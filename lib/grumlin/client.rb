@@ -100,7 +100,7 @@ module Grumlin
       channel = @request_dispatcher.add_request(query)
       begin
         @transport.write(query)
-        channel.dequeue.flat_map { |item| Typing.cast(item) }
+        channel.dequeue
       rescue Async::Stop, Async::TimeoutError
         close(check_requests: false)
         raise
