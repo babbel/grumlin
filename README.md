@@ -297,7 +297,11 @@ method will return profiling data of the results.
 
 ##### Middlewares
 
-See [doc/middlewares.md](doc/middlewares.md)
+Middlewares can be used to perform certain actions before and after every query made by `Grumlin`. It can be useful for
+measuring query execution time or performing some modification or validation to the query before it reaches the server or
+modify the response before client gets it.
+
+See [doc/middlewares.md](doc/middlewares.md) for more info and examples.
 
 #### Transactions
 
