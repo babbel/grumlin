@@ -21,9 +21,7 @@ RSpec.describe Grumlin::Config do
         config.provider = :neptune
       end
 
-      it "does not raise any errors" do
-        expect { subject }.not_to raise_error
-      end
+      include_examples("does not raise")
     end
 
     context "when provider is unknown" do
