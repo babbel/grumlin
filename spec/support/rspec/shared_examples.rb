@@ -36,3 +36,7 @@ end
 RSpec.shared_examples "returns true" do
   include_examples "returns", true
 end
+
+RSpec.shared_examples "returns nil" do
+  include_examples "returns", nil
+end

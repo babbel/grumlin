@@ -145,9 +145,7 @@ RSpec.describe Grumlin::Step do
     end
 
     context "when step is no a shortcut" do
-      it "returns nil" do
-        expect(subject).to be_nil
-      end
+      include_examples "returns nil"
     end
   end
 

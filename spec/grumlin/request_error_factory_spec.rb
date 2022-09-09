@@ -9,9 +9,7 @@ RSpec.describe Grumlin::RequestErrorFactory do
     context "when status is 200" do
       let(:response) { { requestId: 123, status: { code: 200, message: "ok" } } }
 
-      it "returns nil" do
-        expect(subject).to be_nil
-      end
+      include_examples "returns nil"
     end
 
     context "when status is 500" do

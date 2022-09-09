@@ -23,9 +23,7 @@ RSpec.describe Grumlin::Features do
     context "when provider is unknown" do
       let(:provider_name) { :unk }
 
-      it "returns nil" do
-        expect(subject).to be_nil
-      end
+      include_examples "returns nil"
     end
   end
 end
