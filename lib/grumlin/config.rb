@@ -6,14 +6,14 @@ module Grumlin
 
     SUPPORTED_PROVIDERS = %i[neptune tinkergraph].freeze
 
-    DEFAULT_MIDDLEWARES = Middleware::Builder.new do |b|
+    DEFAULT_MIDDLEWARES = Middlewares::Builder.new do |b|
       b.use Middlewares::SerializeToSteps
       b.use Middlewares::ApplyShortcuts
       b.use Middlewares::SerializeToBytecode
       b.use Middlewares::BuildQuery
       b.use Middlewares::CastResults
       b.use Middlewares::RunQuery
-    end.freeze
+    end
 
     class ConfigurationError < Grumlin::Error; end
 
@@ -27,9 +27,11 @@ module Grumlin
     end
 
     def middlewares
-      @middlewares ||= Middleware::Builder.new do |b|
+      @middlewares ||= Middlewares::Builder.new do |b|
         b.use DEFAULT_MIDDLEWARES
       end
+      yield(@middlewares) if block_given?
+      @middlewares
     end
 
     def validate!
