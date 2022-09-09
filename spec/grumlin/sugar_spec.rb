@@ -8,14 +8,14 @@ RSpec.describe Grumlin::Sugar do
   end
 
   describe "#__" do
-    it "returns Grumlin::TraversalStart" do
-      expect(object.__).to be_a(Grumlin::TraversalStart)
-    end
+    subject { object.__ }
+
+    include_examples "returns a", Grumlin::TraversalStart
   end
 
   describe "#g" do
-    it "returns a traversal" do
-      expect(object.g).to be_a(Grumlin::TraversalStart)
-    end
+    subject { object.g }
+
+    include_examples "returns a", Grumlin::TraversalStart
   end
 end

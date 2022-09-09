@@ -69,7 +69,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     subject { storage.g }
 
     it "returns TraversalStart" do
-      expect(subject).to be_an(Grumlin::TraversalStart)
+      expect(subject).to be_a(Grumlin::TraversalStart)
       expect(subject).to respond_to(:foo)
       expect(subject).to respond_to(:bar)
     end
@@ -79,7 +79,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     subject { storage.__ }
 
     it "returns TraversalStart" do
-      expect(subject).to be_an(Grumlin::TraversalStart)
+      expect(subject).to be_a(Grumlin::TraversalStart)
       expect(subject).to respond_to(:foo)
       expect(subject).to respond_to(:bar)
     end

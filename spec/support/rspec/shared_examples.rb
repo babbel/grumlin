@@ -40,3 +40,9 @@ end
 RSpec.shared_examples "returns nil" do
   include_examples "returns", nil
 end
+
+RSpec.shared_examples "returns a" do |klass|
+  it "returns a #{klass.name}" do
+    expect(subject).to be_a(klass)
+  end
+end

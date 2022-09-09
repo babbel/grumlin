@@ -81,9 +81,7 @@ RSpec.describe Grumlin::Typing do
             { label: "vertex", id: 123 }
           end
 
-          it "returns a vertex" do
-            expect(subject).to be_an(Grumlin::Vertex)
-          end
+          include_examples "returns a", Grumlin::Vertex
         end
 
         context "when @value is a malformed hash" do
@@ -107,9 +105,7 @@ RSpec.describe Grumlin::Typing do
             { label: "edge", id: 123, inVLabel: "vertex", outVLabel: "vertex", inV: "234", outV: "345" }
           end
 
-          it "returns an edge" do
-            expect(subject).to be_an(Grumlin::Edge)
-          end
+          include_examples "returns a", Grumlin::Edge
         end
 
         context "when @value is a malformed hash" do

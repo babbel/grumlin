@@ -42,7 +42,7 @@ RSpec.describe Grumlin::Step do
 
       context "when shortcut is empty" do
         it "returns a Step" do
-          expect(subject).to be_an(step_class)
+          expect(subject).to be_a(step_class)
         end
 
         it "assigns passes args and params to the new Step" do
@@ -61,7 +61,7 @@ RSpec.describe Grumlin::Step do
     subject { step.step("step", :arg1, :arg2, param1: 1, param2: 2) }
 
     it "returns a Step" do
-      expect(subject).to be_an(step_class)
+      expect(subject).to be_a(step_class)
     end
 
     it "assigns passes args and params to the new Step" do
@@ -139,9 +139,7 @@ RSpec.describe Grumlin::Step do
       let(:shortcuts) { Grumlin::Shortcuts::Storage[{ cut: Grumlin::Shortcut.new(:name) { nil } }] }
       let(:name) { :cut }
 
-      it "returns a Shortcut" do
-        expect(subject).to be_a(Grumlin::Shortcut)
-      end
+      include_examples "returns a", Grumlin::Shortcut
     end
 
     context "when step is no a shortcut" do
@@ -170,8 +168,6 @@ RSpec.describe Grumlin::Step do
   describe "#steps" do
     subject { step.steps }
 
-    it "returns steps" do
-      expect(subject).to be_an(Grumlin::Steps)
-    end
+    include_examples "returns a", Grumlin::Steps
   end
 end

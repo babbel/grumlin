@@ -7,17 +7,13 @@ RSpec.describe Grumlin::Features do
     context "when provider is neptune" do
       let(:provider_name) { :neptune }
 
-      it "returns a features list" do
-        expect(subject).to be_a(Grumlin::Features::NeptuneFeatures)
-      end
+      include_examples "returns a", Grumlin::Features::NeptuneFeatures
     end
 
-    context "when provider is tunkergraph" do
+    context "when provider is tinkergraph" do
       let(:provider_name) { :tinkergraph }
 
-      it "returns a features list" do
-        expect(subject).to be_a(Grumlin::Features::TinkergraphFeatures)
-      end
+      include_examples "returns a", Grumlin::Features::TinkergraphFeatures
     end
 
     context "when provider is unknown" do
