@@ -6,7 +6,7 @@ module Grumlin
 
     SUPPORTED_PROVIDERS = %i[neptune tinkergraph].freeze
 
-    DEFAULT_MIDDLEWARES = Middleware::Builder.new do |b|
+    DEFAULT_MIDDLEWARES = Middlewares::Builder.new do |b|
       b.use Middlewares::SerializeToSteps
       b.use Middlewares::ApplyShortcuts
       b.use Middlewares::SerializeToBytecode
@@ -27,7 +27,7 @@ module Grumlin
     end
 
     def middlewares
-      @middlewares ||= Middleware::Builder.new do |b|
+      @middlewares ||= Middlewares::Builder.new do |b|
         b.use DEFAULT_MIDDLEWARES
       end
     end

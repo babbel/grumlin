@@ -26,13 +26,13 @@ module Grumlin
 
     def inherited(subclass)
       super
-      subclass.middlewares = Middleware::Builder.new do |b|
+      subclass.middlewares = Middlewares::Builder.new do |b|
         b.use(middlewares)
       end
     end
 
     def middlewares
-      @middlewares ||= Middleware::Builder.new do |b|
+      @middlewares ||= Middlewares::Builder.new do |b|
         b.use(Grumlin.default_middlewares)
       end
 

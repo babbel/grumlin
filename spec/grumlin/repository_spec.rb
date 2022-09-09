@@ -529,12 +529,12 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
       it "returns a copy of the parent middlewares stack" do
         # base_repository_class stores it's additional middleware
-        expect(base_repository_class.middlewares.send(:stack).map(&:first)).to include(Grumlin::Middlewares::Middleware)
+        expect(base_repository_class.middlewares).to include(Grumlin::Middlewares::Middleware)
         # changing base_repository_class does not affect default middlewares
-        expect(Grumlin.default_middlewares.send(:stack).map(&:first)).not_to include(Grumlin::Middlewares::Middleware)
+        expect(Grumlin.default_middlewares).not_to include(Grumlin::Middlewares::Middleware)
         # Stack is new, but middlewares in it are the same
         expect(subject).not_to eq(base_repository_class.middlewares)
-        expect(subject.send(:stack)).to eq(base_repository_class.middlewares.send(:stack)) # stack is protected
+        expect(subject).to be_similar(base_repository_class.middlewares) # stack is protected
       end
     end
 
@@ -542,7 +542,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       it "returns a copy of the default middleware stack" do
         # Stack is new, but middlewares in it are the same
         expect(subject).not_to eq(Grumlin.default_middlewares)
-        expect(subject.send(:stack)).to eq(Grumlin.default_middlewares.send(:stack)) # stack is protected
+        expect(subject).to be_similar(Grumlin.default_middlewares) # stack is protected
       end
     end
   end
