@@ -13,7 +13,7 @@ module Grumlin
       b.use Middlewares::BuildQuery
       b.use Middlewares::CastResults
       b.use Middlewares::RunQuery
-    end.freeze
+    end
 
     class ConfigurationError < Grumlin::Error; end
 

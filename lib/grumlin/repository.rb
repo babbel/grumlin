@@ -24,6 +24,22 @@ module Grumlin
       end.new
     end
 
+    def inherited(subclass)
+      super
+      subclass.middlewares = Middleware::Builder.new do |b|
+        b.use(middlewares)
+      end
+    end
+
+    def middlewares
+      @middlewares ||= Middleware::Builder.new do |b|
+        b.use(Grumlin.default_middlewares)
+      end
+
+      yield(@middlewares) if block_given?
+      @middlewares
+    end
+
     def query(name, return_mode: :list, postprocess_with: nil, &query_block) # rubocop:disable Metrics/AbcSize, Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
       return_mode = validate_return_mode!(return_mode)
       postprocess_with = validate_postprocess_with!(postprocess_with)
@@ -33,8 +49,7 @@ module Grumlin
         return t if t.nil? || (t.respond_to?(:empty?) && t.empty?)
 
         unless t.is_a?(Grumlin::Step)
-          raise WrongQueryResult,
-                "queries must return #{Grumlin::Step}, nil or an empty collection. Given: #{t.class}"
+          raise WrongQueryResult, "queries must return #{Grumlin::Step}, nil or an empty collection. Given: #{t.class}"
         end
 
         return block.call(t) unless block.nil?
@@ -79,5 +94,9 @@ module Grumlin
       raise ArgumentError,
             "postprocess_with must be a String, Symbol or a callable object, given: #{postprocess_with.class}"
     end
+
+    protected
+
+    attr_writer :middlewares
   end
 end

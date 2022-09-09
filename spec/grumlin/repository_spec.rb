@@ -511,4 +511,39 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
     end
   end
+
+  describe "#middlewares" do
+    subject { repository_class.middlewares }
+
+    context "when repository is inherited from another repository" do
+      let(:base_repository_class) do
+        Class.new do
+          extend Grumlin::Repository
+          middlewares do |b|
+            b.use Grumlin::Middlewares::Middleware # does not really matter what class, it won't be executed
+          end
+        end
+      end
+
+      let(:repository_class) { Class.new(base_repository_class) }
+
+      it "returns a copy of the parent middlewares stack" do
+        # base_repository_class stores it's additional middleware
+        expect(base_repository_class.middlewares.send(:stack).map(&:first)).to include(Grumlin::Middlewares::Middleware)
+        # changing base_repository_class does not affect default middlewares
+        expect(Grumlin.default_middlewares.send(:stack).map(&:first)).not_to include(Grumlin::Middlewares::Middleware)
+        # Stack is new, but middlewares in it are the same
+        expect(subject).not_to eq(base_repository_class.middlewares)
+        expect(subject.send(:stack)).to eq(base_repository_class.middlewares.send(:stack)) # stack is protected
+      end
+    end
+
+    context "when repository is not inherited from another repository" do
+      it "returns a copy of the default middleware stack" do
+        # Stack is new, but middlewares in it are the same
+        expect(subject).not_to eq(Grumlin.default_middlewares)
+        expect(subject.send(:stack)).to eq(Grumlin.default_middlewares.send(:stack)) # stack is protected
+      end
+    end
+  end
 end

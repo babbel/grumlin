@@ -25,6 +25,7 @@ module Grumlin
       def_delegator :@storage, :[]
       def_delegator :@storage, :include?, :known?
       def_delegator :@storage, :keys, :names
+      def_delegator :self, :__, :g
 
       def ==(other)
         @storage == other.storage
@@ -45,10 +46,6 @@ module Grumlin
         other.storage.each do |name, shortcut|
           add(name, shortcut)
         end
-      end
-
-      def g
-        __
       end
 
       def __
