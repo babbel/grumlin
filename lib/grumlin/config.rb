@@ -30,6 +30,8 @@ module Grumlin
       @middlewares ||= Middlewares::Builder.new do |b|
         b.use DEFAULT_MIDDLEWARES
       end
+      yield(@middlewares) if block_given?
+      @middlewares
     end
 
     def validate!
