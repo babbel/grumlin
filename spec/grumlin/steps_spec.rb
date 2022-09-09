@@ -268,9 +268,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         steps.add(:has, args: %i[property value])
       end
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
 
     context "when a shortcut is used in the main traversal" do
@@ -279,9 +277,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         steps.add(:hasColor, args: [:red])
       end
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when when a shortcut is used in an anonymous traversal" do
@@ -290,9 +286,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         steps.add(:where, args: [shortcuts.__.hasColor(:red)])
       end
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
   end
 end

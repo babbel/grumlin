@@ -22,3 +22,17 @@ RSpec.shared_examples "returns an exception" do |exception, message|
     expect(subject.message).to eq(message) if message
   end
 end
+
+RSpec.shared_examples "returns" do |value|
+  it "returns #{value}" do
+    expect(subject).to eq(value)
+  end
+end
+
+RSpec.shared_examples "returns false" do
+  include_examples "returns", false
+end
+
+RSpec.shared_examples "returns true" do
+  include_examples "returns", true
+end

@@ -21,17 +21,13 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     context "when storages are equal" do
       let(:another_shortcuts) { shortcuts }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when storage are not equal" do
       let(:another_shortcuts) { { c: Grumlin::Shortcut.new(:c) { nil }, d: Grumlin::Shortcut.new(:d) { nil } } }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 

@@ -80,15 +80,11 @@ RSpec.describe Grumlin::Step do
     context "when step is a configuration step" do
       let(:name) { "withSideEffect" }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not a configuration_step" do
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -96,17 +92,13 @@ RSpec.describe Grumlin::Step do
     subject { step.start_step? }
 
     context "when step a start step" do
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not a configuration_step" do
       let(:name) { "withSideEffect" }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -116,17 +108,13 @@ RSpec.describe Grumlin::Step do
     context "when step a regular step" do
       let(:name) { :has }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not a configuration_step" do
       let(:name) { "withSideEffect" }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -134,17 +122,13 @@ RSpec.describe Grumlin::Step do
     subject { step.supported_step? }
 
     context "when step is supported" do
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not supported" do
       let(:name) { "some_step" }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -174,18 +158,14 @@ RSpec.describe Grumlin::Step do
       let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
       let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when something is not equal" do
       let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
       let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:V, args: [:id])) }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
