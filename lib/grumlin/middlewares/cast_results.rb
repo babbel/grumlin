@@ -1,11 +1,7 @@
 # frozen_string_literal: true
 
-module Grumlin
-  module Middlewares
-    class CastResults < Middleware
-      def call(env)
-        env[:parsed_results] = @app.call(env).flat_map { |item| Typing.cast(item) }
-      end
-    end
+class Grumlin::Middlewares::CastResults < Grumlin::Middlewares::Middleware
+  def call(env)
+    env[:parsed_results] = @app.call(env).flat_map { |item| Grumlin::Typing.cast(item) }
   end
 end
