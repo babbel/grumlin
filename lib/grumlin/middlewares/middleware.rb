@@ -1,15 +1,11 @@
 # frozen_string_literal: true
 
-module Grumlin
-  module Middlewares
-    class Middleware
-      def initialize(app)
-        @app = app
-      end
+class Grumlin::Middlewares::Middleware
+  def initialize(app)
+    @app = app
+  end
 
-      def call(env)
-        raise NotImplementedError
-      end
-    end
+  def call(env)
+    raise NotImplementedError
   end
 end

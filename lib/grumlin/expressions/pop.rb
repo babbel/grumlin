@@ -1,15 +1,11 @@
 # frozen_string_literal: true
 
-module Grumlin
-  module Expressions
-    module Pop
-      SUPPORTED_STEPS = Grumlin.definitions.dig(:expressions, :pop).map(&:to_sym).freeze
+module Grumlin::Expressions::Pop
+  SUPPORTED_STEPS = Grumlin.definitions.dig(:expressions, :pop).map(&:to_sym).freeze
 
-      class << self
-        extend Expression
+  class << self
+    extend Grumlin::Expressions::Expression
 
-        define_steps(SUPPORTED_STEPS, "Pop")
-      end
-    end
+    define_steps(SUPPORTED_STEPS, "Pop")
   end
 end

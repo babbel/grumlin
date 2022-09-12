@@ -1,12 +1,8 @@
 # frozen_string_literal: true
 
-module Grumlin
-  module Middlewares
-    class SerializeToSteps < Middleware
-      def call(env)
-        env[:steps] = Steps.from(env[:traversal])
-        @app.call(env)
-      end
-    end
+class Grumlin::Middlewares::SerializeToSteps < Grumlin::Middlewares::Middleware
+  def call(env)
+    env[:steps] = Grumlin::Steps.from(env[:traversal])
+    @app.call(env)
   end
 end

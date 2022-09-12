@@ -86,3 +86,6 @@ Style/WordArray:
   EnforcedStyle: brackets
   Exclude:
     - spec/**/*_spec.rb
+
+Style/ClassAndModuleChildren:
+  EnforcedStyle: compact

@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
-module Grumlin
-  module Middlewares
-    class FindMutatingSteps < FindBlocklistedSteps
-      MUTATING_STEPS = [:addV, :addE, :property, :drop].freeze
+class Grumlin::Middlewares::FindMutatingSteps < Grumlin::Middlewares::FindBlocklistedSteps
+  MUTATING_STEPS = [:addV, :addE, :property, :drop].freeze
 
-      def initialize(app)
-        super(app, *MUTATING_STEPS)
-      end
-    end
+  def initialize(app)
+    super(app, *MUTATING_STEPS)
   end
 end

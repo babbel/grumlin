@@ -1,15 +1,11 @@
 # frozen_string_literal: true
 
-module Grumlin
-  module Expressions
-    module Cardinality
-      SUPPORTED_STEPS = Grumlin.definitions.dig(:expressions, :cardinality).map(&:to_sym).freeze
+module Grumlin::Expressions::Cardinality
+  SUPPORTED_STEPS = Grumlin.definitions.dig(:expressions, :cardinality).map(&:to_sym).freeze
 
-      class << self
-        extend Expression
+  class << self
+    extend Grumlin::Expressions::Expression
 
-        define_steps(SUPPORTED_STEPS, "Cardinality")
-      end
-    end
+    define_steps(SUPPORTED_STEPS, "Cardinality")
   end
 end

@@ -3,9 +3,5 @@
 require "grumlin/test/rspec/db_cleaner_context"
 require "grumlin/test/rspec/gremlin_context"
 
-module Grumlin
-  module Test
-    module RSpec
-    end
-  end
+module Grumlin::Test::RSpec
 end
