@@ -33,7 +33,7 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
     it "submits commit step" do
       expect_any_instance_of(Grumlin::Transport).to receive(:write).with( # rubocop:disable RSpec/AnyInstance, RSpec/StubbedMock no easier way
         { args: { aliases: { g: :g },
-                  gremlin: { :@type => "g:Bytecode", :@value => { source: [%i[tx commit]] } },
+                  gremlin: { :@type => "g:Bytecode", :@value => { source: [[:tx, :commit]] } },
                   session: "529962d2-374b-4470-915f-cf452bead1be" },
           op: :bytecode,
           processor: :session,
@@ -59,7 +59,7 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
     it "submits commit step" do
       expect_any_instance_of(Grumlin::Transport).to receive(:write).with( # rubocop:disable RSpec/AnyInstance, RSpec/StubbedMock no easier way
         { args: { aliases: { g: :g },
-                  gremlin: { :@type => "g:Bytecode", :@value => { source: [%i[tx rollback]] } },
+                  gremlin: { :@type => "g:Bytecode", :@value => { source: [[:tx, :rollback]] } },
                   session: "529962d2-374b-4470-915f-cf452bead1be" },
           op: :bytecode,
           processor: :session,

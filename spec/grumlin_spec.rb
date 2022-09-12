@@ -70,7 +70,7 @@ RSpec.describe Grumlin do
   describe ".features" do
     subject { described_class.features }
 
-    %i[neptune tinkergraph].each do |name|
+    [:neptune, :tinkergraph].each do |name|
       before do
         described_class.configure do |config|
           config.provider = name

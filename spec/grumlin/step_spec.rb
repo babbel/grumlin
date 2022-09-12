@@ -27,7 +27,7 @@ RSpec.describe Grumlin::Step do
         regular_step = start_step.has(:property, :value)
         expect(regular_step).to be_an(step_class)
         expect(regular_step.name).to eq(:has)
-        expect(regular_step.args).to eq(%i[property value])
+        expect(regular_step.args).to eq([:property, :value])
         expect(regular_step.params).to be_empty
 
         expect(regular_step.previous_step).to equal(start_step)
@@ -46,7 +46,7 @@ RSpec.describe Grumlin::Step do
         end
 
         it "assigns passes args and params to the new Step" do
-          expect(subject.args).to eq(%i[arg1 arg2])
+          expect(subject.args).to eq([:arg1, :arg2])
           expect(subject.params).to eq({ param1: 1, param2: 2 })
         end
 
@@ -65,7 +65,7 @@ RSpec.describe Grumlin::Step do
     end
 
     it "assigns passes args and params to the new Step" do
-      expect(subject.args).to eq(%i[arg1 arg2])
+      expect(subject.args).to eq([:arg1, :arg2])
       expect(subject.params).to eq({ param1: 1, param2: 2 })
     end
 
@@ -151,14 +151,14 @@ RSpec.describe Grumlin::Step do
     subject { step == other_step }
 
     context "when name, args, params and previous step are equal" do
-      let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
-      let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
+      let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: [:property, :value])) }
+      let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: [:property, :value])) }
 
       include_examples "returns true"
     end
 
     context "when something is not equal" do
-      let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
+      let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: [:property, :value])) }
       let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:V, args: [:id])) }
 
       include_examples "returns false"

@@ -16,13 +16,13 @@ module Grumlin
 
       class << self
         # TODO: support more predicates
-        %i[eq gt lt neq].each do |predicate|
+        [:eq, :gt, :lt, :neq].each do |predicate|
           define_method predicate do |*args|
             Predicate.new("P", predicate, value: args[0])
           end
         end
 
-        %i[within without].each do |predicate|
+        [:within, :without].each do |predicate|
           define_method predicate do |*args|
             args = if args.count == 1 && args[0].is_a?(Array)
                      args[0]

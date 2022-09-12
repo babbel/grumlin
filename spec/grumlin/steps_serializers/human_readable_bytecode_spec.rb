@@ -22,7 +22,7 @@ RSpec.describe Grumlin::StepsSerializers::HumanReadableBytecode, gremlin: true d
       let(:steps) { g.V.has(:color, :white).has(:shape, :rectangle).steps }
 
       it "returns a human readable bytecode representation of steps" do
-        expect(subject).to eq([[], [[:V], %i[has color white], %i[has shape rectangle]]])
+        expect(subject).to eq([[], [[:V], [:has, :color, :white], [:has, :shape, :rectangle]]])
       end
     end
 
@@ -30,7 +30,7 @@ RSpec.describe Grumlin::StepsSerializers::HumanReadableBytecode, gremlin: true d
       let(:steps) { g.V.where(__.has(:color, :white)).has(:shape, :rectangle).steps }
 
       it "returns a human readable bytecode representation of steps" do
-        expect(subject).to eq([[], [[:V], [:where, [%i[has color white]]], %i[has shape rectangle]]])
+        expect(subject).to eq([[], [[:V], [:where, [[:has, :color, :white]]], [:has, :shape, :rectangle]]])
       end
     end
 
@@ -54,7 +54,7 @@ RSpec.describe Grumlin::StepsSerializers::HumanReadableBytecode, gremlin: true d
       let(:steps) { g.withSideEffect(:a, 1).V.has(:property, :value).steps }
 
       it "returns a human readable bytecode representation of steps" do
-        expect(subject).to eq([[[:withSideEffect, :a, 1]], [[:V], %i[has property value]]])
+        expect(subject).to eq([[[:withSideEffect, :a, 1]], [[:V], [:has, :property, :value]]])
       end
     end
 

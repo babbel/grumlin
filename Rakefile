@@ -9,7 +9,7 @@ require "rubocop/rake_task"
 RSpec::Core::RakeTask.new(:spec)
 RuboCop::RakeTask.new
 
-task default: %i[rubocop spec]
+task default: [:rubocop, :spec]
 
 namespace :definitions do
   desc "Format definitions.yml"

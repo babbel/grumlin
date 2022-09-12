@@ -3,7 +3,7 @@
 module Grumlin
   module Middlewares
     class FindMutatingSteps < FindBlocklistedSteps
-      MUTATING_STEPS = %i[addV addE property drop].freeze
+      MUTATING_STEPS = [:addV, :addE, :property, :drop].freeze
 
       def initialize(app)
         super(app, *MUTATING_STEPS)

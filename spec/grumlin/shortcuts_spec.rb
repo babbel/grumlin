@@ -19,7 +19,7 @@ RSpec.describe Grumlin::Shortcuts do
     end
 
     it "allows using shortcuts defined in the ancestor" do
-      expect(another_klass.shortcuts.names).to eq(%i[test_step1 shortcut1])
+      expect(another_klass.shortcuts.names).to eq([:test_step1, :shortcut1])
     end
   end
 
@@ -33,7 +33,7 @@ RSpec.describe Grumlin::Shortcuts do
     context "when shortcut has no conflicts" do
       it "add a new shortcut" do
         klass.shortcut(:custom_step) { nil }
-        expect(klass.shortcuts.names).to eq(%i[test_step1 custom_step])
+        expect(klass.shortcuts.names).to eq([:test_step1, :custom_step])
         expect(klass.shortcuts[:custom_step]).to be_a(Grumlin::Shortcut)
       end
     end
@@ -51,7 +51,7 @@ RSpec.describe Grumlin::Shortcuts do
 
     it "adds all shortcuts from another class" do
       klass.shortcuts_from(another_klass)
-      expect(klass.shortcuts.names).to eq(%i[test_step1 test_step2 test_step3])
+      expect(klass.shortcuts.names).to eq([:test_step1, :test_step2, :test_step3])
     end
   end
 end

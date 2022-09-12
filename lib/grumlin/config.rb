@@ -4,7 +4,7 @@ module Grumlin
   class Config
     attr_accessor :url, :pool_size, :client_concurrency, :client_factory, :provider
 
-    SUPPORTED_PROVIDERS = %i[neptune tinkergraph].freeze
+    SUPPORTED_PROVIDERS = [:neptune, :tinkergraph].freeze
 
     DEFAULT_MIDDLEWARES = Middlewares::Builder.new do |b|
       b.use Middlewares::SerializeToSteps
