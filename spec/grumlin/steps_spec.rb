@@ -10,9 +10,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       g.withSideEffect(:a, b: 1).V.has(:property, :value).where(__.out(:name))
     end
 
-    it "returns a Steps" do
-      expect(subject).to be_an(described_class)
-    end
+    include_examples "returns a", described_class
   end
 
   describe "#add" do
@@ -25,9 +23,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       context "when adding a configuration step" do
         let(:name) { :withSideEffect }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a configuration step" do
           expect { subject }.to change { steps.configuration_steps.count }.by(1)
@@ -41,9 +37,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       context "when adding a start step" do
         let(:name) { :V }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -58,9 +52,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         let(:name) { :shortcut }
         let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: Grumlin::Shortcut.new(:shortcut) { nil } }] }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -74,9 +66,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       context "when adding a regular step" do
         let(:name) { :has }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -92,9 +82,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       context "when adding a configuration step" do
         let(:name) { :withSideEffect }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a configuration step" do
           expect { subject }.to change { steps.configuration_steps.count }.by(1)
@@ -108,9 +96,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       context "when adding a start step" do
         let(:name) { :V }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -125,9 +111,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         let(:name) { :shortcut }
         let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: Grumlin::Shortcut.new(:shortcut) { nil } }] }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -141,9 +125,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       context "when adding a regular step" do
         let(:name) { :has }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -182,9 +164,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
       context "when adding a start step" do
         let(:name) { :V }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -199,9 +179,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         let(:name) { :shortcut }
         let(:shortcuts) { Grumlin::Shortcuts::Storage[{ shortcut: Grumlin::Shortcut.new(:shortcut) { nil } }] }
 
-        it "returns a StepData" do
-          expect(subject).to be_a(Grumlin::StepData)
-        end
+        include_examples "returns a", Grumlin::StepData
 
         it "adds a step" do
           expect { subject }.to change { steps.steps.count }.by(1)
@@ -227,9 +205,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
           let(:name) { :where }
           let(:args) { [__.has(:proeprty, :value)] }
 
-          it "returns a StepData" do
-            expect(subject).to be_a(Grumlin::StepData)
-          end
+          include_examples "returns a", Grumlin::StepData
 
           it "returns a step with casted arguments" do
             expect(subject.args[0]).to be_a(described_class)
@@ -268,9 +244,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         steps.add(:has, args: %i[property value])
       end
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
 
     context "when a shortcut is used in the main traversal" do
@@ -279,9 +253,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         steps.add(:hasColor, args: [:red])
       end
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when when a shortcut is used in an anonymous traversal" do
@@ -290,9 +262,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
         steps.add(:where, args: [shortcuts.__.hasColor(:red)])
       end
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
   end
 end

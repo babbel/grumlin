@@ -174,6 +174,8 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     end
 
     context "when query has single return mode" do
+      subject { repository.test_query(:white) }
+
       let(:repository_class) do
         Class.new do
           extend Grumlin::Repository
@@ -184,11 +186,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
 
-      it "returns a Grumlin::Vertex" do
-        result = repository.test_query(:white)
-
-        expect(result).to be_an(Grumlin::Vertex)
-      end
+      include_examples "returns a", Grumlin::Vertex
     end
 
     context "when query has none return mode" do
@@ -210,6 +208,8 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     end
 
     context "when query has traversal return mode" do
+      subject { repository.test_query(:white) }
+
       let(:repository_class) do
         Class.new do
           extend Grumlin::Repository
@@ -220,11 +220,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
       end
 
-      it "returns a Grumlin::Step" do
-        result = repository.test_query(:white)
-
-        expect(result).to be_an(Grumlin::Step)
-      end
+      include_examples "returns a", Grumlin::Step
     end
 
     context "when preconfigured return mode is overwritten" do

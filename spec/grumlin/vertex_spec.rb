@@ -18,14 +18,14 @@ RSpec.describe Grumlin::Vertex do
   end
 
   describe "#==" do
+    subject { vertex == other_vertex }
+
     let(:vertex) { described_class.new(**attrs) }
 
     context "when the other object is equal" do
       let(:other_vertex) { described_class.new(**attrs) }
 
-      it "returns true" do
-        expect(vertex).to eq(other_vertex)
-      end
+      include_examples "returns true"
     end
 
     context "when the other object is not equal" do
@@ -33,9 +33,7 @@ RSpec.describe Grumlin::Vertex do
         described_class.new(label: "vertex", id: 234)
       end
 
-      it "returns true" do
-        expect(vertex).not_to eq(other_vertex)
-      end
+      include_examples "returns false"
     end
   end
 end

@@ -18,14 +18,14 @@ RSpec.describe Grumlin::Edge do
   end
 
   describe "#==" do
+    subject { edge == other_edge }
+
     let(:edge) { described_class.new(**attrs) }
 
     context "when the other object is equal" do
       let(:other_edge) { described_class.new(**attrs) }
 
-      it "returns true" do
-        expect(edge).to eq(other_edge)
-      end
+      include_examples "returns true"
     end
 
     context "when the other object is not equal" do
@@ -33,9 +33,7 @@ RSpec.describe Grumlin::Edge do
         described_class.new(label: "edge", id: 234, inVLabel: "vertex", outVLabel: "vertex", inV: "234", outV: "345")
       end
 
-      it "returns true" do
-        expect(edge).not_to eq(other_edge)
-      end
+      include_examples "returns false"
     end
   end
 end
