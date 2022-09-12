@@ -82,116 +82,11 @@ Current differences between providers:
 
 **Warning**: Not all steps and expressions defined in the reference documentation are supported.
 
-#### Sugar
-
-Grumlin provides an easy to use module called `Grumlin::Sugar`. Once included in your class it injects some useful
-constants and methods turning your class into an entrypoint for traversals with pure gremlin experience.
-
-```ruby
-class MyRepository
-  include Grumlin::Sugar
-  
-  def nodes(property1:, property2:)
-    g.V()
-      .has(T.label, "node")
-      .has(:property1, property1)
-      .has(:property2, property2)
-      .order.by(:property3, Order.asc).limit(10)
-      .toList
-  end
-end
-```
-
-#### Shortcuts
-
-**Shortcuts** is a way to share and organize gremlin code. They let developers define their own steps consisting of
-sequences of standard gremlin steps, other shortcuts and even add new initially unsupported by Grumlin steps.
-Remember ActiveRecord scopes? Shortcuts are very similar.
-
-**Important**: if a shortcut's name matches a name of a method defined on the wrapped object, this shortcut will be
-be ignored because methods have higher priority.
-
-Shortcuts are designed to be used with `Grumlin::Repository` but still can be used separately, with `Grumlin::Sugar`
-for example.
-
-**Defining**:
-```ruby
-
-# Defining shortcuts
-class ColorShortcut
-  extend Grumlin::Shortcuts
-
-  # Custom step
-  shortcut :hasColor do |color|
-    has(:color, color)
-  end
-end
-
-class ChooseShortcut
-  extend Grumlin::Shortcuts
-
-  # Standard Gremlin step
-  shortcut :choose do |*args|
-    step(:choose, *args)
-  end
-end
-
-class AllShortcuts
-  extend Grumlin::Shortcuts
-
-  # Adding shortcuts from other modules
-  shortcuts_from ColorShortcut
-  shortcuts_from ChooseShortcut
-end
-```
-
-**Using with Grumlin::Sugar**:
-```ruby
-class MyRepository
-  include Grumlin::Sugar
-  extend Grumlin::Shortcuts
-
-  shortcuts_from AllShortcuts
-
-  # Wrapping a traversal
-  def red_triangles
-    g(self.class.shortcuts).V.hasLabel(:triangle)
-       .hasColor("red")
-       .toList
-  end
-
-  # Wrapping _
-  def something_else
-    g(self.class.shortcuts).V.hasColor("red")
-       .repeat(__(self.class.shortcuts))
-       .out(:has)
-       .hasColor("blue")
-       .toList
-  end
-end
-```
-
-##### Overriding standard steps and shortcuts
-
-Sometimes it may be useful to override standard steps. Grumlin does not allow it by default, but one
-is still able to override standard steps if they know what they are doing:
-
-```ruby
-shortcut :addV, override: true do |label|
-  super(label).property(:default, :value)
-end
-```
-
-This will create a new shortcut that overrides the standard step `addV` and adds default properties to all vertices
-created by the repository that uses this shortcut.
-
-Shortcuts also can be overridden, but super() is not available.
-
 #### Grumlin::Repository
-`Grumlin::Repository` combines functionality of `Grumlin::Sugar` and `Grumlin::Shortcuts` as well as adds a few useful
-shortcuts to make gremlin code more rubyish. Can be used as a drop in replacement for `Grumlin::Sugar`. Remember that
-`Grumlin::Sugar` needs to be included, but `Grumlin::Repository` - extended. **Classes extending `Grumlin::Repository`
-or `Grumlin::Shortcuts` can be inherited**, successors don't need to extend them again and have access to shortcuts 
+`Grumlin::Repository` - is a starting point for all traversals. It provides easy access to `g`, `__` and usual gremlin
+expressions for you class. It has support for defining your own shortcuts and is even shipped with a couple of useful
+shortcuts to make gremlin code more rubyish. **Classes extending `Grumlin::Repository`
+or `Grumlin::Shortcuts` can be inherited**, successors don't need to extend them again and have access to shortcuts
 defined in the ancestor.
 
 **Definition**
@@ -200,8 +95,7 @@ defined in the ancestor.
 class MyRepository
   extend Grumlin::Repository
   # read_only! - forbids mutating queries for this repository. May be useful for separation reads and writes
-
-  # Repository supports all Grumlin::Shortcut and Grumlin::Sugar features.
+  
   # It can add shortcuts from another repository or a shortcuts module
   shortcuts_from ChooseShortcut
   
@@ -253,13 +147,13 @@ Each `return_mode` is mapped to a particular termination step:
 - `drop_in_batches(traversal, batch_size: 10_000)`
 
 and a few methods that emulate upserts:
-- `upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)` 
+- `upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)`
 - `upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)`
 - `upsert_edges(edges, batch_size: 100, on_failure: :retry, start: g, **params)`
 - `upsert_vertices(edges, batch_size: 100, on_failure: :retry, start: g, **params)`
 
 All of them support 3 different modes for error handling: `:retry`, `:ignore` and `:raise`. Retry mode is implemented
-with [retryable](https://github.com/nfedyashev/retryable). **params will be merged to the default config for upserts 
+with [retryable](https://github.com/nfedyashev/retryable). **params will be merged to the default config for upserts
 and passed to `Retryable.retryable`. In case if you want to modify retryable behaviour you are to do so.
 
 If you want to use these methods inside a transaction simply pass your `gtx` as `start` parameter:
@@ -271,7 +165,7 @@ end
 
 If you don't want to define you own repository, simply use
 
-`Grumlin::Repository.new` returns an instance of an anonymous class extending `Grumlin::Repository`. 
+`Grumlin::Repository.new` returns an instance of an anonymous class extending `Grumlin::Repository`.
 
 **Usage**
 
@@ -295,6 +189,62 @@ it may be useful for debugging. Note that one needs to call a termination step m
 `MyRepository.new.triangles_with_color(:red, query_params: { profile: true })`
 
 method will return profiling data of the results.
+
+#### Shortcuts
+
+**Shortcuts** is a way to share and organize gremlin code. They let developers define their own steps consisting of
+sequences of standard gremlin steps, other shortcuts and even add new initially unsupported by Grumlin steps.
+Remember ActiveRecord scopes? Shortcuts are very similar.
+
+**Important**: if a shortcut's name matches a name of a method defined on the wrapped object, this shortcut will be
+be ignored because methods have higher priority.
+
+**Defining**:
+```ruby
+
+# Defining shortcuts
+class ColorShortcut
+  extend Grumlin::Shortcuts
+
+  # Custom step
+  shortcut :hasColor do |color|
+    has(:color, color)
+  end
+end
+
+class ChooseShortcut
+  extend Grumlin::Shortcuts
+
+  # Standard Gremlin step
+  shortcut :choose do |*args|
+    step(:choose, *args)
+  end
+end
+
+class AllShortcuts
+  extend Grumlin::Shortcuts
+
+  # Adding shortcuts from other modules
+  shortcuts_from ColorShortcut
+  shortcuts_from ChooseShortcut
+end
+```
+
+##### Overriding standard steps and shortcuts
+
+Sometimes it may be useful to override standard steps. Grumlin does not allow it by default, but one
+is still able to override standard steps if they know what they are doing:
+
+```ruby
+shortcut :addV, override: true do |label|
+  super(label).property(:default, :value)
+end
+```
+
+This will create a new shortcut that overrides the standard step `addV` and adds default properties to all vertices
+created by the repository that uses this shortcut.
+
+Shortcuts also can be overridden, but super() is not available.
 
 ##### Middlewares
 
@@ -324,41 +274,43 @@ end # commits automatically
 
 #### IRB
 
-An example of how to start an IRB session with support for executing gremlin queries:
-
-```ruby
-Async do
-  include Grumlin::Sugar
-
-  IRB.start
-ensure
-  Grumlin.close
-end
-```
-
-Please check out [bin/console](bin/console) for full source. A similar trick may be applied to PRY.
+Please check out [bin/console](bin/console) for inspiration. A similar trick may be applied to PRY.
 
 #### Rails console
 
 In order to make it possible to execute gremlin queries from the rails console you need to define
-a custom console class. It should look somehow like
+a custom console class. It should look somewhat like
 
 ```ruby
-class MyRailsConsole
-  def self.start
+class Async::RailsConsole
+  extend Grumlin::Repository
+
+  def start
+    self.class.shortcuts_from Shortcuts::Content
+
     IRB::WorkSpace.prepend(Rails::Console::BacktraceCleaner)
     IRB::ExtendCommandBundle.include(Rails::ConsoleMethods)
 
-    Async do
-      include Grumlin::Sugar
+    IRB.setup(binding.source_location[0], argv: [])
+    workspace = IRB::WorkSpace.new(binding)
 
-      IRB.setup(binding.source_location[0], argv: [])
-      workspace = IRB::WorkSpace.new(binding)
-
-      IRB::Irb.new(workspace).run(IRB.conf)
-    ensure
-      Grumlin.close
+    begin
+      Async do
+        IRB::Irb.new(workspace).run(IRB.conf)
+      ensure
+        Grumlin.close
+      end
+    rescue StandardError, Interrupt, Async::Stop, IRB::Abort
+      retry
     end
+  end
+
+  def inspect
+    'main'
+  end
+
+  def to_s
+    inspect
   end
 end
 ```
@@ -382,13 +334,13 @@ require 'async/rspec'
 require require "grumlin/test/rspec"
 ...
 config.include_context(Async::RSpec::Reactor) # Runs async reactor
-config.include_context(Grumlin::Test::RSpec::GremlinContext) # Injects sugar and makes sure client is closed after every test
+config.include_context(Grumlin::Test::RSpec::GremlinContext) # Injects `g`, `__` and expressions, makes sure client is closed after every test
 config.include_context(Grumlin::Test::RSpec::DBCleanerContext) # Cleans the database before every test
 ...
 ```
 
-It is highly recommended to use `Grumlin::Sugar` or `Grumlin::Repository` and not trying to use lower level APIs
-as they are subject to change.
+It is highly recommended to use `Grumlin::Repository` and not trying to use lower level APIs as they are subject to 
+change.
 
 ## Development
 

@@ -560,10 +560,6 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
     context "when running a mutating query" do
       subject { repository.g.addV(:test).iterate }
 
-      it "works" do
-        pp repository.class.middlewares
-      end
-
       include_examples "raises an exception", Grumlin::QueryValidators::Validator::ValidationError, "Query is invalid: {:blocklisted_steps=>[:addV]}"
     end
   end

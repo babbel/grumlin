@@ -6,7 +6,13 @@ module Grumlin::Test::RSpec
 
   ::RSpec.shared_context GremlinContext do
     include GremlinContext
-    include Grumlin::Sugar
+    include Grumlin::Expressions
+
+    [:__, :g].each do |name|
+      define_method(name) do |cuts = Grumlin::Shortcuts::Storage.empty|
+        cuts.send(name)
+      end
+    end
 
     before do
       Grumlin::Expressions.constants.each do |tool|
