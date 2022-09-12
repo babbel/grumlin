@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
-class Grumlin
-  module QueryAnalyzers
+module Grumlin
+  module QueryValidators
     class Validator
       class ValidationError < Grumlin::Error
         attr_reader :errors, :steps
 
         def initialize(steps, errors)
-          super("#{steps} is invalid: #{errors}")
+          super("Query is invalid: #{errors}")
           @steps = steps
           @errors = errors
         end
@@ -17,11 +17,11 @@ class Grumlin
       def validate!(steps)
         return unless (err = errors(steps)).any?
 
-        raise ValidationError, err
+        raise ValidationError.new(steps, err)
       end
 
       def valid?(steps)
-        errors(steps).any?
+        errors(steps).empty?
       end
 
       protected
