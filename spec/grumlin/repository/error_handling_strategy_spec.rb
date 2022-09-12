@@ -58,10 +58,7 @@ RSpec.describe Grumlin::Repository::ErrorHandlingStrategy do
         end
 
         include_examples "does not retry"
-
-        it "does not raise an error" do
-          expect { subject }.not_to raise_error
-        end
+        include_examples "does not raise"
       end
 
       context "when an error not from the 'on' list is raised" do

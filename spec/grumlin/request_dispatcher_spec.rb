@@ -251,15 +251,11 @@ RSpec.describe Grumlin::RequestDispatcher, async: true do
         dispatcher.add_request({ requestId: 123 })
       end
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when request is unknown" do
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 

@@ -13,15 +13,15 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
   let(:repository) { repository_class.new }
 
   describe "#__" do
-    it "returns TraversalStart" do
-      expect(repository.__).to be_an(Grumlin::TraversalStart)
-    end
+    subject { repository.__ }
+
+    include_examples "returns a", Grumlin::TraversalStart
   end
 
   describe "#g" do
-    it "returns TraversalStart" do
-      expect(repository.g).to be_an(Grumlin::TraversalStart)
-    end
+    subject { repository.g }
+
+    include_examples "returns a", Grumlin::TraversalStart
   end
 
   describe "#drop_vertex" do

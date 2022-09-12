@@ -21,17 +21,13 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     context "when storages are equal" do
       let(:another_shortcuts) { shortcuts }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when storage are not equal" do
       let(:another_shortcuts) { { c: Grumlin::Shortcut.new(:c) { nil }, d: Grumlin::Shortcut.new(:d) { nil } } }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -73,7 +69,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     subject { storage.g }
 
     it "returns TraversalStart" do
-      expect(subject).to be_an(Grumlin::TraversalStart)
+      expect(subject).to be_a(Grumlin::TraversalStart)
       expect(subject).to respond_to(:foo)
       expect(subject).to respond_to(:bar)
     end
@@ -83,7 +79,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     subject { storage.__ }
 
     it "returns TraversalStart" do
-      expect(subject).to be_an(Grumlin::TraversalStart)
+      expect(subject).to be_a(Grumlin::TraversalStart)
       expect(subject).to respond_to(:foo)
       expect(subject).to respond_to(:bar)
     end

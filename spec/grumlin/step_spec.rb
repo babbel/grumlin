@@ -42,7 +42,7 @@ RSpec.describe Grumlin::Step do
 
       context "when shortcut is empty" do
         it "returns a Step" do
-          expect(subject).to be_an(step_class)
+          expect(subject).to be_a(step_class)
         end
 
         it "assigns passes args and params to the new Step" do
@@ -61,7 +61,7 @@ RSpec.describe Grumlin::Step do
     subject { step.step("step", :arg1, :arg2, param1: 1, param2: 2) }
 
     it "returns a Step" do
-      expect(subject).to be_an(step_class)
+      expect(subject).to be_a(step_class)
     end
 
     it "assigns passes args and params to the new Step" do
@@ -80,15 +80,11 @@ RSpec.describe Grumlin::Step do
     context "when step is a configuration step" do
       let(:name) { "withSideEffect" }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not a configuration_step" do
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -96,17 +92,13 @@ RSpec.describe Grumlin::Step do
     subject { step.start_step? }
 
     context "when step a start step" do
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not a configuration_step" do
       let(:name) { "withSideEffect" }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -116,17 +108,13 @@ RSpec.describe Grumlin::Step do
     context "when step a regular step" do
       let(:name) { :has }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not a configuration_step" do
       let(:name) { "withSideEffect" }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -134,17 +122,13 @@ RSpec.describe Grumlin::Step do
     subject { step.supported_step? }
 
     context "when step is supported" do
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when step is not supported" do
       let(:name) { "some_step" }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
@@ -155,15 +139,11 @@ RSpec.describe Grumlin::Step do
       let(:shortcuts) { Grumlin::Shortcuts::Storage[{ cut: Grumlin::Shortcut.new(:name) { nil } }] }
       let(:name) { :cut }
 
-      it "returns a Shortcut" do
-        expect(subject).to be_a(Grumlin::Shortcut)
-      end
+      include_examples "returns a", Grumlin::Shortcut
     end
 
     context "when step is no a shortcut" do
-      it "returns nil" do
-        expect(subject).to be_nil
-      end
+      include_examples "returns nil"
     end
   end
 
@@ -174,26 +154,20 @@ RSpec.describe Grumlin::Step do
       let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
       let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when something is not equal" do
       let(:step) { step_class.new(:V).has(:property, :value).where(step_class.new(:has, args: %i[property value])) }
       let(:other_step) { step_class.new(:V).has(:property, :value).where(step_class.new(:V, args: [:id])) }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
   describe "#steps" do
     subject { step.steps }
 
-    it "returns steps" do
-      expect(subject).to be_an(Grumlin::Steps)
-    end
+    include_examples "returns a", Grumlin::Steps
   end
 end

@@ -16,8 +16,9 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
   describe "#begin" do
     subject { tx.begin }
 
+    include_examples "returns a", Grumlin::TraversalStart
+
     it "returns a TraversalStart session_id" do
-      expect(subject).to be_a(Grumlin::TraversalStart)
       expect(subject.session_id).not_to be_nil
     end
   end

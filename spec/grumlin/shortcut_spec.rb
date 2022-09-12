@@ -21,27 +21,21 @@ RSpec.describe Grumlin::Shortcut do
       let(:another_name) { name }
       let(:another_block) { block }
 
-      it "returns true" do
-        expect(subject).to be_truthy
-      end
+      include_examples "returns true"
     end
 
     context "when names are different, but blocks are equal" do
       let(:another_name) { :another_test_step }
       let(:another_block) { block }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
 
     context "when names are equal, but blocks are different" do
       let(:another_name) { name }
       let(:another_block) { proc {} }
 
-      it "returns false" do
-        expect(subject).to be_falsey
-      end
+      include_examples "returns false"
     end
   end
 
