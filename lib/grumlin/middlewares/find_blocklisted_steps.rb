@@ -5,7 +5,7 @@ module Grumlin
     class FindBlocklistedSteps < Middleware
       def initialize(app, *steps)
         super(app)
-        QueryValidators::BlocklistedStepsValidator.new(*steps)
+        @validator = QueryValidators::BlocklistedStepsValidator.new(*steps)
       end
 
       def call(env)

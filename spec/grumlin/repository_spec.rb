@@ -542,4 +542,29 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       end
     end
   end
+
+  describe "read only repository" do
+    let(:repository_class) do
+      Class.new do
+        extend Grumlin::Repository
+        read_only!
+      end
+    end
+
+    context "when running a non-mutating query" do
+      subject { repository.g.V.count.next }
+
+      include_examples "does not raise"
+    end
+
+    context "when running a mutating query" do
+      subject { repository.g.addV(:test).iterate }
+
+      it "works" do
+        pp repository.class.middlewares
+      end
+
+      include_examples "raises an exception", Grumlin::QueryValidators::Validator::ValidationError, "Query is invalid: {:blocklisted_steps=>[:addV]}"
+    end
+  end
 end
