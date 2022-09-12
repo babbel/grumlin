@@ -31,6 +31,12 @@ module Grumlin
       end
     end
 
+    def read_only!
+      middlewares do |b|
+        b.insert_after Middlewares::ApplyShortcuts, Middlewares::FindMutatingSteps
+      end
+    end
+
     def middlewares
       @middlewares ||= Middlewares::Builder.new do |b|
         b.use(Grumlin.default_middlewares)

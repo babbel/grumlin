@@ -199,6 +199,7 @@ defined in the ancestor.
 ```ruby
 class MyRepository
   extend Grumlin::Repository
+  # read_only! - forbids mutating queries for this repository. May be useful for separation reads and writes
 
   # Repository supports all Grumlin::Shortcut and Grumlin::Sugar features.
   # It can add shortcuts from another repository or a shortcuts module
