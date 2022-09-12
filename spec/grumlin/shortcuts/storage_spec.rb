@@ -9,7 +9,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
     subject { described_class.new({ a: Grumlin::Shortcut.new(:a) { nil }, b: Grumlin::Shortcut.new(:b) { nil } }) }
 
     it "creates a new storage with given shortcuts" do
-      expect(subject.names).to eq(%i[a b])
+      expect(subject.names).to eq([:a, :b])
     end
   end
 
@@ -38,7 +38,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
       let(:name) { :baz }
 
       it "adds a new shortcut" do
-        expect { subject }.to change(storage, :names).from(%i[foo bar]).to(%i[foo bar baz])
+        expect { subject }.to change(storage, :names).from([:foo, :bar]).to([:foo, :bar, :baz])
       end
     end
 
@@ -48,7 +48,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
 
         it "does not do anything" do
           expect { subject }.not_to raise_error
-          expect(storage.names).to eq(%i[foo bar])
+          expect(storage.names).to eq([:foo, :bar])
         end
       end
     end
@@ -61,7 +61,7 @@ RSpec.describe Grumlin::Shortcuts::Storage do
 
     it "adds all shortcuts from another storage" do
       subject
-      expect(storage.names).to eq(%i[foo bar baz])
+      expect(storage.names).to eq([:foo, :bar, :baz])
     end
   end
 

@@ -21,7 +21,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
   end
 
   describe "class methods" do
-    %i[shortcut shortcuts shortcuts_from].each do |method|
+    [:shortcut, :shortcuts, :shortcuts_from].each do |method|
       it "responds to ##{method}" do
         expect(repository_class).to respond_to(method)
       end
@@ -30,7 +30,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
   describe "included shortcuts" do
     it "includes shortcuts" do
-      expect(repository_class.shortcuts.names).to eq(%i[props hasAll upsertV upsertE shortcut])
+      expect(repository_class.shortcuts.names).to eq([:props, :hasAll, :upsertV, :upsertE, :shortcut])
     end
   end
 
@@ -255,7 +255,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       it "returns profiling data" do
         result = repository.test_query(:white, query_params: { profile: true })
 
-        expect(result.keys).to match_array(%i[dur metrics]) # Profiling data
+        expect(result.keys).to match_array([:dur, :metrics]) # Profiling data
       end
     end
 
@@ -363,7 +363,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
     context "when super is called" do
       it "calls the original step" do
-        expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], %i[property a b]] })
+        expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], [:property, :a, :b]] })
       end
 
       context "when overridden shortcut is inherited" do
@@ -372,7 +372,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
 
         it "calls the original step" do
-          expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], %i[property a b]] })
+          expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], [:property, :a, :b]] })
         end
       end
 
@@ -386,7 +386,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
         end
 
         it "calls the previous override and the original step" do
-          expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], %i[property a b], %i[property b c]] })
+          expect(repository.g.addV("test").bytecode.serialize).to eq({ step: [[:addV, "test"], [:property, :a, :b], [:property, :b, :c]] })
         end
       end
     end

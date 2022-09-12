@@ -46,7 +46,7 @@ RSpec.configure do |config|
   config.include_context(Async::RSpec::Reactor, practical_gremlin: true)
   config.include_context(Grumlin::Test::RSpec::GremlinContext, practical_gremlin: true)
 
-  re = Regexp.compile("#{%w[spec grumlin practical_gremlin].join('[\\\/]')}[\\\\/]")
+  re = Regexp.compile("#{["spec", "grumlin", "practical_gremlin"].join('[\\\/]')}[\\\\/]")
   config.define_derived_metadata(file_path: re) do |metadata|
     metadata[:practical_gremlin] ||= true
   end

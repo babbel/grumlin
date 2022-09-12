@@ -241,7 +241,7 @@ RSpec.describe Grumlin::Steps, gremlin: true do
     context "when shortcuts are not used" do
       before do
         steps.add(:V, args: [])
-        steps.add(:has, args: %i[property value])
+        steps.add(:has, args: [:property, :value])
       end
 
       include_examples "returns false"
