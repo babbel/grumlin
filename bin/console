@@ -13,10 +13,25 @@ Grumlin.configure do |config|
   config.url = ENV.fetch("GREMLIN_URL", "ws://localhost:8182/gremlin")
 end
 
-Async do
-  include Grumlin::Sugar
+class Repository
+  extend Grumlin::Repository
 
-  IRB.start
+  def start_irb
+    IRB.setup(nil)
+    IRB.conf[:PROMPT][:DEFAULT] = { PROMPT_I: "%N(main):%03n:%i> ",
+                                    PROMPT_N: "%N(main):%03n:%i> ",
+                                    PROMPT_S: "%N(main):%03n:%i%l ",
+                                    PROMPT_C: "%N(main):%03n:%i* ",
+                                    RETURN: "=> %s\n" }
+    workspace = IRB::WorkSpace.new(binding)
+    irb = IRB::Irb.new(workspace)
+    IRB.conf[:MAIN_CONTEXT] = irb.context
+    irb.eval_input
+  end
+end
+
+Async do
+  Repository.new.start_irb
 ensure
   Grumlin.close
 end

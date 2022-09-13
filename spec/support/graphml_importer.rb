@@ -11,7 +11,7 @@ class GraphMLImporter
 
   JOBS = 1
 
-  include Grumlin::Sugar
+  extend Grumlin::Repository
 
   def initialize(graphml)
     @graphml = Nokogiri::XML(graphml)
