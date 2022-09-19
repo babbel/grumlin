@@ -84,4 +84,11 @@ RSpec.describe Grumlin do
       end
     end
   end
+
+  describe ".fake_uuid" do
+    it "returns a uuid-like string calculated from inputs" do
+      expect(described_class.fake_uuid("a", "b", "c")).to eq("9a3f091b-ff4d-3253-d3ce-8df315e78f95")
+      expect(described_class.fake_uuid("from", "edge_name", "to")).to eq("b18ca8bf-4211-4b3e-d00a-74bed5d232c5")
+    end
+  end
 end

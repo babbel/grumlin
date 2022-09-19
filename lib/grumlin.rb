@@ -184,6 +184,19 @@ module Grumlin
     def definitions
       @definitions ||= YAML.safe_load(File.read(File.join(__dir__, "definitions.yml")), symbolize_names: true)
     end
+
+    def fake_uuid(*parts, separator: "->")
+      uuid = Digest::MD5.hexdigest(parts.join(separator))
+
+      segments = [8, 4, 4, 4, 12]
+      parts = segments.map do |n|
+        uuid[0...n].tap do
+          uuid = uuid[n..]
+        end
+      end
+
+      parts.join("-")
+    end
   end
 end
 

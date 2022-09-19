@@ -44,7 +44,8 @@ RSpec.describe Grumlin::Shortcuts::Upserts do
                                                        [:addE, "test"],
                                                        [:from, { :@type => "g:Bytecode", :@value => { step: [[:V, 1]] } }],
                                                        [:to, { :@type => "g:Bytecode", :@value => { step: [[:V, 2]] } }],
-                                                       [:property, :a, 1]
+                                                       [:property, :a, 1],
+                                                       [:property, { :@type => "g:T", :@value => :id }, "ae49b8ee-a510-731b-de35-123d5cbb40dd"]
                                                      ]
                                                    }
                                                  }],
