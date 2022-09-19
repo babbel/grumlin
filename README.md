@@ -148,9 +148,14 @@ Each `return_mode` is mapped to a particular termination step:
 
 and a few methods that emulate upserts:
 - `upsert_vertex(label, id, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)`
+- `upsert_vertices(edges, batch_size: 100, on_failure: :retry, start: g, **params)`
 - `upsert_edge(label, from:, to:, create_properties: {}, update_properties: {}, on_failure: :retry, start: g, **params)`
 - `upsert_edges(edges, batch_size: 100, on_failure: :retry, start: g, **params)`
-- `upsert_vertices(edges, batch_size: 100, on_failure: :retry, start: g, **params)`
+
+**Note**: all upsert methods expect your provider has support for user supplied string ids for nodes and edges 
+respectively. For edges and if `create_properties[T.id]` if nil, grumlin will generate a uuid-like id out of `from` and
+`to` vertex ids and edge's label to ensure uniqueness of the edge. If you manually provide an id, it's your 
+responsibility to ensure it's uniquely identifies the edge using it's `from`, `to` and `label`.
 
 All of them support 3 different modes for error handling: `:retry`, `:ignore` and `:raise`. Retry mode is implemented
 with [retryable](https://github.com/nfedyashev/retryable). **params will be merged to the default config for upserts
