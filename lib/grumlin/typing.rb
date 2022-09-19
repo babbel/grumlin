@@ -13,7 +13,7 @@ module Grumlin::Typing
     "g:Int64" => ->(value) { cast_int(value) },
     "g:Int32" => ->(value) { cast_int(value) },
     "g:Double" => ->(value) { cast_double(value) },
-    "g:Direction" => ->(value) { value },
+    "g:Direction" => ->(value) { value.to_sym },
     "g:VertexProperty" => ->(value) { cast_entity(Grumlin::VertexProperty, value) },
     "g:TraversalMetrics" => ->(value) { cast_map(value[:@value]) },
     "g:Metrics" => ->(value) { cast_map(value[:@value]) },

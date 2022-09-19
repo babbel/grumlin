@@ -242,8 +242,8 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
       it "creates an edge" do
         expect { subject }.to change { g.E.count.next }.by(1)
         expect(g.E(id).elementMap.next).to eq({ T.id => 123, T.label => "test_label",
-                                                "IN" => { T.id => 2, T.label => "test" },
-                                                "OUT" => { T.id => 1, T.label => "test" },
+                                                :IN => { T.id => 2, T.label => "test" },
+                                                :OUT => { T.id => 1, T.label => "test" },
                                                 key: "value" })
       end
 
@@ -253,8 +253,8 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
         it "creates an edge" do
           expect { subject }.to change { g.E.count.next }.by(1)
           expect(g.E(id).elementMap.next).to eq({ T.id => 123, T.label => "test_label",
-                                                  "IN" => { T.id => 2, T.label => "test" },
-                                                  "OUT" => { T.id => 1, T.label => "test" },
+                                                  :IN => { T.id => 2, T.label => "test" },
+                                                  :OUT => { T.id => 1, T.label => "test" },
                                                   key: "value" })
         end
       end
@@ -267,8 +267,8 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
       it "creates an edge" do
         expect { subject }.to change { g.E.count.next }.by(1)
         expect(g.E(124).elementMap.next).to eq({ T.id => 124, T.label => "test_label",
-                                                 "IN" => { T.id => 2, T.label => "test" },
-                                                 "OUT" => { T.id => 1, T.label => "test" },
+                                                 :IN => { T.id => 2, T.label => "test" },
+                                                 :OUT => { T.id => 1, T.label => "test" },
                                                  key: "value" })
       end
     end
@@ -354,8 +354,8 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
       it "creates an edge" do
         expect { subject }.to change { g.E.count.next }.by(1)
         expect(g.E(1234).elementMap.next).to eq({ T.id => 1234, T.label => "test",
-                                                  "IN" => { T.id => 2, T.label => "test" },
-                                                  "OUT" => { T.id => 1, T.label => "test" },
+                                                  :IN => { T.id => 2, T.label => "test" },
+                                                  :OUT => { T.id => 1, T.label => "test" },
                                                   another_key: "another_value", key: "value" })
       end
     end
@@ -372,8 +372,8 @@ RSpec.describe Grumlin::Repository::InstanceMethods, gremlin_server: true do
       it "updates properties with update_properties" do
         subject
         expect(g.E(1234).elementMap.next).to eq({ T.id => 1234, T.label => "test",
-                                                  "IN" => { T.id => 2, T.label => "test" },
-                                                  "OUT" => { T.id => 1, T.label => "test" },
+                                                  :IN => { T.id => 2, T.label => "test" },
+                                                  :OUT => { T.id => 1, T.label => "test" },
                                                   another_key: "another_value" })
       end
     end
