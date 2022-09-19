@@ -12,15 +12,19 @@ class Grumlin::TraversalStart < Grumlin::Steppable
     transaction = tx_class.new(self.class, pool: @pool, middlewares: @middlewares)
     return transaction unless block_given?
 
+    result = nil
+
     begin
-      yield transaction.begin
+      result = yield transaction.begin
     rescue Grumlin::Rollback
       transaction.rollback
+      result
     rescue StandardError
       transaction.rollback
       raise
     else
       transaction.commit
+      result
     end
   end
 

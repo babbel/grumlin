@@ -14,7 +14,6 @@ class Grumlin::Steppable
   def initialize(pool: nil, session_id: nil, middlewares: Grumlin.default_middlewares)
     @pool = pool
     @session_id = session_id
-
     @middlewares = middlewares
 
     return if respond_to?(:shortcuts)

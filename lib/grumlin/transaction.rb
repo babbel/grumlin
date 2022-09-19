@@ -16,7 +16,7 @@ class Grumlin::Transaction
   end
 
   def begin
-    @traversal_start_class.new(session_id: @session_id)
+    @traversal_start_class.new(session_id: @session_id, pool: @pool)
   end
 
   def commit

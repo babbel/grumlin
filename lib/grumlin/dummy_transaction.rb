@@ -5,8 +5,9 @@ class Grumlin::DummyTransaction < Grumlin::Transaction
 
   include Console
 
-  def initialize(traversal_start_class, middlewares:, pool: nil) # rubocop:disable Lint/MissingSuper, Lint/UnusedMethodArgument
-    @traversal_start_class = traversal_start_class
+  def initialize(traversal_start_class, middlewares:, pool:)
+    super
+    @session_id = nil
 
     logger.info(self) do
       "#{Grumlin.config.provider} does not support transactions. commit and rollback are ignored, data will be saved"
