@@ -428,7 +428,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
       it "assigns default properties" do
         repository.g.addE(:test).property(T.id, :test_edge).from(__.V(1)).to(__.V(2)).iterate
-        expect(repository.g.E(:test_edge).elementMap.next).to eq({ T.id => "test_edge", T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
+        expect(repository.g.E(:test_edge).elementMap.next).to eq({ T.id => "test_edge", T.label => "test", :IN => { T.id => 2, T.label => "test" }, :OUT => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
       end
     end
 
@@ -447,7 +447,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
       it "assigns default properties" do
         repository.add_edge(:test, T.id => :test_edge, from: 1, to: 2)
-        expect(repository.g.E(:test_edge).elementMap.next).to eq({ T.id => "test_edge", T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
+        expect(repository.g.E(:test_edge).elementMap.next).to eq({ T.id => "test_edge", T.label => "test", :IN => { T.id => 2, T.label => "test" }, :OUT => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
       end
     end
 
@@ -466,7 +466,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
       it "assigns default properties" do
         repository.g.upsertE(:test, 1, 2).iterate
-        expect(repository.g.E.hasLabel(:test).elementMap.next.except(T.id)).to eq({ T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
+        expect(repository.g.E.hasLabel(:test).elementMap.next.except(T.id)).to eq({ T.label => "test", :IN => { T.id => 2, T.label => "test" }, :OUT => { T.id => 1, T.label => "test" }, edge: true, default_label: "test" })
       end
     end
 
@@ -502,7 +502,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
 
         it "assigns default properties" do
           repository.g.addE(:test).property(T.id, :test_edge).from(__.V(1)).to(__.V(2)).iterate
-          expect(repository.g.E(:test_edge).elementMap.next).to eq({ T.id => "test_edge", T.label => "test", "IN" => { T.id => 2, T.label => "test" }, "OUT" => { T.id => 1, T.label => "test" }, edge: true, default_label: "test", inherited: true })
+          expect(repository.g.E(:test_edge).elementMap.next).to eq({ T.id => "test_edge", T.label => "test", :IN => { T.id => 2, T.label => "test" }, :OUT => { T.id => 1, T.label => "test" }, edge: true, default_label: "test", inherited: true })
         end
       end
     end

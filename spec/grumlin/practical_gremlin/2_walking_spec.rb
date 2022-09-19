@@ -413,8 +413,8 @@ RSpec.describe "Practical Gramlin: walking" do
                                                                      { desc: "Austin Bergstrom International Airport" }])
 
     expect(g.V().has("code", "AUS").elementMap("city").toList).to eq([{ city: "Austin", T.id => 3, T.label => "airport" }])
-    expect(g.V(3).outE.limit(1).elementMap.toList).to eq([{ "IN" => { T.id => 47, T.label =>  "airport" },
-                                                            "OUT" => { T.id => 3, T.label =>  "airport" },
+    expect(g.V(3).outE.limit(1).elementMap.toList).to eq([{ :IN => { T.id => 47, T.label =>  "airport" },
+                                                            :OUT => { T.id => 3, T.label =>  "airport" },
                                                             :dist => 1357,
                                                             T.id => 5161,
                                                             T.label => "route" }])
