@@ -125,7 +125,7 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
 
   def with_upsert_error_handling(on_failure, params, &block)
     if params.any?
-      ErrorHandlingStrategy.new(mode: on_failure, **UPSERT_RETRY_PARAMS.merge(params))
+      Grumlin::Repository::ErrorHandlingStrategy.new(mode: on_failure, **UPSERT_RETRY_PARAMS.merge(params))
     else
       DEFAULT_ERROR_HANDLING_STRATEGY
     end.apply!(&block)
