@@ -200,12 +200,6 @@ RSpec.describe Grumlin::Typing do
       end
     end
 
-    context "when value is an array" do
-      let(:value_to_cast) { [] }
-
-      include_examples "raises TypeError", "[] cannot be casted"
-    end
-
     context "when value is an object" do
       let(:value_to_cast) { Object.new }
 

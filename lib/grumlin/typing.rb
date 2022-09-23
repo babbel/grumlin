@@ -20,11 +20,13 @@ module Grumlin::Typing
     "g:T" => ->(value) { Grumlin::Expressions::T.public_send(value) }
   }.freeze
 
-  CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass, NilClass].freeze
+  CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass, NilClass, Array].freeze
 
   class << self
     def cast(value)
       verify_type!(value)
+
+      return value.map { |v| cast(v) } if value.is_a?(Array)
 
       return value unless value.is_a?(Hash)
 
