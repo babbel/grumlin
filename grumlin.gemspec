@@ -29,7 +29,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ["lib"]
 
   spec.add_dependency "async-pool", "~> 0.3"
-  spec.add_dependency "async-websocket", ">= 0.19", "< 0.20"
+  spec.add_dependency "async-websocket", "~> 0.22"
   spec.add_dependency "ibsciss-middleware", "~> 0.4.0"
   spec.add_dependency "oj", "~> 3.13"
   spec.add_dependency "retryable", "~> 3.0"
