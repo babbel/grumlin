@@ -83,7 +83,7 @@ class Grumlin::Client
 
     @request_dispatcher.clear unless check_requests
 
-    raise ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}" if check_requests
+    raise Grumlin::ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}" if check_requests
   ensure
     logger.debug(self, "Closed")
   end

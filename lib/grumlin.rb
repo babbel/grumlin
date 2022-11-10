@@ -4,10 +4,6 @@ require "securerandom"
 require "oj"
 require "yaml"
 
-# TODO: use Oj directly
-Oj.mimic_JSON
-Oj.add_to_json
-
 require "async"
 require "async/pool"
 require "async/pool/resource"
