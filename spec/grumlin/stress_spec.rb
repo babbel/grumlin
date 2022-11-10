@@ -62,7 +62,7 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
   context "when number of iterations is limited" do
     let(:iterations) { 100 }
 
-    it "succeeds", timeout: 120 do
+    it "succeeds", timeout: 120 do # rubocop:disable RSpec/NoExpectationExample
       barrier = Async::Barrier.new
 
       Array.new(concurrency) do
@@ -80,7 +80,7 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
   context "when time is limited" do
     let(:duration) { 10 }
 
-    it "succeeds", timeout: 20 do
+    it "succeeds", timeout: 20 do # rubocop:disable RSpec/NoExpectationExample
       barrier = Async::Barrier.new(parent: reactor)
 
       concurrency.times do
@@ -98,7 +98,7 @@ RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
   end
 
   context "when running multiple concurrent upserts" do
-    it "succeeds" do
+    it "succeeds" do # rubocop:disable RSpec/NoExpectationExample
       barrier = Async::Barrier.new
 
       concurrency.times do

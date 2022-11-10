@@ -79,7 +79,7 @@ RSpec.describe Grumlin do
 
       context "when provider is #{name}" do
         it "returns a features list" do
-          expect(subject).to be_a_kind_of(Grumlin::Features::FeatureList)
+          expect(subject).to be_a(Grumlin::Features::FeatureList)
         end
       end
     end
