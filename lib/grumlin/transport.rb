@@ -70,7 +70,7 @@ class Grumlin::Transport
   def run_response_task
     with_guard do
       loop do
-        data = JSON.parse(@connection.read.to_str, symbolize_names: true)
+        data = Oj.load(@connection.read.to_str, symbolize_names: true)
         @response_channel << data
       end
     end
@@ -79,7 +79,7 @@ class Grumlin::Transport
   def run_request_task
     with_guard do
       @request_channel.each do |message|
-        @connection.write(message.to_json)
+        @connection.write(Oj.dump(message, mode: :compat))
         @connection.flush
       end
     end
