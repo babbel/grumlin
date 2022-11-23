@@ -1,6 +1,6 @@
 # Grumlin
 
-[![Ruby](https://github.com/zhulik/grumlin/actions/workflows/main.yml/badge.svg)](https://github.com/zhulik/grumlin/actions/workflows/main.yml)
+[![Ruby](https://github.com/babbel/grumlin/actions/workflows/main.yml/badge.svg)](https://github.com/babbel/grumlin/actions/workflows/main.yml)
 [![standard-readme compliant](https://img.shields.io/badge/readme%20style-standard-brightgreen.svg?style=flat-square)](https://github.com/RichardLitt/standard-readme)
 [![MIT license](https://img.shields.io/badge/License-MIT-blue.svg)](https://lbesson.mit-license.org/)
 
@@ -403,7 +403,7 @@ and run `rake definitions:format`. You don't need to properly sort the lists man
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/zhulik/grumlin. This project is intended to 
 be a safe, welcoming space for collaboration, and contributors are expected to adhere to the 
-[code of conduct](https://github.com/zhulik/grumlin/blob/master/CODE_OF_CONDUCT.md).
+[code of conduct](https://github.com/babbel/grumlin/blob/master/CODE_OF_CONDUCT.md).
 
 ## License
 
