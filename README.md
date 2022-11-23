@@ -401,7 +401,7 @@ and run `rake definitions:format`. You don't need to properly sort the lists man
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/zhulik/grumlin. This project is intended to 
+Bug reports and pull requests are welcome on GitHub at https://github.com/babbel/grumlin. This project is intended to 
 be a safe, welcoming space for collaboration, and contributors are expected to adhere to the 
 [code of conduct](https://github.com/babbel/grumlin/blob/master/CODE_OF_CONDUCT.md).
 
