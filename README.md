@@ -286,6 +286,54 @@ end # commits automatically
 
 Please check out [bin/console](bin/console) for inspiration. A similar trick may be applied to PRY.
 
+Then you need to reference it in your application.rb:
+```ruby
+config.console = MyRailsConsole
+```
+
+#### Testing
+
+Grumlin provides a couple of helpers to simplify testing code written with it.
+
+##### RSpec
+
+Make sure you have [async-rspec](https://github.com/socketry/async-rspec) installed.
+
+`spec_helper.rb` or `rails_helper.rb`:
+```ruby
+require 'async/rspec'
+require require "grumlin/test/rspec"
+...
+config.include_context(Async::RSpec::Reactor) # Runs async reactor
+config.include_context(Grumlin::Test::RSpec::GremlinContext) # Injects `g`, `__` and expressions, makes sure client is closed after every test
+config.include_context(Grumlin::Test::RSpec::DBCleanerContext) # Cleans the database before every test
+...
+```
+
+It is highly recommended to use `Grumlin::Repository` and not trying to use lower level APIs as they are subject to 
+change.
+
+#### Using in a web app
+
+As previously mentioned, `Grumlin` is built on top of the [async stack](https://github.com/socketry/async).
+This basically means you'd either have to use [Falcon](https://github.com/socketry/falcon) as you application server,
+or you'd need to wrap every place where you use `Grumlin` into an `Async` block:
+
+```ruby
+Async do
+  MyGrumlinRepository.some_query
+ensure
+  Grumlin.close
+end
+```
+
+`Falcon` is preferred because it can keep connections to your Gremlin server open between requests. The only downside
+is that `ActiveRecord` currently does not play well with ruby's fiber scheduler so far, and it can block the event loop.
+When using `Falcon` you don't need explicit `Async` blocks.
+
+Currently it's not recommended to use `ActiveRecord` with `Falcon`. If you still need access to a SQL database from your app,
+consider using [socketry/db](https://github.com/socketry/db)
+
 #### Rails console
 
 In order to make it possible to execute gremlin queries from the rails console you need to define
@@ -325,32 +373,13 @@ class Async::RailsConsole
 end
 ```
 
-Then you need to reference it in your application.rb:
-```ruby
-config.console = MyRailsConsole
-```
+#### AWS Neptune
 
-#### Testing
+See [docs/neptune.md](./docs/neptune.md)
 
-Grumlin provides a couple of helpers to simplify testing code written with it.
+#### Sidekiq
 
-##### RSpec
-
-Make sure you have [async-rspec](https://github.com/socketry/async-rspec) installed.
-
-`spec_helper.rb` or `rails_helper.rb`:
-```ruby
-require 'async/rspec'
-require require "grumlin/test/rspec"
-...
-config.include_context(Async::RSpec::Reactor) # Runs async reactor
-config.include_context(Grumlin::Test::RSpec::GremlinContext) # Injects `g`, `__` and expressions, makes sure client is closed after every test
-config.include_context(Grumlin::Test::RSpec::DBCleanerContext) # Cleans the database before every test
-...
-```
-
-It is highly recommended to use `Grumlin::Repository` and not trying to use lower level APIs as they are subject to 
-change.
+See [docs/neptune.md](./docs/sidekiq.md)
 
 ## Development
 
