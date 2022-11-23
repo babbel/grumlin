@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    grumlin (1.0.0.rc7)
+    grumlin (1.0.0)
       async-pool (~> 0.3.0)
       async-websocket (~> 0.22.0)
       ibsciss-middleware (~> 0.4.0)
@@ -98,7 +98,7 @@ GEM
       protocol-http (~> 0.2)
       protocol-http1 (~> 0.2)
     racc (1.6.0)
-    rack (3.0.0)
+    rack (3.0.1)
     rainbow (3.1.1)
     rake (13.0.6)
     regexp_parser (2.6.0)
