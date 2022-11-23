@@ -14,12 +14,12 @@ Gem::Specification.new do |spec|
     Gremlin graph traversal language DSL and client for Ruby. Suitable and tested with gremlin-server and AWS Neptune.
   DESCRIPTION
 
-  spec.homepage      = "https://github.com/zhulik/grumlin"
+  spec.homepage      = "https://github.com/babbel/grumlin"
   spec.license       = "MIT"
   spec.required_ruby_version = Gem::Requirement.new(">= 2.7.0")
 
   spec.metadata["homepage_uri"] = spec.homepage
-  spec.metadata["source_code_uri"] = "https://github.com/zhulik/grumlin"
+  spec.metadata["source_code_uri"] = "https://github.com/babbel/grumlin"
   spec.metadata["changelog_uri"] = "https://github.com/babbel/grumlin/releases"
   spec.metadata["rubygems_mfa_required"] = "true"
 
