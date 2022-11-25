@@ -17,7 +17,8 @@ module Grumlin::Typing
     "g:VertexProperty" => ->(value) { cast_entity(Grumlin::VertexProperty, value) },
     "g:TraversalMetrics" => ->(value) { cast_map(value[:@value]) },
     "g:Metrics" => ->(value) { cast_map(value[:@value]) },
-    "g:T" => ->(value) { Grumlin::Expressions::T.public_send(value) }
+    "g:T" => ->(value) { Grumlin::Expressions::T.public_send(value) },
+    "g:UUID" => ->(value) { value }
   }.freeze
 
   CASTABLE_TYPES = [Hash, String, Integer, TrueClass, FalseClass, NilClass, Array].freeze
@@ -45,7 +46,7 @@ module Grumlin::Typing
 
     def verify_castable_hash!(value, type)
       raise TypeError, "#{value} cannot be casted, @type is missing" if value[:@type].nil?
-      raise(UnknownTypeError, value[:@type]) if type.nil?
+      raise(Grumlin::UnknownTypeError, value[:@type]) if type.nil?
       raise TypeError, "#{value} cannot be casted, @value is missing" if value[:@value].nil?
     end
 
