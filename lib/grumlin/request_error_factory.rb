@@ -4,6 +4,7 @@ class Grumlin::RequestErrorFactory
   ERRORS = {
     499 => Grumlin::InvalidRequestArgumentsError,
     500 => Grumlin::ServerError,
+    595 => Grumlin::FailStepError,
     597 => Grumlin::ScriptEvaluationError,
     599 => Grumlin::ServerSerializationError,
     598 => Grumlin::ServerTimeoutError,
