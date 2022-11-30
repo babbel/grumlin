@@ -96,6 +96,9 @@ module Grumlin
     # NOTE: Neptune does not return id.
   end
 
+  class FailStepError < ServerError
+  end
+
   class VertexAlreadyExistsError < AlreadyExistsError; end
 
   class EdgeAlreadyExistsError < AlreadyExistsError; end

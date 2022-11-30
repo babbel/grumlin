@@ -21,6 +21,7 @@ steps:
   - drop
   - elementMap
   - emit
+  - fail
   - filter
   - fold
   - from

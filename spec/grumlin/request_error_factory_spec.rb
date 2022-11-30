@@ -54,6 +54,12 @@ RSpec.describe Grumlin::RequestErrorFactory do
       end
     end
 
+    context "when status is 595" do
+      let(:response) { { requestId: 123, status: { code: 595, message: "" } } }
+
+      include_examples "returns an exception", Grumlin::FailStepError
+    end
+
     context "when status is 597" do
       let(:response) { { requestId: 123, status: { code: 597, message: "" } } }
 
