@@ -262,7 +262,7 @@ Middlewares can be used to perform certain actions before and after every query 
 measuring query execution time or performing some modification or validation to the query before it reaches the server or
 modify the response before client gets it.
 
-See [doc/middlewares.md](doc/middlewares.md) for more info and examples.
+See [docs/middlewares.md](docs/middlewares.md) for more info and examples.
 
 #### Transactions
 
