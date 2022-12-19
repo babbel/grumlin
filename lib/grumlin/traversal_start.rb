@@ -9,7 +9,10 @@ class Grumlin::TraversalStart < Grumlin::Steppable
   def tx
     raise AlreadyBoundToTransactionError if @session_id
 
-    transaction = tx_class.new(self.class, pool: @pool, middlewares: @middlewares)
+    # Pool should have size of 1 when working with session
+    pool = Async::Pool::Controller.new(Grumlin::Client::PoolResource, limit: 1)
+
+    transaction = tx_class.new(self.class, pool: pool, middlewares: @middlewares)
     return transaction unless block_given?
 
     result = nil
