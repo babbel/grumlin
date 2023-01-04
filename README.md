@@ -379,7 +379,7 @@ See [docs/neptune.md](./docs/neptune.md)
 
 #### Sidekiq
 
-See [docs/neptune.md](./docs/sidekiq.md)
+See [docs/sidekiq.md](./docs/sidekiq.md)
 
 ## Development
 
