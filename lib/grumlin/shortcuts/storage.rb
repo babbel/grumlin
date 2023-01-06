@@ -46,8 +46,12 @@ class Grumlin::Shortcuts::Storage
     end
   end
 
-  def __
+  def g
     traversal_start_class.new(pool: Grumlin.default_pool)
+  end
+
+  def __
+    traversal_start_class.new(pool: nil)
   end
 
   def traversal_start_class
