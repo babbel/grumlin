@@ -34,5 +34,7 @@ class Grumlin::Transaction
                       need_results: false,
                       session_id: @session_id,
                       pool: @pool)
+  ensure
+    @pool.close
   end
 end

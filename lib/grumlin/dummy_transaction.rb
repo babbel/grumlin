@@ -14,11 +14,9 @@ class Grumlin::DummyTransaction < Grumlin::Transaction
     end
   end
 
-  def commit
-    nil
-  end
+  private
 
-  def rollback
-    nil
+  def finalize(*)
+    @pool.close
   end
 end
