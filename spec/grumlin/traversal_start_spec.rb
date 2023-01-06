@@ -86,4 +86,28 @@ RSpec.describe Grumlin::TraversalStart, gremlin_server: true do
       include_examples "raises an exception", Grumlin::TraversalStart::AlreadyBoundToTransactionError
     end
   end
+
+  describe "when bound to a session" do
+    let(:repository) do
+      Class.new do
+        extend Grumlin::Repository
+
+        shortcut :test do
+          hasLabel(:test)
+        end
+      end.new
+    end
+
+    let(:gtx) { repository.g.tx.begin }
+    let(:session_pool) { gtx.pool }
+
+    it "makes all traversal go through one separate connection pool of size 1" do
+      expect(session_pool).not_to eq(Grumlin.default_pool)
+
+      expect(gtx.V.count.pool).to eq(session_pool)
+      expect(gtx.V.test.count.pool).to eq(session_pool)
+      # Async::Pool::Controller does not have a getter for it's limit
+      expect(session_pool.instance_variable_get(:@limit)).to eq(1)
+    end
+  end
 end
