@@ -3,7 +3,7 @@
 class Grumlin::Steppable
   extend Forwardable
 
-  attr_reader :session_id
+  attr_reader :session_id, :pool
 
   START_STEPS = Grumlin.definitions.dig(:steps, :start).map(&:to_sym).freeze
   REGULAR_STEPS = Grumlin.definitions.dig(:steps, :regular).map(&:to_sym).freeze
