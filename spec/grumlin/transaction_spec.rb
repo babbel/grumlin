@@ -47,6 +47,19 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
         nil
       end
     end
+
+    it "closes it's pool" do
+      expect_any_instance_of(Grumlin::Transport).to receive(:write).and_raise(Async::Stop) # rubocop:disable RSpec/AnyInstance, RSpec/StubbedMock no easier way
+
+      # Manually initialize the pool
+      tx.pool.acquire { "empty" }
+
+      expect do
+        subject
+      rescue Async::Stop
+        nil
+      end.to change(tx.pool, :active?).from(true).to(false)
+    end
   end
 
   describe "#rollback" do
@@ -72,6 +85,19 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
       rescue Async::Stop
         nil
       end
+    end
+
+    it "closes it's pool" do
+      expect_any_instance_of(Grumlin::Transport).to receive(:write).and_raise(Async::Stop) # rubocop:disable RSpec/AnyInstance, RSpec/StubbedMock no easier way
+
+      # Manually initialize the pool
+      tx.pool.acquire { "empty" }
+
+      expect do
+        subject
+      rescue Async::Stop
+        nil
+      end.to change(tx.pool, :active?).from(true).to(false)
     end
   end
 end

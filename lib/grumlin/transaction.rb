@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Grumlin::Transaction
-  attr_reader :session_id
+  attr_reader :session_id, :pool
 
   include Console
 
