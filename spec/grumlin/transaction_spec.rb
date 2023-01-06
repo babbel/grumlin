@@ -66,7 +66,7 @@ RSpec.describe Grumlin::Transaction, gremlin_server: true do
           requestId: "529962d2-374b-4470-915f-cf452bead1be" }
       ).and_raise(Async::Stop)
       # we raise a RuntimeError because otherwise client will be stuck waiting for the commit result
-      # which are not sent on tinkergraph as it does not support transactions
+      # which is not sent on from as it does not support transactions
       begin
         subject
       rescue Async::Stop
