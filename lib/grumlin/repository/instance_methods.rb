@@ -6,7 +6,7 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
   extend Forwardable
 
   def_delegator "self.class", :shortcuts
-  def_delegator :self, :__, :g
+  def_delegator :shortcuts, :__
 
   UPSERT_RETRY_PARAMS = {
     on: [Grumlin::AlreadyExistsError, Grumlin::ConcurrentModificationError],
@@ -17,8 +17,8 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
 
   DEFAULT_ERROR_HANDLING_STRATEGY = Grumlin::Repository::ErrorHandlingStrategy.new(mode: :retry, **UPSERT_RETRY_PARAMS)
 
-  def __
-    shortcuts.traversal_start_class.new(pool: Grumlin.default_pool, middlewares: self.class.middlewares)
+  def g
+    shortcuts.g(middlewares: self.class.middlewares)
   end
 
   def drop_vertex(id, start: g)
