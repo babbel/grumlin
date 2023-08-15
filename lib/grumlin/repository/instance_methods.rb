@@ -58,7 +58,7 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
 
   def add_vertex(label, id = nil, start: g, **properties)
     id ||= properties[T.id]
-    properties = except(properties, T.id)
+    properties = properties.except(T.id)
 
     t = start.addV(label)
     t = t.props(T.id => id) unless id.nil?
@@ -67,7 +67,7 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
 
   def add_edge(label, id = nil, from:, to:, start: g, **properties)
     id ||= properties[T.id]
-    properties = except(properties, T.label)
+    properties = properties.except(T.label)
     properties[T.id] = id
 
     start.addE(label).from(__.V(from)).to(__.V(to)).props(**properties).next
@@ -136,20 +136,10 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
     Retryable.retryable(**retry_params, &block)
   end
 
-  # A polyfill for Hash#except for ruby 2.x environments without ActiveSupport
-  # TODO: delete and use native Hash#except after ruby 2.7 is deprecated.
-  def except(hash, *keys)
-    return hash.except(*keys) if hash.respond_to?(:except)
-
-    hash.each_with_object({}) do |(k, v), res|
-      res[k] = v unless keys.include?(k)
-    end
-  end
-
   def cleanup_properties(create_properties, update_properties, *props_to_cleanup)
     props_to_cleanup = [T.id, T.label] if props_to_cleanup.empty?
     [create_properties, update_properties].map do |props|
-      except(props, props_to_cleanup)
+      props.except(props_to_cleanup)
     end
   end
 end
