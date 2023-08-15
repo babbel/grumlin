@@ -132,7 +132,7 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
   end
 
   def with_upsert_retry(retry_params, &block)
-    retry_params = UPSERT_RETRY_PARAMS.merge((retry_params))
+    retry_params = UPSERT_RETRY_PARAMS.merge(retry_params)
     Retryable.retryable(**retry_params, &block)
   end
 

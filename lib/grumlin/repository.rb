@@ -81,7 +81,7 @@ module Grumlin::Repository
 
   def default_edge_properties(&block)
     shortcut :addE, override: true do |*args|
-      super(*args).props(**block.call(*args))  # rubocop:disable Performance/RedundantBlockCall
+      super(*args).props(**block.call(*args)) # rubocop:disable Performance/RedundantBlockCall
     end
   end
 

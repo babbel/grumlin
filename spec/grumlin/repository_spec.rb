@@ -255,7 +255,7 @@ RSpec.describe Grumlin::Repository, gremlin_server: true do
       it "returns profiling data" do
         result = repository.test_query(:white, query_params: { profile: true })
 
-        expect(result.keys).to match_array([:dur, :metrics]) # Profiling data
+        expect(result.keys).to contain_exactly(:dur, :metrics) # Profiling data
       end
     end
 
