@@ -27,7 +27,7 @@ event loop.
 
 ## Dependencies
 
-Grumlin works with ruby >= 2.7, but it's recommended to use 3.1 due to [zlib warnings](https://github.com/socketry/async-websocket/issues/42).
+Grumlin works with ruby >= 3.0, but it's recommended to use 3.1 due to [zlib warnings](https://github.com/socketry/async-websocket/issues/42).
 
 ## Install
 

@@ -15,7 +15,7 @@ namespace :definitions do
   desc "Format definitions.yml"
   task :format do
     path = File.join(__dir__, "lib", "definitions.yml")
-    definitions = YAML.safe_load(File.read(path))
+    definitions = YAML.safe_load_file(path)
 
     definitions.each_value do |kind|
       kind.each do |name, list|

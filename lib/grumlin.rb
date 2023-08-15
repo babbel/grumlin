@@ -181,7 +181,7 @@ module Grumlin
     end
 
     def definitions
-      @definitions ||= YAML.safe_load(File.read(File.join(__dir__, "definitions.yml")), symbolize_names: true)
+      @definitions ||= YAML.safe_load_file(File.join(__dir__, "definitions.yml"), symbolize_names: true)
     end
 
     def fake_uuid(*parts, separator: "->")

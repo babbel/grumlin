@@ -54,7 +54,8 @@ class Grumlin::RequestErrorFactory
 
     def already_exists_error(status)
       return Grumlin::VertexAlreadyExistsError if status[:message]&.include?(VERTEX_ALREADY_EXISTS)
-      return Grumlin::EdgeAlreadyExistsError if status[:message]&.include?(EDGE_ALREADY_EXISTS)
+
+      Grumlin::EdgeAlreadyExistsError if status[:message]&.include?(EDGE_ALREADY_EXISTS)
     end
 
     def concurrent_modification_error(status) # rubocop:disable Metrics/CyclomaticComplexity, Metrics/PerceivedComplexity
@@ -66,7 +67,8 @@ class Grumlin::RequestErrorFactory
       if status[:message]&.include?(CONCURRENT_EDGE_PROPERTY_INSERT_FAILED)
         return Grumlin::ConcurrentEdgePropertyInsertFailedError
       end
-      return Grumlin::ConcurrentModificationError if status[:message]&.include?(CONCURRENCT_MODIFICATION_FAILED)
+
+      Grumlin::ConcurrentModificationError if status[:message]&.include?(CONCURRENCT_MODIFICATION_FAILED)
     end
   end
 end

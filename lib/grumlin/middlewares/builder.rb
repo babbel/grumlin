@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Grumlin::Middlewares::Builder < ::Middleware::Builder
+class Grumlin::Middlewares::Builder < Middleware::Builder
   def similar?(other)
     stack == other.stack
   end
