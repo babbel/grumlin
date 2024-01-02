@@ -89,3 +89,6 @@ Style/WordArray:
 
 Style/ClassAndModuleChildren:
   EnforcedStyle: compact
+
+FactoryBot/IdSequence:
+  Enabled: false
