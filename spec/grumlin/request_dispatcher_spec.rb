@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::RequestDispatcher, async: true do
+RSpec.describe Grumlin::RequestDispatcher, :async do
   let(:dispatcher) { described_class.new }
 
   describe "#add_request" do

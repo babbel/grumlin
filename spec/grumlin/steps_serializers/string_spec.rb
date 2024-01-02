@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::StepsSerializers::String, gremlin: true do
+RSpec.describe Grumlin::StepsSerializers::String, :gremlin do
   let(:serializer) { described_class.new(steps, apply_shortcuts: apply_shortcuts) }
 
   let(:shortcuts) do

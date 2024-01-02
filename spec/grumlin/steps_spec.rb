@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Steps, gremlin: true do
+RSpec.describe Grumlin::Steps, :gremlin do
   let(:steps) { described_class.new(shortcuts) }
 
   describe ".from" do

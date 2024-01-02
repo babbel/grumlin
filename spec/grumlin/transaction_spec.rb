@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Transaction, gremlin_server: true do
+RSpec.describe Grumlin::Transaction, :gremlin_server do
   let(:tx) { g.tx }
 
   before do

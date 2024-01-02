@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::Repository, gremlin_server: true do
+RSpec.describe Grumlin::Repository, :gremlin_server do
   let(:repository_class) do
     Class.new do
       extend Grumlin::Repository

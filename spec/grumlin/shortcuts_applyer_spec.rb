@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::ShortcutsApplyer, gremlin: true do
+RSpec.describe Grumlin::ShortcutsApplyer, :gremlin do
   describe ".call" do
     subject { described_class.call(steps) }
 

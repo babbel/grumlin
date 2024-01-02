@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::WithExtension, gremlin: true do
+RSpec.describe Grumlin::WithExtension, :gremlin do
   let(:shortcuts) { Grumlin::Shortcuts::Storage.new }
 
   let(:klass) do

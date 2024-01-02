@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Async::Channel, async: true do
+RSpec.describe Async::Channel, :async do
   let(:channel) { described_class.new }
 
   describe "#<<" do
