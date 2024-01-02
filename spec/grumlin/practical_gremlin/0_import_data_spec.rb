@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "Practical Gremlin: Import data", gremlin_server: true, timeout: 60 do
+RSpec.describe "Practical Gremlin: Import data", :gremlin_server, timeout: 60 do
   let(:graphml) { File.read("spec/fixtures/air_routes/air-routes.graphml") }
   let(:importer) { GraphMLImporter.new(graphml) }
 

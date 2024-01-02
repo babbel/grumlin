@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::DummyTransaction, gremlin_server: true do
+RSpec.describe Grumlin::DummyTransaction, :gremlin_server do
   let(:tx) { g.tx }
 
   describe "defaults" do

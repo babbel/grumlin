@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe "stress test", gremlin_server: true, timeout: 120 do
+RSpec.describe "stress test", :gremlin_server, timeout: 120 do
   let(:uuids) { Array.new(1000) { SecureRandom.uuid } }
   let(:upsert_uuids) { Array.new(5) { SecureRandom.uuid } }
 

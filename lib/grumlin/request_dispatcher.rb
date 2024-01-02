@@ -61,7 +61,7 @@ class Grumlin::RequestDispatcher
   end
 
   def clear
-    @requests.each do |_id, request|
+    @requests.each_value do |request|
       request[:channel].close!
     end
     @requests.clear

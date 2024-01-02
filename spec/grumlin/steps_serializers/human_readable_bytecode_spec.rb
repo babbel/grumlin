@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::StepsSerializers::HumanReadableBytecode, gremlin: true do
+RSpec.describe Grumlin::StepsSerializers::HumanReadableBytecode, :gremlin do
   let(:serializer) { described_class.new(steps) }
 
   # TODO: add cases with predicates

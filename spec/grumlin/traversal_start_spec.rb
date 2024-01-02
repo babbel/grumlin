@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::TraversalStart, gremlin_server: true do
+RSpec.describe Grumlin::TraversalStart, :gremlin_server do
   describe "#tx" do
     subject { g.tx }
 

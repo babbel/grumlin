@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.describe Grumlin::QueryValidators::BlocklistedStepsValidator, gremlin: true do
+RSpec.describe Grumlin::QueryValidators::BlocklistedStepsValidator, :gremlin do
   let(:validator) { described_class.new(:addV, :drop) }
 
   shared_examples "considers query valid" do

@@ -5,6 +5,5 @@ FactoryBot.define do
     initialize_with { new(**attributes) }
 
     label { "test_vertex" }
-    sequence(:id)
   end
 end
