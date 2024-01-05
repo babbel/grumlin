@@ -13,11 +13,9 @@ jobs:
           ruby-version: "3.0"
           bundler-cache: true
 
-      - name: Run the default task
-        run: |
-          gem install bundler -v 2.2.15
-          bundle install
-          bundle exec rubocop
+      - name: Run rubocop
+        run: bundle exec rubocop -g github
+
   test:
     runs-on: ubuntu-latest
     strategy:
@@ -43,6 +41,7 @@ jobs:
 
       - name: Run tests
         run: bundle exec rspec
+
   publish:
     runs-on: ubuntu-latest
     needs:
