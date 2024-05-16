@@ -93,7 +93,7 @@ RSpec.describe Async::Channel, :async do
         Async do
           n = 0
           channel.each do |msg|
-            expect(msg).to eq(message[n])
+            expect(msg).to eq(messages[n])
             n += 1
           end
           expect(channel).to be_closed

@@ -19,7 +19,7 @@ RSpec.describe Grumlin::Traverser do
   describe ".new" do
     subject { described_class.new(traverser_value) }
 
-    let(:traverser_value) { { bulk: bulk, value: value } }
+    let(:traverser_value) { { bulk:, value: } }
 
     let(:value) do
       { "@type": "g:Map", "@value":  ["test2", { "@type": "g:List", "@value": [{ "@type": "g:Int32", "@value": 0 }] },
@@ -27,7 +27,7 @@ RSpec.describe Grumlin::Traverser do
     end
 
     context "when bulk is not specified" do
-      let(:traverser_value) { { value: value } }
+      let(:traverser_value) { { value: } }
 
       include_examples "builds a traverser", 1
     end

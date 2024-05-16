@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 RSpec.describe Grumlin::Repository::ErrorHandlingStrategy do
-  let(:strategy) { described_class.new(mode: mode, **params) }
+  let(:strategy) { described_class.new(mode:, **params) }
   let(:params) { { on: [NameError] } }
 
   describe "#apply" do

@@ -42,7 +42,7 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
 
     return if traversal.count.next.zero?
 
-    drop_in_batches(traversal, batch_size: batch_size)
+    drop_in_batches(traversal, batch_size:)
 
     Console.logger.info(self) { "drop_in_batches: finished." }
   end
@@ -123,17 +123,17 @@ module Grumlin::Repository::InstanceMethods # rubocop:disable Metrics/ModuleLeng
 
   private
 
-  def with_upsert_error_handling(on_failure, params, &block)
+  def with_upsert_error_handling(on_failure, params, &)
     if params.any?
       Grumlin::Repository::ErrorHandlingStrategy.new(mode: on_failure, **UPSERT_RETRY_PARAMS.merge(params))
     else
       DEFAULT_ERROR_HANDLING_STRATEGY
-    end.apply!(&block)
+    end.apply!(&)
   end
 
-  def with_upsert_retry(retry_params, &block)
+  def with_upsert_retry(retry_params, &)
     retry_params = UPSERT_RETRY_PARAMS.merge(retry_params)
-    Retryable.retryable(**retry_params, &block)
+    Retryable.retryable(**retry_params, &)
   end
 
   def cleanup_properties(create_properties, update_properties, *props_to_cleanup)

@@ -92,7 +92,7 @@ RSpec.describe "stress test", :gremlin_server, timeout: 120 do
       end
 
       reactor.sleep(duration)
-      barrier.tasks.each(&:stop)
+      barrier.tasks.each { _1.task.stop }
       barrier.wait
     end
   end

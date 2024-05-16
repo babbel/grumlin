@@ -16,7 +16,7 @@ Gem::Specification.new do |spec|
 
   spec.homepage      = "https://github.com/babbel/grumlin"
   spec.license       = "MIT"
-  spec.required_ruby_version = Gem::Requirement.new(">= 3.0")
+  spec.required_ruby_version = Gem::Requirement.new(">= 3.1")
 
   spec.metadata["homepage_uri"] = spec.homepage
   spec.metadata["source_code_uri"] = "https://github.com/babbel/grumlin"
@@ -28,8 +28,12 @@ Gem::Specification.new do |spec|
   end
   spec.require_paths = ["lib"]
 
-  spec.add_dependency "async-pool", "~> 0.4.0"
+  spec.add_dependency "async", "~> 2.11.0"
+  spec.add_dependency "async-http", "~> 0.66.0"
+  spec.add_dependency "async-io", "~> 1.43.0"
+  spec.add_dependency "async-pool", "~> 0.6.0"
   spec.add_dependency "async-websocket", "~> 0.26.0"
+  spec.add_dependency "console", "~> 1.25.0"
   spec.add_dependency "ibsciss-middleware", "~> 0.4.0"
   spec.add_dependency "oj", "~> 3.16.0"
   spec.add_dependency "retryable", "~> 3.0.0"

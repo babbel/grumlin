@@ -23,13 +23,13 @@ class Grumlin::Steppable
 
   ALL_STEPS.each do |step|
     define_method step do |*args, **params|
-      shortcuts.step_class.new(step, args: args, params: params, previous_step: self,
+      shortcuts.step_class.new(step, args:, params:, previous_step: self,
                                      session_id: @session_id, pool: @pool, middlewares: @middlewares)
     end
   end
 
   def step(name, *args, **params)
-    shortcuts.step_class.new(name, args: args, params: params, previous_step: self,
+    shortcuts.step_class.new(name, args:, params:, previous_step: self,
                                    session_id: @session_id, pool: @pool, middlewares: @middlewares)
   end
 

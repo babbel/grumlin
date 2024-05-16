@@ -3,8 +3,6 @@
 class Grumlin::Transaction
   attr_reader :session_id, :pool
 
-  include Console
-
   COMMIT = Grumlin::Repository.new.g.step(:tx, :commit)
   ROLLBACK = Grumlin::Repository.new.g.step(:tx, :rollback)
 

@@ -4,8 +4,6 @@ class Grumlin::Transport
   # A transport based on https://github.com/socketry/async
   # and https://github.com/socketry/async-websocket
 
-  include Console
-
   attr_reader :url
 
   # Transport is not reusable. Once closed should be recreated.
@@ -26,7 +24,7 @@ class Grumlin::Transport
     raise AlreadyConnectedError if connected?
 
     @connection = Async::WebSocket::Client.connect(Async::HTTP::Endpoint.parse(@url), **@client_options)
-    logger.debug(self) { "Connected to #{@url}." }
+    Console.debug(self) { "Connected to #{@url}." }
 
     @response_task = @parent.async { run_response_task }
 
@@ -88,7 +86,7 @@ class Grumlin::Transport
   def with_guard
     yield
   rescue Async::Stop, Async::TimeoutError, StandardError => e
-    logger.debug(self) { "Guard error, closing." }
+    Console.debug(self) { "Guard error, closing." }
     begin
       @response_channel.exception(e)
     rescue Async::Channel::ChannelClosedError
