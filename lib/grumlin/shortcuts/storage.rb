@@ -35,7 +35,7 @@ class Grumlin::Shortcuts::Storage
     sc = step_class
 
     shortcut_methods_module.define_method(name) do |*args, **params|
-      next sc.new(name, args: args, params: params, previous_step: self, pool: pool)
+      next sc.new(name, args:, params:, previous_step: self, pool:)
     end
     extend_traversal_classes(shortcut) unless shortcut.lazy?
   end
@@ -47,7 +47,7 @@ class Grumlin::Shortcuts::Storage
   end
 
   def g(middlewares: Grumlin.default_middlewares)
-    traversal_start_class.new(pool: Grumlin.default_pool, middlewares: middlewares)
+    traversal_start_class.new(pool: Grumlin.default_pool, middlewares:)
   end
 
   def __

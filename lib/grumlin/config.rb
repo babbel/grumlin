@@ -22,7 +22,7 @@ class Grumlin::Config
     @pool_size = 10
     @client_concurrency = 5
     @provider = :tinkergraph
-    @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent: parent) }
+    @client_factory = ->(url, parent) { Grumlin::Client.new(url, parent:) }
   end
 
   def middlewares

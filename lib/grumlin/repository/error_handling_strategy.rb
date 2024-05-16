@@ -19,11 +19,11 @@ class Grumlin::Repository::ErrorHandlingStrategy
     @mode == :retry
   end
 
-  def apply!(&block)
+  def apply!(&)
     return yield if raise?
-    return ignore_errors!(&block) if ignore?
+    return ignore_errors!(&) if ignore?
 
-    retry_errors!(&block)
+    retry_errors!(&)
   end
 
   private
@@ -34,7 +34,7 @@ class Grumlin::Repository::ErrorHandlingStrategy
     # ignore errors
   end
 
-  def retry_errors!(&block)
-    Retryable.retryable(**@params, &block)
+  def retry_errors!(&)
+    Retryable.retryable(**@params, &)
   end
 end

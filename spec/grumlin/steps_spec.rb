@@ -14,7 +14,7 @@ RSpec.describe Grumlin::Steps, :gremlin do
   end
 
   describe "#add" do
-    subject { steps.add(name, args: args) }
+    subject { steps.add(name, args:) }
 
     let(:args) { [] }
     let(:shortcuts) { Grumlin::Shortcuts::Storage.empty }

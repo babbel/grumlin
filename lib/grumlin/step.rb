@@ -6,7 +6,7 @@ class Grumlin::Step < Grumlin::Steppable
   # TODO: replace pool, session_id and middlewares with a context?
   def initialize(name, args: [], params: {}, previous_step: nil, pool: nil, session_id: nil, # rubocop:disable Metrics/ParameterLists
                  middlewares: Grumlin.default_middlewares)
-    super(pool: pool, session_id: session_id, middlewares: middlewares)
+    super(pool:, session_id:, middlewares:)
 
     @name = name.to_sym
     @args = args # TODO: add recursive validation: only json types or Step
@@ -55,7 +55,7 @@ class Grumlin::Step < Grumlin::Steppable
   end
 
   def bytecode(no_return: false)
-    Grumlin::StepsSerializers::Bytecode.new(steps, no_return: no_return)
+    Grumlin::StepsSerializers::Bytecode.new(steps, no_return:)
   end
 
   def next
@@ -85,7 +85,7 @@ class Grumlin::Step < Grumlin::Steppable
 
   def send_query(need_results:)
     @middlewares.call(traversal: self,
-                      need_results: need_results,
+                      need_results:,
                       session_id: @session_id,
                       pool: @pool)
   end

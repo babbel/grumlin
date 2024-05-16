@@ -24,11 +24,9 @@ class Grumlin::Steps
   end
 
   def add(name, args: [], params: {}, to: :end)
-    if CONFIGURATION_STEPS.include?(name) || name.to_sym == :tx
-      return add_configuration_step(name, args: args, params: params, to: to)
-    end
+    return add_configuration_step(name, args:, params:, to:) if CONFIGURATION_STEPS.include?(name) || name.to_sym == :tx
 
-    Grumlin::StepData.new(name, args: cast_arguments(args), params: params).tap do |step|
+    Grumlin::StepData.new(name, args: cast_arguments(args), params:).tap do |step|
       next @steps << step if to == :end
       next @steps.unshift(step) if to == :begin
 
@@ -62,7 +60,7 @@ class Grumlin::Steps
   def add_configuration_step(name, args: [], params: {}, to: :end)
     raise ArgumentError, "cannot use configuration steps after start step was used" if @steps.any? && to == :end
 
-    Grumlin::StepData.new(name, args: cast_arguments(args), params: params).tap do |step|
+    Grumlin::StepData.new(name, args: cast_arguments(args), params:).tap do |step|
       next @configuration_steps << step if to == :end
       next @configuration_steps.unshift(step) if to == :begin
 

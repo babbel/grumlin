@@ -26,7 +26,7 @@ class Grumlin::ShortcutsApplyer
         args = step.args.map { |arg| call(arg) }
 
         shortcut = shortcuts[step.name]
-        next result << Grumlin::StepData.new(step.name, args: args, params: step.params) unless shortcut&.lazy?
+        next result << Grumlin::StepData.new(step.name, args:, params: step.params) unless shortcut&.lazy?
 
         t = shortcuts.__
         step = shortcut.apply(t, *args, **step.params)

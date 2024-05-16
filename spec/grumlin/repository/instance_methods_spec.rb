@@ -225,7 +225,7 @@ RSpec.describe Grumlin::Repository::InstanceMethods, :gremlin_server do
   end
 
   describe "#add_edge" do
-    subject { repository.add_edge(:test_label, id, from: from, to: to, **properties) }
+    subject { repository.add_edge(:test_label, id, from:, to:, **properties) }
 
     let(:from) { 1 }
     let(:to) { 2 }
@@ -275,7 +275,7 @@ RSpec.describe Grumlin::Repository::InstanceMethods, :gremlin_server do
   end
 
   describe "#upsert_vertex" do
-    subject { repository.upsert_vertex(:test, id, create_properties: create_properties, update_properties: update_properties) }
+    subject { repository.upsert_vertex(:test, id, create_properties:, update_properties:) }
 
     let(:id) { 123 }
     let(:create_properties) { { key: :value } }
@@ -337,7 +337,7 @@ RSpec.describe Grumlin::Repository::InstanceMethods, :gremlin_server do
   end
 
   describe "#upsert_edge" do
-    subject { repository.upsert_edge(:test, from: from, to: to, create_properties: create_properties, update_properties: update_properties) }
+    subject { repository.upsert_edge(:test, from:, to:, create_properties:, update_properties:) }
 
     let(:create_properties) { { key: :value, T.id => 1234 } }
     let(:update_properties) { { another_key: :another_value } }

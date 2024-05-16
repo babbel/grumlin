@@ -38,8 +38,6 @@ class Grumlin::Client
     end
   end
 
-  include Console
-
   # Client is not reusable. Once closed should be recreated.
   def initialize(url, parent: Async::Task.current, **client_options)
     @url = url
@@ -62,7 +60,7 @@ class Grumlin::Client
     rescue Async::Stop, Async::TimeoutError, StandardError
       close(check_requests: false)
     end
-    logger.debug(self, "Connected")
+    Console.debug(self, "Connected")
   end
 
   # Before calling close the user must ensure that:
@@ -85,7 +83,7 @@ class Grumlin::Client
 
     raise Grumlin::ResourceLeakError, "Request list is not empty: #{@request_dispatcher.requests}" if check_requests
   ensure
-    logger.debug(self, "Closed")
+    Console.debug(self, "Closed")
   end
 
   def connected?

@@ -23,7 +23,7 @@ class Grumlin::RequestDispatcher
     raise RequestAlreadyAddedError if @requests.include?(request[:requestId])
 
     Async::Channel.new.tap do |channel|
-      @requests[request[:requestId]] = { request: request, result: [], channel: channel }
+      @requests[request[:requestId]] = { request:, result: [], channel: }
     end
   end
 

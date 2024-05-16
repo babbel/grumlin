@@ -2,6 +2,6 @@
 
 class Grumlin::TraversalStrategies::OptionsStrategy < Grumlin::TypedValue
   def initialize(value)
-    super(type: "OptionsStrategy", value: value)
+    super(type: "OptionsStrategy", value:)
   end
 end

@@ -102,7 +102,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
 
   describe "#query" do
     context "when return_mode is passed" do
-      subject { repository_class.query(:test_query, return_mode: return_mode) { g.V } }
+      subject { repository_class.query(:test_query, return_mode:) { g.V } }
 
       context "when return mode is valid" do
         let(:return_mode) { :single }
@@ -121,7 +121,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
     end
 
     context "when postprocess_with is passed" do
-      subject { repository_class.query(:test_query, postprocess_with: postprocess_with) { g.V } }
+      subject { repository_class.query(:test_query, postprocess_with:) { g.V } }
 
       context "when postprocess_with is a symbol" do
         let(:postprocess_with) { :present }
@@ -160,7 +160,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
           extend Grumlin::Repository
 
           query :test_query do |color|
-            g.V.hasAll(color: color)
+            g.V.hasAll(color:)
           end
         end
       end
@@ -181,7 +181,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
           extend Grumlin::Repository
 
           query(:test_query, return_mode: :single) do |color|
-            g.V.hasAll(color: color)
+            g.V.hasAll(color:)
           end
         end
       end
@@ -195,7 +195,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
           extend Grumlin::Repository
 
           query(:test_query, return_mode: :none) do |color|
-            g.V.hasAll(color: color)
+            g.V.hasAll(color:)
           end
         end
       end
@@ -215,7 +215,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
           extend Grumlin::Repository
 
           query(:test_query, return_mode: :traversal) do |color|
-            g.V.hasAll(color: color)
+            g.V.hasAll(color:)
           end
         end
       end
@@ -229,7 +229,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
           extend Grumlin::Repository
 
           query(:test_query, return_mode: :list) do |color|
-            g.V.hasAll(color: color)
+            g.V.hasAll(color:)
           end
         end
       end
@@ -247,7 +247,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
           extend Grumlin::Repository
 
           query(:test_query) do |color|
-            g.V.hasAll(color: color)
+            g.V.hasAll(color:)
           end
         end
       end
@@ -265,7 +265,7 @@ RSpec.describe Grumlin::Repository, :gremlin_server do
           extend Grumlin::Repository
 
           query(:test_query) do |color|
-            g.V.hasAll(color: color)
+            g.V.hasAll(color:)
           end
         end
       end

@@ -13,7 +13,7 @@ RSpec.describe Grumlin::RequestErrorFactory do
     end
 
     context "when status is 500" do
-      let(:response) { { requestId: 123, status: { code: 500, message: message } } }
+      let(:response) { { requestId: 123, status: { code: 500, message: } } }
 
       context "when vertex already exists" do
         let(:message) { "Vertex with id already exists: 1234" }

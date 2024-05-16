@@ -21,7 +21,7 @@ module Grumlin::Shortcuts
 
     raise ArgumentError, "either shortcut or block must be passed" if [shortcut, block].count(&:nil?) != 1
 
-    shortcuts.add(name, shortcut || Grumlin::Shortcut.new(name, lazy: lazy, &block))
+    shortcuts.add(name, shortcut || Grumlin::Shortcut.new(name, lazy:, &block))
   end
 
   def shortcuts_from(other_shortcuts)

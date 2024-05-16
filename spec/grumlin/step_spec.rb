@@ -2,7 +2,7 @@
 
 RSpec.describe Grumlin::Step do
   let(:step_class) { shortcuts.step_class }
-  let(:step) { step_class.new(name, args: args, params: params) }
+  let(:step) { step_class.new(name, args:, params:) }
   let(:name) { :V }
   let(:args) { [] }
   let(:params) { {} }
