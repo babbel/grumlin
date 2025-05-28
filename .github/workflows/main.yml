@@ -57,12 +57,21 @@ jobs:
       - name: Build gem
         run: gem build
 
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+      - uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          parse-json-secrets: true
+          secret-ids: RUBYGEMS,${{ vars.RUBYGEMS_SECRET_ARN }}
+
       - name: Create credentials
         run: |
           mkdir ~/.gem
           cat << EOF > ~/.gem/credentials
           ---
-          :rubygems_api_key: ${{ secrets.RUBYGEMS_TOKEN }}
+          :rubygems_api_key: ${{ env.RUBYGEMS_TOKEN }}
           EOF
           chmod 0600 /home/runner/.gem/credentials
 
