@@ -73,7 +73,7 @@ jobs:
       - uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
           parse-json-secrets: true
-          secret-ids: RUBYGEMS,${{ vars.RUBYGEMS_SECRET_ARN }}
+          secret-ids: RUBYGEMS_TOKEN,${{ vars.RUBYGEMS_SECRET_ARN }}
 
       - name: Create credentials
         run: |
