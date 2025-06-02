@@ -72,7 +72,6 @@ jobs:
           role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
       - uses: aws-actions/aws-secretsmanager-get-secrets@v2
         with:
-          parse-json-secrets: true
           secret-ids: RUBYGEMS_TOKEN,${{ vars.RUBYGEMS_SECRET_ARN }}
 
       - name: Create credentials
