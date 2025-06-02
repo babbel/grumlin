@@ -28,6 +28,12 @@ jobs:
           ruby-version: ${{ matrix.ruby }}
           bundler-cache: true
 
+      - name: Install Docker Compose
+        run: |
+          sudo curl -L "https://github.com/docker/compose/releases/download/v2.27.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+          sudo chmod +x /usr/local/bin/docker-compose
+          docker-compose version
+
       - name: Start Gremlin server
         run: |
           docker-compose up -d --build
@@ -43,6 +49,9 @@ jobs:
 
   publish:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     needs:
       - lint
       - test
@@ -57,12 +66,20 @@ jobs:
       - name: Build gem
         run: gem build
 
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-region: ${{ vars.AWS_REGION }}
+          role-to-assume: ${{ vars.AWS_IAM_ROLE_ARN }}
+      - uses: aws-actions/aws-secretsmanager-get-secrets@v2
+        with:
+          secret-ids: RUBYGEMS_TOKEN,${{ vars.RUBYGEMS_SECRET_ARN }}
+
       - name: Create credentials
         run: |
           mkdir ~/.gem
           cat << EOF > ~/.gem/credentials
           ---
-          :rubygems_api_key: ${{ secrets.RUBYGEMS_TOKEN }}
+          :rubygems_api_key: ${{ env.RUBYGEMS_TOKEN }}
           EOF
           chmod 0600 /home/runner/.gem/credentials
 
